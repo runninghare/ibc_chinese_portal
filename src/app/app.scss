@@ -1,0 +1,268 @@
+// http://ionicframework.com/docs/theming/
+
+
+// App Global Sass
+// --------------------------------------------------
+// Put style rules here that you want to apply globally. These
+// styles are for the entire app and not just one component.
+// Additionally, this file can be also used as an entry point
+// to import other Sass files to be included in the output CSS.
+//
+// Shared Sass variables, which can be used to adjust Ionic's
+// default Sass variables, belong in "theme/variables.scss".
+//
+// To declare rules for a specific mode, create a child rule
+// for the .md, .ios, or .wp mode classes. The mode class is
+// automatically applied to the <body> element in the app.
+
+@each $key, $color in $colors {
+  @each $ui in (content, list, item) {
+    .#{$ui}-md-#{$key}, .#{$ui}-ios-#{$key}, .#{$ui}-wp-#{$key} {
+      @if type-of($color) == 'map' {
+        background: map-get($color, base);
+        color: map-get($color, contrast);
+      }
+    }
+  }
+}
+
+.ibc-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: 0.3;
+  z-index: 1
+}
+
+.ratio-4-3 {
+  width: 32vw;
+  height: 18vw;
+}
+
+@for $i from 0 through 10 {
+  .home-bg-#{$i} {
+      background: url("../assets/img/home-bg-#{$i}.jpg") no-repeat;
+      background-size: cover;
+      color: #FFF;
+  }
+}
+
+.bg-color-white {
+  background-color: white;
+}
+
+.std-bg {
+  background-color: #EFEFEF;
+  color: #000;
+}
+
+.std-header-bg {
+  background-color: #004D40;
+  color: #FFF;
+}
+
+ion-note {
+  white-space: normal;
+}
+
+img.img-avatar {
+  border-radius: 50%;
+  overflow: visible;
+  width: 40px;
+}
+
+.page-spinner-container {
+    text-align: center;
+    .page-spinner {
+        width: 50px;
+        height: 50px;
+        margin-top: 50%
+    }
+}
+
+.toast-success {
+  > div{
+       background-color:#43A047!important;
+   }
+}
+
+.toast-danger {
+  > div{
+       background-color:#FF5252!important;
+   }
+}
+
+.toolbar-background {
+  background-color: transparent;
+}
+
+.ibc-full-width {
+  width: 100%;
+}
+
+.ibc-full-height {
+  height: 100%;
+}
+
+// Paddings and Margins
+// 
+
+
+.ibc-clear-v-margin {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.ibc-clear-v-padding {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.ibc-clear-h-margin {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.ibc-clear-h-padding {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.ibc-clear-padding {
+  @extend .ibc-clear-h-padding;
+  @extend .ibc-clear-v-padding;
+}
+
+.ibc-clear-margin {
+  @extend .ibc-clear-h-margin;
+  @extend .ibc-clear-v-margin;
+}
+
+@each $dir in top, bottom, left, right {
+
+  .ibc-clear-#{$dir}-margin {
+    margin-#{$dir}: 0 !important;
+  }
+
+  .ibc-clear-#{$dir}-padding {
+    padding-#{$dir}: 0 !important;
+  }
+}
+
+.ibc-add-left-margin-1 {
+    margin-left: 1rem;
+}
+
+@each $size in (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 40, 50, 60) {
+
+  /* Margin Classes */
+  .ibc-margin-#{$size} {
+    margin: #{$size}px;
+  }
+
+  .ibc-h-margin-#{$size} {
+    margin-left: #{$size}px;
+    margin-right: #{$size}px;
+  }
+
+  .ibc-v-margin-#{$size} {
+    margin-top: #{$size}px;
+    margin-bottom: #{$size}px;
+  }
+
+  .ibc-top-margin-#{$size} {
+    margin-top: #{$size}px;
+  }
+
+  .ibc-bottom-margin-#{$size} {
+    margin-bottom: #{$size}px;
+  }
+
+  .ibc-left-margin-#{$size} {
+    margin-left: #{$size}px;
+  }
+
+  .ibc-right-margin-#{$size} {
+    margin-right: #{$size}px;
+  }
+
+  /* Padding Classes */
+  .ibc-padding-#{$size} {
+    padding: #{$size}px;
+  }
+
+  .ibc-h-padding-#{$size} {
+    padding-left: #{$size}px !important;
+    padding-right: #{$size}px !important;
+  }
+
+  .ibc-v-padding-#{$size} {
+    padding-top: #{$size}px !important;
+    padding-bottom: #{$size}px !important;
+  }
+
+  .ibc-top-padding-#{$size} {
+    padding-top: #{$size}px;
+  }
+
+  .ibc-bottom-padding-#{$size} {
+    padding-bottom: #{$size}px;
+  }
+
+  .ibc-left-padding-#{$size} {
+    padding-left: #{$size}px;
+  }
+
+  .ibc-right-padding-#{$size} {
+    padding-right: #{$size}px;
+  }
+}
+
+ion-content {
+  max-width: 600px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ibc-content-button {
+    font-size: 2rem !important;
+    height: 3rem !important;
+    padding: 0.5rem !important;
+    font-size: 2rem !important;
+}
+
+.loader-overlay {
+
+  text-align: center;
+  .page-spinner {
+    width: 50px;
+    height: 50px;
+    top: 40%;
+  }
+
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+
+  background-color: #000;
+  opacity: 0.5;
+}
+
+.ibc-badge {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  border-radius: 15px !important;
+}
+
+body {
+  // user-select: text;
+}

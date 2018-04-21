@@ -1,0 +1,19 @@
+<ion-menu [content]="content" color="sidebar">
+  <ion-header color="sidebar">
+    <ion-toolbar color="sidebar">
+      <ion-title>目錄</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content no-bounce color="sidebar">
+    <ion-list color="sidebar">
+      <button color="sidebar" menuClose ion-item [hidden]="p.needAuth && !ibcFB.isAuthed" *ngFor="let p of pages" (click)="openPage(p)">
+        {{p.title}}
+      </button>
+    </ion-list>
+  </ion-content>
+
+</ion-menu>
+
+<!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

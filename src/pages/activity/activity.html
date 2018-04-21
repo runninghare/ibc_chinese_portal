@@ -1,0 +1,87 @@
+<!--
+  Generated template for the ActivityPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{ activity?.title }}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<load-tracker></load-tracker>
+
+<ion-content padding>
+    <table class="ibc-full-width" style="table-layout: fixed">
+        <tbody id="participants">         
+            <tr *ngIf="activity?.datetime">
+                <td width="30%">時間</td>
+                <td width="70%">{{activity?.datetime | date: 'yyyy年MM月dd日'}}</td>
+            </tr>
+            <tr *ngIf="activity?.location">
+                <td width="30%">地點</td>
+                <td width="70%">
+                    <div>{{activity?.location}}</div>
+                </td>
+            </tr>
+            <tr *ngIf="activity?.longitude">
+                <td colspan="2">
+                    <ibc-map
+                        [lng]="activity?.longitude" 
+                        [lat]="activity?.latitude" 
+                        [title]="activity?.location" 
+                        height="200px">
+                    </ibc-map>
+                </td>
+            </tr>
+            <tr *ngIf="activity?.description">
+                <td width="30%">內容</td>
+                <td width="70%">{{activity?.description}}</td>
+            </tr>               
+            <tr *ngIf="persons && persons.length > 0">
+                <td width="30%">參加者</td>
+                <td width="70%">
+                    <table class="ibc-full-width" style="table-layout: fixed">
+                        <thead style="border-bottom: 1px solid #aeacb4" *ngIf="activity?.question">
+                            <tr>
+                                <td width="50%"></td>
+                                <td width="50%">{{activity?.question}}</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let person of persons">
+                                <td width="50%">{{person.name}}<span *ngIf="person.chinese_name">({{person.chinese_name}})</span></td>
+                                <td width="50%">{{getParticipantFromPerson(person)?.comment}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+<!--                     <div *ngFor="let person of persons">
+                        {{person.name}}<span *ngIf="person.chinese_name">({{person.chinese_name}})</span>
+                    </div> -->
+                </td>
+            </tr>            
+        </tbody>
+    </table>
+
+    <ion-buttons class="ibc-top-margin-20" ion-end *ngIf="!activity.past && content.ibcFB.access_level > 0">
+      <button ion-button block color="teal" ion-end *ngIf="myIndex < 0" [question]="question" (answer)="register($event)">我要報名</button>
+      <button ion-button block color="danger" ion-end *ngIf="myIndex >= 0" (click)="cancel()">取消報名</button>
+    </ion-buttons>
+
+    <ion-buttons class="ibc-top-margin-20" ion-end *ngIf="activity.chatId">
+      <button ion-button block ion-end (click)="goToChat()">留言評論</button>
+    </ion-buttons>
+
+    <!-- <ibc-map lng="-32.89455339999999" lat="151.7181718" title="My Home" height="200px"></ibc-map> -->
+
+    <p></p>
+
+    <div>
+        <div *ngFor="let photo of activity?.pictures" style="align-items: start">
+            <img [src]="photo" (click)="openLink(photo)"/>
+        </div>
+    </div>
+</ion-content>

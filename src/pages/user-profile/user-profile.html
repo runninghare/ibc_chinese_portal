@@ -1,0 +1,133 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>編輯個人檔案</ion-title>
+    <ion-buttons end>
+      <button ion-button color="primary" (click)="save()">
+        保存
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+
+  <button ion-button block color="teal" (click)="showAuthInfo = !showAuthInfo">
+    <ion-icon name="logo-arrow-forward"></ion-icon>
+    修改個人密碼
+  </button>
+   
+  <form [formGroup]="authForm" *ngIf="authForm" [@showAnimation]="showAuthInfo?'visible':'invisible'">
+        <ion-item>
+            <ion-label floating>登錄用戶名</ion-label>
+            <ion-input required type="text" [formControl]="authForm.controls.username"></ion-input>
+        </ion-item>
+        <ion-note style="color: red" ion-item text-right *ngIf="submittingAuthForm && authForm.controls.username.errors?.required">用戶名不能為空</ion-note>
+
+        <ion-item>
+            <ion-label floating>輸入舊密碼</ion-label>
+            <ion-input type="password" [formControl]="authForm.controls.oldpassword"></ion-input>
+        </ion-item>
+        <ion-note style="color: red" ion-item text-right *ngIf="submittingAuthForm && authForm.controls.oldpassword.errors?.required">舊密碼不能為空</ion-note>        
+
+        <ion-item>
+            <ion-label floating>輸入新密碼</ion-label>
+            <ion-input type="password" [formControl]="authForm.controls.password1"></ion-input>
+        </ion-item>
+        <ion-note style="color: red" ion-item text-right *ngIf="submittingAuthForm && authForm.controls.password1.errors?.required">新密碼不能為空</ion-note>
+
+        <ion-item>
+            <ion-label floating>再次輸入新密碼</ion-label>
+            <ion-input type="password" [formControl]="authForm.controls.password2"></ion-input>
+        </ion-item>
+        <ion-note style="color: red" ion-item text-right *ngIf="submittingAuthForm && authForm.controls.password2.errors?.required">重復新密碼不能為空</ion-note>
+        <ion-note style="color: red" ion-item text-right *ngIf="submittingAuthForm && authForm.controls.password2.errors?.MatchPassword">兩次輸入的密碼不符</ion-note>
+
+  </form>
+
+  <button ion-button block color="teal" (click)="showPersonalInfo = !showPersonalInfo">
+    <ion-icon name="logo-arrow-forward"></ion-icon>
+    更改個人資料
+  </button>
+   
+   <form [formGroup]="userForm" *ngIf="userForm" [@showAnimation]="showPersonalInfo?'visible':'invisible'">
+
+        <button ion-item (click)="changeAvatar()">
+            <img *ngIf="!loadingAvatar" class="img-avatar" [src]="userForm.controls.photoURL.value" item-left>
+            <ion-spinner *ngIf="loadingAvatar" class="page-spinner"></ion-spinner>
+            <ion-note>編輯頭像</ion-note>
+            <ion-note style="color: red" *ngIf="avatarDirty">頭像更新还未保存</ion-note>
+        </button>
+
+        <ion-item>
+            <ion-label floating>英文名</ion-label>
+            <ion-input type="text" [formControl]="userForm.controls.name"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>中文名</ion-label>
+            <ion-input type="text" [formControl]="userForm.controls.chinese_name"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>電子郵件</ion-label>
+            <ion-input type="text" [formControl]="userForm.controls.email"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>電話</ion-label>
+            <ion-input type="text" [formControl]="userForm.controls.mobile"></ion-input>
+        </ion-item>            
+
+        <ion-item>
+            <ion-label floating>微信</ion-label>
+            <ion-input type="text" [formControl]="userForm.controls.wechat"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>地址</ion-label>
+            <ion-input type="text" [formControl]="userForm.controls.address1"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>&nbsp;&nbsp;&nbsp;&nbsp;</ion-label>
+            <ion-input type="text" [formControl]="userForm.controls.address2"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>省份</ion-label>
+            <ion-input type="text" [formControl]="userForm.controls.state"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>郵政編碼</ion-label>
+            <ion-input type="text" [formControl]="userForm.controls.postcode"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>國家</ion-label>
+            <ion-input type="text" [formControl]="userForm.controls.country"></ion-input>
+        </ion-item>        
+
+        <ion-item>
+          <ion-label>出生日期</ion-label>
+          <ion-datetime displayFormat="MM月DD日" [formControl]="userForm.controls.dob"></ion-datetime>
+        </ion-item>       
+
+    </form>
+
+  <button ion-button block color="teal" (click)="showMinistrySkills = !showMinistrySkills">
+    <ion-icon name="logo-arrow-forward"></ion-icon>
+    我要參加事奉
+  </button>
+
+  <form *ngIf="userForm" [@showAnimation]="showMinistrySkills?'visible':'invisible'">
+    <p style="padding-left: 1rem">請選擇你願意參加下面那種事奉，然後保存</p>
+    <ion-item *ngFor="let skill of allSkills">
+      <ion-label>{{skill}}</ion-label>
+      <ion-checkbox color="dark" [(ngModel)]="skills[skill]" (click)="userForm.markAsDirty()" [ngModelOptions]="{standalone: true}" [name]="skill"></ion-checkbox>
+    </ion-item>
+  </form>
+</ion-content>

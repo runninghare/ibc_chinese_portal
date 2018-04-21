@@ -1,0 +1,59 @@
+page-chat {
+
+    %bubble {
+        max-width: 300px;
+        min-height: 1em;
+        display: inline-block;
+        vertical-align: top;
+        position: relative;
+        text-align: left;
+        font-size: 14px;
+        border-radius: 3px;
+        margin: 0 10px;
+        white-space: pre-line;
+    }
+
+    %bubble-arrow {
+        position: absolute;
+        height: 0;
+        width: 0;
+        top: 14px;
+        border: 6px solid transparent;
+        content: " ";
+    }
+
+    .sender {
+        @extend %bubble;
+        background-color: #b2e281;
+        padding: 1rem;
+
+        &:after {
+            @extend %bubble-arrow;
+            right: 100%;
+            border-right: 6px solid #b2e281;
+        }
+    }
+
+    .receiver {
+        @extend %bubble;
+        background-color: white;
+        padding: 1rem;
+
+        &:after {
+            @extend %bubble-arrow;
+            left: 100%;
+            border-left: 6px solid white;
+        }
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    .small-note {
+        font-size: 1rem;
+        padding: 2px;
+        color: #666;
+    }
+
+}

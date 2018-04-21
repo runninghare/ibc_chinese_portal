@@ -1,0 +1,150 @@
+<ion-header [ngClass]="authUser?'std-header-bg':''">
+  <ion-navbar align-title="center" color="transparent">
+
+    <ion-buttons left>
+        <button ion-button menuToggle icon-only>
+          <ion-icon name="menu"></ion-icon>
+        </button>
+    </ion-buttons>
+
+    <h4 ion-text text-center style="color: white"><p>依斯靈頓中文教會</p></h4>
+    
+    <ion-buttons right *ngIf="authUser && content.myselfContact?.photoURL">
+      <button ion-button style="height: 60px" (click)="presentPopover($event)">
+        <img class="img-avatar" [src]="common.sanitize(fileCacheSvc.cachingMap[content.myselfContact?.photoURL]?.target || 'assets/img/default-photo.jpg')">
+
+        <!-- Android supports cdvfile:// path, however iOS doesn't -->
+        <!-- We can only use base64 encoded image for iOS, however readAsDataURL doesn't work for android, which
+        means we can't encode a base64 string from given URL -->
+        <!-- <img class="img-avatar" src="cdvfile://localhost/temporary/aHR0cHM6Ly9maXJlYmFzZXN0b3JhZ2UuZ29vZ2xlYXBpcy5jb20vdjAvYi9pYmMtYXBwLTk0NDY2LmFwcHNwb3QuY29tL28vYXZhdGFyJTJGaWJjX0xlaW5naWU0b29naXQ/YWx0PW1lZGlhJnRva2VuPWI5YjdlZTIwLTdmMGQtNGMyYi05MTMxLTVhMzExYjJkMGNmNA=="> -->
+      </button>   
+    </ion-buttons>
+
+    <ion-buttons right *ngIf="authUser && !content.myselfContact?.photoURL">
+      <button ion-button icon-only (click)="presentPopover($event)">
+        <ion-icon name="contact"></ion-icon>
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
+</ion-header>
+
+<!-- <div class="ibc-overlay"></div> -->
+
+<!-- <ion-content class="page-spinner-container" *ngIf="ibcFB.beingLoggedIn">
+  <ion-spinner class="page-spinner"></ion-spinner>
+</ion-content> -->
+
+<load-tracker></load-tracker>
+
+<ion-content no-bounce [hidden]="ibcFB.beingLoggedIn" [ngClass]="bgClass">
+
+<!--   <div *ngIf="!user">
+    <img src="assets/img/churchyard_950x293.png" alt="">
+
+    <p *ngIf="!user || !user.uid">
+      歡迎來到依斯靈頓浸信會（中文堂），更多信息，請訪問我們的網站<a href="http://chinese.islingtonbaptist.org.au/">docs</a>.
+    </p>    
+  </div> -->
+
+  <div class="ibc-full-height">
+      
+    <ng-container *ngIf="!authUser">
+
+      <div style="height: 'calc(100% - 100px)'" class="ibc-full-width" [@showAnimation]="showCustomLoginConfirm?'invisible':'visible'" fxLayout="column" fxLayoutAlign="center center">
+
+        <h3>同來敬拜</h3>
+        <h3>Come to Worship with Us</h3>
+
+        <div ion-text>星期日上午 9:30am</div>
+        <div ion-text>180 Maitland Road Islington NSW 2296</div>
+
+        <ion-buttons class="ibc-top-margin-20">
+          <button ion-button (click)="openBulletin()">本週崇拜期刊</button>
+          <button ion-button color="teal" (click)="openPPT()">本週崇拜PPT</button>
+        </ion-buttons>
+
+      </div>
+
+      <div class="ibc-full-width">
+
+        <ng-container *ngIf="!authUser">
+            <button ion-button block color="teal" (click)="showCustomLoginConfirm = !showCustomLoginConfirm">
+              <ion-icon name="logo-arrow-forward"></ion-icon>
+              登入 Sign In
+            </button>
+
+            <ng-container *ngIf="showCustomLoginConfirm">
+              <ion-item>
+                <ion-label fixed>用戶名</ion-label>
+                <ion-input autocorrect="false" #username type="text"></ion-input>
+              </ion-item>
+
+              <ion-item>
+                <ion-label fixed>密碼</ion-label>
+                <ion-input #password type="password"></ion-input>
+              </ion-item>
+
+              <button ion-button block color="teal" (click)="ibcFB.customLogin(username.value, password.value); showCustomLoginConfirm = false;">
+                <ion-icon name="logo-arrow-forward"></ion-icon>
+                確認
+              </button>
+
+            </ng-container>      
+          </ng-container>
+
+          <button *ngIf="!authUser" ion-button block color="teal-1" (click)="login()">
+            <ion-icon name="logo-googleplus"></ion-icon>&nbsp;
+            用Google帳戶登入
+          </button>
+
+          <button *ngIf="authUser" ion-button block color="light" (click)="logout()">
+            <ion-icon name="logo-arrow-backward"></ion-icon>
+            登出 Sign Out
+          </button>
+
+        </div> 
+      </ng-container>  
+
+      <ng-container *ngIf="authUser">
+
+<!--         <button ion-item>
+          <ion-avatar item-left>
+            <img [src]="user?.photoURL">
+          </ion-avatar>
+          <div class="item-note" item-right>
+            <h2>你好，{{ user?.displayName }}！</h2>
+            <h3>{{ user?.email }}</h3>
+          </div>
+        </button> -->
+
+        <ion-list>
+          <button ion-item *ngFor="let card of cards" (click)="homecardRedirect(card)">
+            <img class="ratio-4-3" [ngStyle]="common.isWeb ? {width: '160px', height: '120px'} : {}" [src]="card.thumbnail" alt="" item-left>
+            <ion-badge *ngIf="badgeCountIsNumber(card.badgeCount) && card.badgeCount > 0" color="danger" class="ibc-badge">{{card.badgeCount}}</ion-badge>
+            <div class="ibc-full-height ibc-full-width">
+              <div><strong>{{card.title}}</strong></div>
+              <br>
+              <ion-note wrap>{{card.subtitle}}</ion-note>
+            </div>
+          </button>
+<!--           <div list-item *ngFor="let card of cards">
+            <h5>
+              {{card.title}}
+            </h5>
+            <div [parse-html]="card.content">
+           </div>
+          </div>  -->
+        </ion-list>
+
+        <button *ngIf="authUser && ibcFB?.afAuth?.auth?.currentUser?.providerData?.length == 0 && gmailLinkable" ion-button block color="danger" (click)="ibcFB.linkAccount()">
+          <ion-icon name="logo-googleplus"></ion-icon>
+          關聯到Google帳戶
+        </button>
+
+    </ng-container>
+
+  </div>
+
+
+</ion-content>

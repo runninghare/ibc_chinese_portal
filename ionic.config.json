@@ -1,0 +1,22 @@
+{
+  "name": "IBCChinese",
+  "app_id": "com.rjwebsolution.ibcchinese",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  },
+  "proxies": [
+    {
+      "path": "/churchpage",
+      "proxyUrl": "http://cors.api.com/api"
+    },
+    {
+      "path": "/anyorigin",
+      "proxyUrl": "http://anyorigin.com/go"
+    },
+    {
+      "path": "/api",
+      "proxyUrl": "http://35.201.28.240"
+    }
+  ]
+}

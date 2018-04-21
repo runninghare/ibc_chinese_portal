@@ -1,0 +1,31 @@
+<!-- <ion-content class="outer-content"> -->
+<ion-header>
+</ion-header>
+
+<ion-content>
+
+    <ion-title style="text-align: center; margin-top: 3rem">{{data?.id?"編輯":"添加"}} {{pageTitle}}</ion-title>
+
+    <ion-list *ngIf="data">
+
+      <ion-item *ngFor="let d of definitions" [ngSwitch]="d.type" [hidden]="isHidden(d)">
+        <ion-label stacked>{{d.caption || d.key}}</ion-label>
+        <ion-input *ngSwitchCase="'number'" type="number" [(ngModel)]="data[d.key]"></ion-input>
+        <ion-textarea *ngSwitchCase="'textarea'" [(ngModel)]="data[d.key]"></ion-textarea>
+        <ion-checkbox *ngSwitchCase="'boolean'" [(ngModel)]="data[d.key]"></ion-checkbox>
+        <ion-datetime *ngSwitchCase="'date'" displayFormat="YYYY-MM-DD" [(ngModel)]="data[d.key]"></ion-datetime>
+        <ion-select *ngSwitchCase="'dropdown'" [(ngModel)]="data[d.key]">
+          <ion-option [value]="o[d.lookupValue]" *ngFor="let o of d.lookupSource | async">{{getCaption(d.lookupCaption,o)}}</ion-option>
+        </ion-select>
+        <ion-select *ngSwitchCase="'multi-dropdown'" [(ngModel)]="data[d.key]" multiple="true">
+          <ion-option [value]="o[d.lookupValue]" *ngFor="let o of d.lookupSource | async">{{getCaption(d.lookupCaption,o)}}</ion-option>
+        </ion-select>
+        <ion-input *ngSwitchDefault [(ngModel)]="data[d.key]"></ion-input>
+      </ion-item>
+
+    </ion-list>
+
+    <button ion-button full color="teal" (click)="save()">保存</button>
+    <button ion-button full color="light" (click)="cancel()">取消</button>
+
+</ion-content>

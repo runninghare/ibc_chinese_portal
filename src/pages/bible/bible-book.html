@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title #title>{{book?.FullName}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding no-bounce>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-3 *ngFor="let i of chapters;">
+        <div>
+          <a (click)="chapterTapped($event, {bookId: book?.SN, book: book?.FullName, chapter: i})">
+            <div style="font-size: 1.8rem">第{{i}}章</div>
+          </a>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+

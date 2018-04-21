@@ -1,0 +1,47 @@
+<!--
+  Generated template for the ChatPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{partner?.name}} {{partner?.chinese_name}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content no-bounce>
+    <div fxLayout="column" style="height: 100%; width: 100%; background-color: #eee">
+        <div fxFlex style="overflow:auto" #chatArea class="ibc-h-padding-5">
+          <div *ngFor="let message of thread?.messages">
+            <div *ngIf="message.sender == content?.myselfContact?.id" class="ibc-full-width ibc-v-padding-10" fxLayout="row" fxLayoutAlign="start start">
+              <div fxLayout="column" fxLayoutAlign="start center">
+                <img class="img-avatar" [src]="cacheSvc.sanitizer.bypassSecurityTrustResourceUrl(cacheSvc.cachingMap[content?.myselfContact?.photoURL]?.target || 'assets/img/default-photo.jpg')">
+                <div class="small-note">{{content?.myselfContact?.name}}</div>
+              </div>
+              <div fxLayout="column" fxLayoutAlign="start start">
+                <div class="sender">{{formatMessageBody(message.body)}}</div>
+                <div class="small-note" style="margin-left: 10px;">{{message.timestamp}}</div>
+              </div>
+            </div>
+            <div *ngIf="message.sender != content?.myselfContact?.id" class="ibc-full-width ibc-v-padding-10" fxLayout="row" fxLayoutAlign="end start">
+                <div fxLayout="column" fxLayoutAlign="start end">
+                  <div class="receiver">{{formatMessageBody(message.body)}}</div>
+                  <div class="small-note" style="margin-right: 10px;">{{message.timestamp}}</div>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="start center">
+                  <img class="img-avatar" [src]="cacheSvc.sanitizer.bypassSecurityTrustResourceUrl(cacheSvc.cachingMap[contacts[message.sender]?.photoURL]?.target || 'assets/img/default-photo.jpg')">
+                  <div class="small-note">{{contacts[message.sender]?.name}}</div>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <ion-textarea #myInput placeholder="Enter a description" maxlength="2000" rows="1" (focus)="scrollDown()" (focusout)="scrollDown()" (keyup)="resize()" style="border: solid 1px#ccc; background-color: #FFF"></ion-textarea>
+          <button ion-button (click)="send(myInput)">發送</button>
+        </div>
+    </div>
+</ion-content>

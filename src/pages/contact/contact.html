@@ -1,0 +1,77 @@
+<!--
+  Generated template for the ContactPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{title || '教會成員'}}</ion-title>
+
+    <ion-buttons end *ngIf="!onlyForFriends && !commonSvc.readonly">
+      <button ion-button class="bar-button-menutoggle-ios" (click)="addContact()" >
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end *ngIf="onlyForFriends">
+      <button ion-button class="bar-button-menutoggle-ios" (click)="addFriend()" >
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-searchbar #searchBar (ionInput)="getItems($event)"></ion-searchbar>
+  <ion-list>
+    <ion-item-sliding *ngFor="let contact of mappedItems">
+      <ion-item (click)="contactClick(contact)" [style.background-color]="contact.class == 'group' ? '#F0F4C3' : '#FFF'">
+        <ion-avatar item-start>
+          <img [src]="sanitizer.bypassSecurityTrustResourceUrl(cacheSvc.cachingMap[contact.photoURL]?.target || 'assets/img/default-photo.jpg')">
+        </ion-avatar>
+        <ion-badge *ngIf="isNew(contact)" color="danger" class="ibc-badge">New!</ion-badge>
+        <h2>{{contact.name}} {{contact.chinese_name}} {{contact.class == 'group' ? '（群）' : ''}}</h2>
+        <p ion-note *ngIf="contact.skills?.length > 0">事奉 <ion-badge *ngFor="let skill of contact.skills" style="margin-right: 5px">{{skill}}</ion-badge></p>
+        <p ion-note *ngIf="hasEmail(content?.myselfContact) && hasEmail(contact)">電郵 {{contact.email}}</p>
+        <p ion-note *ngIf="content?.myselfContact?.mobile && contact.mobile">電話 {{contact.mobile}}</p>
+        <!-- <p ion-note>生日 {{contact.dob | date:'M月d日'}}</p> -->
+        <p ion-note *ngIf="content?.myselfContact?.wechat && contact.wechat">微信 {{contact.wechat}}</p>
+        <p ion-note *ngIf="content?.myselfContact?.address1 && contact.address1">地址 {{contact.address1}} {{contact.address2}} {{contact.state}} {{contact.postcode}}</p>
+        <p ion-note *ngIf="content?.myselfContact?.dob && contact.dob">生日 {{contact.dob | date:'M月d日'}}</p>
+      </ion-item>
+      <ion-item-options side="right">
+        <a ion-button color="primary" *ngIf="content?.myselfContact?.mobile && contact.mobile" (click)="socialSharing.shareViaSMS('', contact.mobile)">
+          <ion-icon name="text"></ion-icon>
+          短信
+        </a>
+        <a ion-button color="secondary" *ngIf="content?.myselfContact?.mobile && contact.mobile" [href]="'tel:'+contact.mobile">
+          <ion-icon name="call"></ion-icon>
+          電話
+        </a>
+        <a ion-button color="teal" *ngIf="hasEmail(content?.myselfContact) && hasEmail(contact)" [href]="'mailTo:'+contact.email">
+          <ion-icon name="mail"></ion-icon>
+          電郵
+        </a>
+        <a ion-button color="teal-1" *ngIf="content?.myselfContact?.address1 && contact.address1" (click)="geoNavigate(contact)">
+          <ion-icon name="globe"></ion-icon>
+          導航
+        </a> 
+        <a ion-button color="danger" *ngIf="!onlyForFriends && !commonSvc.readonly" (click)="deleteContact(contact.id)">
+          <ion-icon name="remove"></ion-icon>
+          删除
+        </a>                 
+        <a ion-button color="danger" *ngIf="onlyForFriends" (click)="deleteFriend(contact.id)">
+          <ion-icon name="remove"></ion-icon>
+          删除
+        </a>        
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+</ion-content>

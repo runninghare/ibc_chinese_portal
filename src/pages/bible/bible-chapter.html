@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{chapterMeta?.book}} 第{{chapterMeta?.chapter}}章</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding no-bounce>
+  <ion-list>
+    <div ion-item *ngFor="let verse of verses">
+      <div item-left>{{verse?.VerseSN}}</div>
+      <div class="item-note" item-left>
+        {{verse?.Lection}}
+      </div>
+    </div>
+  </ion-list>
+</ion-content>
+
+
