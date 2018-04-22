@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { GoogleMap, GoogleMapsEvent, GoogleMapsLatLng } from 'ionic-native';
 import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderForwardResult } from '@ionic-native/native-geocoder';
+import { LaunchNavigator, LaunchNavigatorOptions } from '@ionic-native/launch-navigator';
 import { Platform } from 'ionic-angular';
 
 /**
@@ -13,7 +14,7 @@ import { Platform } from 'ionic-angular';
     selector: 'ibc-map',
     templateUrl: 'ibc-map.html'
 })
-export class IbcMapComponent {
+export class IbcMapComponent implements OnInit {
 
     @Input('lat') lat: number = 0;
     @Input('lng') lng: number = 0;
@@ -23,27 +24,42 @@ export class IbcMapComponent {
 
     map: GoogleMap;
 
-    constructor(public platform: Platform, public nativeGeocoder: NativeGeocoder) {
-        platform.ready().then(() => {
+    constructor(public platform: Platform, public nativeGeocoder: NativeGeocoder, public navLauncher: LaunchNavigator) {
+        // platform.ready().then(() => {
+        //     setTimeout(() => {
+        //         this.loadMap();
+        //     }, 500);
+        // });
+    }
+
+    ngOnInit(): void {
+        console.log(`The address is ${this.address}`);
+
+        if (!this.lat || !this.lng) {
+            this.nativeGeocoder.forwardGeocode(this.address)
+                .then((coordinates: NativeGeocoderForwardResult) => {
+                    console.log('The coordinates are latitude=');
+                    console.log(JSON.stringify(coordinates, null, 2));
+                    if (coordinates && coordinates['length'] > 0) {
+                        this.lat = coordinates[0].latitude;
+                        this.lng = coordinates[0].longitude;
+
+                        setTimeout(() => {
+                            this.loadMap();
+                        }, 500);
+                    }
+                })
+                .catch((error: any) => console.log(error));
+        } else {
             setTimeout(() => {
                 this.loadMap();
             }, 500);
-        });
-
-        this.nativeGeocoder.forwardGeocode('Berlin')
-            .then((coordinates: NativeGeocoderForwardResult) => {
-                console.log('The coordinates are latitude=');
-            })
-            .catch((error: any) => console.log(error));
-    }
-
-    ionViewDidLoad() {
-        this.loadMap();
+        }
     }
 
     loadMap() {
 
-        let location = new GoogleMapsLatLng(this.lng, this.lat);
+        let location = new GoogleMapsLatLng(this.lat, this.lng);
 
         this.map = new GoogleMap('map', {
             'backgroundColor': 'white',
@@ -83,6 +99,11 @@ export class IbcMapComponent {
             });
         });
 
+    }
+
+    geoNavigate() {
+        this.navLauncher.navigate(this.address).then(() => {
+        }, console.error);
     }
 
 }

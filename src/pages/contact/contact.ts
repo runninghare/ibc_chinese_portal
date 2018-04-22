@@ -4,6 +4,7 @@ import { AudioProvider } from '../../providers/audio/audio';
 import { S2tProvider } from '../../providers/s2t/s2t';
 import { DataProvider, IntContact, IntPopupTemplateItem} from '../../providers/data-adaptor/data-adaptor';
 import { ChatPage } from '../../pages/chat/chat';
+import { MapPage } from '../../pages/map/map';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { LaunchNavigator, LaunchNavigatorOptions } from '@ionic-native/launch-navigator';
 import { FileCacheProvider } from '../../providers/file-cache/file-cache';
@@ -246,8 +247,12 @@ export class ContactPage implements OnDestroy {
   }
 
   geoNavigate(item: IntContact) {
-    this.navLauncher.navigate(`${item.address1} ${item.address2} ${item.province} ${item.state} ${item.postcode}`).then(() => {
-    }, console.error);
+    this.navCtrl.push(MapPage, {
+      title: `${item.name}的家`,
+      address: `${item.address1} ${item.address2} ${item.province} ${item.state} ${item.postcode}`
+    });
+    // this.navLauncher.navigate(`${item.address1} ${item.address2} ${item.province} ${item.state} ${item.postcode}`).then(() => {
+    // }, console.error);
   }
 
 }

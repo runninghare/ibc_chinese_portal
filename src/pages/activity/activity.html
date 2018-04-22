@@ -30,8 +30,7 @@
             <tr *ngIf="activity?.longitude">
                 <td colspan="2">
                     <ibc-map
-                        [lng]="activity?.longitude" 
-                        [lat]="activity?.latitude" 
+                        [address]="activity?.location"
                         [title]="activity?.location" 
                         height="200px">
                     </ibc-map>

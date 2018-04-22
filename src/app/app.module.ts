@@ -22,6 +22,7 @@ import { BrowserPage } from '../pages/browser/browser';
 import { ActivityPage } from '../pages/activity/activity';
 import { AboutPageModule } from '../pages/about/about.module';
 import { ChatPage } from '../pages/chat/chat';
+import { MapPage } from '../pages/map/map';
 
 import { BiblePageModule } from '../pages/bible/bible.module';
 import { MonthlyVersesPageModule } from '../pages/monthly-verses/monthly-verses.module';
@@ -112,6 +113,7 @@ import { ContactLinkDirective } from '../directives/contact-link/contact-link';
     BrowserPage,
     ActivityPage,
     ChatPage,
+    MapPage,
     PopupComponent,
     LoadTrackerComponent,
     ParseHtmlDirective,
@@ -151,6 +153,7 @@ import { ContactLinkDirective } from '../directives/contact-link/contact-link';
     BrowserPage,
     ActivityPage,
     ChatPage,
+    MapPage,
     PopupComponent,
     LoadTrackerComponent,
     IbcMapComponent
