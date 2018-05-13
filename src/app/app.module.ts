@@ -20,7 +20,7 @@ import { ContactPage } from '../pages/contact/contact';
 import { HeaderPopoverPage } from '../pages/Popover/header';
 import { BrowserPage } from '../pages/browser/browser';
 import { ActivityPage } from '../pages/activity/activity';
-import { AboutPageModule } from '../pages/about/about.module';
+import { AboutPage } from '../pages/about/about';
 import { ChatPage } from '../pages/chat/chat';
 import { MapPage } from '../pages/map/map';
 
@@ -81,6 +81,7 @@ import { NotificationProvider } from '../providers/notification/notification';
 import { ParseHtmlDirective } from '../directives/parse-html/parse-html';
 import { QuestionDirective } from '../directives/question/question';
 import { ContactLinkDirective } from '../directives/contact-link/contact-link';
+import { MapLinkDirective } from '../directives/map-link/map-link';
 
 // const firebaseConfig = {
 //     apiKey: "AIzaSyDFkwr578ZYuu0PPQxd5MN2-OCh4O7oKtc",
@@ -114,11 +115,13 @@ import { ContactLinkDirective } from '../directives/contact-link/contact-link';
     ActivityPage,
     ChatPage,
     MapPage,
+    AboutPage,
     PopupComponent,
     LoadTrackerComponent,
     ParseHtmlDirective,
     QuestionDirective,
     ContactLinkDirective,
+    MapLinkDirective,
     IbcMapComponent
   ],
   imports: [
@@ -137,7 +140,6 @@ import { ContactLinkDirective } from '../directives/contact-link/contact-link';
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     AngularFirestoreModule,
-    AboutPageModule,
     ImageCropperModule
   ],
   bootstrap: [IonicApp],
@@ -146,6 +148,7 @@ import { ContactLinkDirective } from '../directives/contact-link/contact-link';
     HomePage,
     ListPage,
     ContactPage,
+    AboutPage,
     HeaderPopoverPage,
     PhotoEditPage,
     UserProfilePage,

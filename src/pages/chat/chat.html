@@ -14,7 +14,7 @@
 
 
 <ion-content no-bounce>
-    <div fxLayout="column" style="height: 100%; width: 100%; background-color: #eee">
+    <div fxLayout="column" [style.height]="height" style="width: 100%; background-color: #eee">
         <div fxFlex style="overflow:auto" #chatArea class="ibc-h-padding-5">
           <div *ngFor="let message of thread?.messages">
             <div *ngIf="message.sender == content?.myselfContact?.id" class="ibc-full-width ibc-v-padding-10" fxLayout="row" fxLayoutAlign="start start">
@@ -40,7 +40,7 @@
           </div>
         </div>
         <div fxLayout="row" fxLayoutAlign="start center">
-          <ion-textarea #myInput placeholder="Enter a description" maxlength="2000" rows="1" (focus)="scrollDown()" (focusout)="scrollDown()" (keyup)="resize()" style="border: solid 1px#ccc; background-color: #FFF"></ion-textarea>
+          <ion-textarea #myInput placeholder="Enter a description" maxlength="2000" rows="1" (focus)="focuson()" (focusout)="focusout()" (keyup)="resize()" style="border: solid 1px#ccc; background-color: #FFF"></ion-textarea>
           <button ion-button (click)="send(myInput)">發送</button>
         </div>
     </div>

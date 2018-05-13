@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild, ElementRef, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Inject, ViewChild, ElementRef, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { DataProvider, IntContact, IntMessage, IntThread } from '../../providers/data-adaptor/data-adaptor';
 import { EnvVariables } from '../../app/environment/environment.token';
@@ -9,6 +9,7 @@ import { FileCacheProvider } from '../../providers/file-cache/file-cache';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { AudioProvider } from '../../providers/audio/audio';
 import * as moment from 'moment';
+import * as $ from 'jquery';
 
 /**
  * Generated class for the ChatPage page.
@@ -21,7 +22,7 @@ import * as moment from 'moment';
     selector: 'page-chat',
     templateUrl: 'chat.html',
 })
-export class ChatPage implements AfterViewInit {
+export class ChatPage implements OnInit, AfterViewInit {
 
     @ViewChild('chatArea') chatArea: ElementRef;
     @ViewChild('myInput') myInput: ElementRef;
@@ -37,6 +38,8 @@ export class ChatPage implements AfterViewInit {
     contacts: {[index: string]: IntContact};
 
     incomingMessage$: Subject<IntMessage> = new BehaviorSubject<IntMessage>(null);
+
+    height: string = '100%';
 
     constructor(@Inject(EnvVariables) public envVariables, 
         public http: Http, 
@@ -54,6 +57,14 @@ export class ChatPage implements AfterViewInit {
                 let headers = new Headers({ Authorization: `Bearer ${auth.uid}`, Accept: 'application/json', 'Content-Type': 'application/json' });
 
                 let body = { receiver_id: this.partner.id };
+
+                this.activate();
+
+                /* Clear all Unread Notifications */
+                this.content.allStatusDB
+                           .child(this.content.myselfContact.id)
+                           .child(this.partner.id)
+                           .child('chat_notifs').set(0);
 
                 return http.post(`${this.envVariables.apiServer}/firebase/thread_with`, body, new RequestOptions({ headers }))
                 .timeout(5000)
@@ -90,6 +101,40 @@ export class ChatPage implements AfterViewInit {
         })
     }
 
+    ngOnInit(): void {
+        console.log('=== start chatting ===');
+
+        /* Make sure set chat_active to false when the app is no longer in use */
+        this.commonSvc.platform.pause.subscribe(e => {
+            console.log('=== quitted! ===');
+            this.deactivate();
+        });
+
+        window.addEventListener('beforeunload', () => {
+            this.deactivate();
+        });
+    }
+
+    ngOnDestroy(): void {
+        console.log("=== Bye! ===");
+        this.deactivate();
+    }
+
+    updateActive(val: boolean = true): void {
+        this.content.allStatusDB
+                    .child(this.content.myselfContact.id)
+                    .child(this.partner.id)
+                    .child('chat_active').set(val);
+    }
+
+    activate(): void {
+        this.updateActive(true);
+    }
+
+    deactivate(): void {
+        this.updateActive(false);
+    }
+
     resize(reset?: boolean) {
         let element = this.myInput['_elementRef'].nativeElement.getElementsByClassName("text-input")[0];
         if (reset) {
@@ -100,6 +145,53 @@ export class ChatPage implements AfterViewInit {
             element.style.height = scrollHeight + 'px';
             this.myInput['_elementRef'].nativeElement.style.height = (scrollHeight + 25) + 'px';
         }
+        this.scrollDown();
+    }
+
+    addPartnerNotif(): void {
+       this.content.allStatusDB
+                   .child(this.partner.id)
+                   .child(this.content.myselfContact.id)
+                   .child('chat_active')
+                   .once('value', snapshot => {
+
+           let val = snapshot.val();
+
+           /* Do not add notif if chatting is active */
+           if (val) return;
+
+           this.content.allStatusDB
+               .child(this.partner.id)
+               .child(this.content.myselfContact.id)
+               .child('chat_notifs').once('value', snapshot => {
+                   let notif = snapshot.val();
+
+                   if (notif == null) {
+                     this.content.allStatusDB
+                           .child(this.partner.id)
+                           .child(this.content.myselfContact.id)
+                           .child('chat_notifs').set(1);
+                   } else {
+                     this.content.allStatusDB
+                           .child(this.partner.id)
+                           .child(this.content.myselfContact.id)
+                           .child('chat_notifs').set(notif+1);
+                   }
+               })
+       });
+    }
+
+    clearPartnerNotif(): void {
+
+    }
+
+    focuson(): void {
+        this.height = 'calc(100% - 10px)';
+        this.scrollDown();
+    }
+
+    focusout(): void {
+        this.height = '100%'
         this.scrollDown();
     }
 
@@ -134,6 +226,9 @@ export class ChatPage implements AfterViewInit {
             inputElem.value = '';
             this.resize(true);
             this.audioSvc.play('messageSent');
+
+            /* Add notif to the partner's status container */
+            this.addPartnerNotif();
         }, console.error);
     }
 

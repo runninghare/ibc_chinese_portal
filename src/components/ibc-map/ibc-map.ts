@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { GoogleMap, GoogleMapsEvent, GoogleMapsLatLng } from 'ionic-native';
 import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderForwardResult } from '@ionic-native/native-geocoder';
 import { LaunchNavigator, LaunchNavigatorOptions } from '@ionic-native/launch-navigator';
-import { Platform } from 'ionic-angular';
+import { CommonProvider } from '../../providers/common/common';
 
 /**
  * Generated class for the IbcMapComponent component.
@@ -23,8 +23,9 @@ export class IbcMapComponent implements OnInit {
     @Input('height') height: string;
 
     map: GoogleMap;
+    iframeUrl: string;
 
-    constructor(public platform: Platform, public nativeGeocoder: NativeGeocoder, public navLauncher: LaunchNavigator) {
+    constructor(public common: CommonProvider, public nativeGeocoder: NativeGeocoder, public navLauncher: LaunchNavigator) {
         // platform.ready().then(() => {
         //     setTimeout(() => {
         //         this.loadMap();
@@ -33,7 +34,12 @@ export class IbcMapComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log(`The address is ${this.address}`);
+        // console.log(`The address is ${this.address}`);
+
+        if (this.common.isWeb && this.address) {
+            this.iframeUrl = `https://maps.google.com/maps?width=100&height=600&hl=en&q=${this.address}&ie=UTF8&t=&z=14&iwloc=B&output=embed`;
+            return;
+        } 
 
         if (!this.lat || !this.lng) {
             this.nativeGeocoder.forwardGeocode(this.address)
@@ -58,7 +64,6 @@ export class IbcMapComponent implements OnInit {
     }
 
     loadMap() {
-
         let location = new GoogleMapsLatLng(this.lat, this.lng);
 
         this.map = new GoogleMap('map', {

@@ -103,11 +103,11 @@ export class HomePage implements OnInit, AfterViewInit {
     }
 
     openBulletin(): void {
-      this.browserSvc.openPage('http://ibc.medocs.com.au/DL/c-bulletin.pdf');
+      this.browserSvc.openPage(this.content.urls['c-bulletin']);
     }
 
     openPPT(): void {
-        this.browserSvc.openPage('http://ibc.medocs.com.au/DL/c-latestpptx.pptx');
+        this.browserSvc.openPage(this.content.urls['c-latestpptx']);
         
         // 
         // this.file.resolveLocalFilesystemUrl('www/c-latestpptx.pdf').then(res => {

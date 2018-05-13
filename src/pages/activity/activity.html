@@ -27,7 +27,7 @@
                     <div>{{activity?.location}}</div>
                 </td>
             </tr>
-            <tr *ngIf="activity?.longitude">
+            <tr *ngIf="activity?.location">
                 <td colspan="2">
                     <ibc-map
                         [address]="activity?.location"

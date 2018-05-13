@@ -82,6 +82,7 @@ export interface IntContact {
     class?: string;
     myFriends?: any;
     tasks?: any; 
+    notifs?: number;
     createDT?: string;
     updateDT?: string;
 }
@@ -196,6 +197,10 @@ export interface IntCache {
   timestamp: Date;
 }
 
+export interface IntUserStatus {
+  chat_active: boolean;
+}
+
 export {database} from 'firebase/app';
 
 /*
@@ -216,6 +221,8 @@ export class DataProvider {
     homeCardsDB: firebase.database.Reference;
     homeCards$: Observable<IntHomeCard[]>;    
     homeCards: IntHomeCard[] = [];
+
+    urls: any = {};
 
     urlPageAdjustments$: Observable<IntUrlModifier[]>;
     urlPageAdjustments: IntUrlModifier[] = [];
@@ -258,6 +265,9 @@ export class DataProvider {
 
     lastCounts$: Observable<any>;
     lastCountDB: firebase.database.Reference;
+
+    allStatusDB: firebase.database.Reference;
+    allStatus$: Observable<{[index: string]: IntUserStatus}>;
 
     errorObservableHandler = err => {
         console.log(err);
@@ -434,7 +444,7 @@ export class DataProvider {
         this.userAuthHandler();
 
         this.homeCardsDB = this.ibcFB.afDB.database.ref('homecards');
-        this.homeCards$ = this.ibcFB.afDB.list<IntHomeCard>('homecards').valueChanges();        
+        this.homeCards$ = this.ibcFB.afDB.list<IntHomeCard>('homecards').valueChanges();
 
         this.beliefUrlsDB = this.ibcFB.afDB.database.ref('beliefs');
         this.beliefUrls$ = this.ibcFB.afDB.list<IntListItem>('beliefs').valueChanges();
@@ -626,6 +636,11 @@ export class DataProvider {
             },
         };
 
+        /* public URLs */
+        this.ibcFB.afDB.database.ref('urls').on('value', snapshot => {
+          this.urls = snapshot.val();
+        });
+
         this.urlPageAdjustments$ = this.ibcFB.afDB.list<IntUrlModifier>('urlPageAdjustments').valueChanges();
         this.existingSubscriptions.push(this.urlPageAdjustments$.subscribe(res => {
           this.urlPageAdjustments = res;
@@ -645,6 +660,9 @@ export class DataProvider {
 
         this.lastCountDB = this.ibcFB.afDB.database.ref('lastCounts');
         this.lastCounts$ = this.ibcFB.afDB.object('lastCounts').valueChanges();
+
+        this.allStatusDB = this.ibcFB.afDB.database.ref('status');
+        this.allStatus$ = <Observable<any>>this.ibcFB.afDB.object('status').valueChanges();
     }
 
 }

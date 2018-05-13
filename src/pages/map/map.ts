@@ -17,10 +17,12 @@ export class MapPage {
 
   title: string;
   address: string;
+  height: number;
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
       this.title = navParams.get('title');
       this.address = navParams.get('address');
+      this.height = window.innerHeight - 120;
   }
 
   ionViewDidLoad() {

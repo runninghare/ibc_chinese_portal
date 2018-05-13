@@ -25,9 +25,11 @@
         <div ion-text>星期日上午 9:30am</div>
         <div fxFlex></div>
         <h3>教會地址</h3>
-        <div ion-text>180 Maitland Road Islington NSW 2296</div>       
-        <div ion-text><a href="mailTo:chineseministry@islingtonbaptist.org.au">chineseministry@islingtonbaptist.org.au</a></div>       
-        <div ion-text>郵箱: PO Box 18, Islington, NSW 2296</div>       
+        <div [map-link]="'180 Maitland Road Islington NSW 2296'"></div>   
+        <div fxFlex></div>
+        <h3>教会信箱</h3>
+        <div ion-text><a href="mailTo:chineseministry@islingtonbaptist.org.au">chineseministry@islingtonbaptist.org.au</a></div>
+        <div ion-text>郵箱: PO Box 18, Islington, NSW 2296</div>
         <div fxFlex></div>
         <h3>中文堂牧者</h3>
         <h4>陳偉生 Wilson CHAN (傳道)</h4>

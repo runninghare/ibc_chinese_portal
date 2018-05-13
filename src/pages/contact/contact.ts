@@ -39,6 +39,8 @@ export class ContactPage implements OnDestroy {
 
   prefilter: (contact: IntContact) => boolean;
 
+  notifTracker: any;
+
   constructor(
     public navCtrl: NavController, public navParams: NavParams, public s2t: S2tProvider, 
     public cacheSvc: FileCacheProvider, public sanitizer: DomSanitizer,
@@ -60,6 +62,24 @@ export class ContactPage implements OnDestroy {
               return friends.filter(f => f == contact.id).length > 0
             });
           }
+
+          if (this.notifTracker) {
+            console.log('=== turn off existing notif tracker ===');
+            this.content.allStatusDB.child(this.content.myselfContact.id).off('value', this.notifTracker);
+          }
+
+          this.notifTracker = this.content.allStatusDB.child(this.content.myselfContact.id).on('value', snapshot => {
+              let notifMap = snapshot.val();
+              console.log('----- check values -----');
+              console.log(notifMap);
+
+              this.items.forEach(item => {
+                  if (notifMap[item.id]) {
+                      item.notifs = notifMap[item.id].chat_notifs;
+                  }
+              });
+              console.log(this.items);
+          });
 
           let value = this.searchBar.value;
           this.getItems({ target: { value } });

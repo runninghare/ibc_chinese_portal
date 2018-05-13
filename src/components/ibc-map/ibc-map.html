@@ -1,5 +1,11 @@
 <!-- Generated template for the IbcMapComponent component -->
-<div id="map" [style.height]="height"></div>
-<ion-buttons>
-  <button ion-button block color="teal" (click)="geoNavigate()">導航</button>
-</ion-buttons>
+<ng-container *ngIf="!iframeUrl">
+    <div id="map" [style.height]="height"></div>   
+    <ion-buttons>
+      <button ion-button block color="teal" (click)="geoNavigate()">導航</button>
+    </ion-buttons> 
+</ng-container>
+
+<div class="ibc-full-width ibc-top-margin-20" *ngIf="iframeUrl">
+    <iframe width="100%" [height]="height" [src]="common.sanitize(iframeUrl)" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</div>

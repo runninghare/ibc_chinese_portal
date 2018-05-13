@@ -9,7 +9,6 @@ import { IbcStyleProvider } from '../../providers/ibc-style/ibc-style';
  * Ionic pages and navigation.
  */
 
-@IonicPage()
 @Component({
   selector: 'page-about',
   templateUrl: 'about.html',

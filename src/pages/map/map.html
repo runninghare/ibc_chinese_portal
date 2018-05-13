@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>{{title}}</ion-title>
+    <ion-title>{{title || ''}}</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -17,6 +17,6 @@
     <ibc-map
         [address]="address"
         [title]="address" 
-        height="300px">
+        [height]="height + 'px'">
     </ibc-map>
 </ion-content>
