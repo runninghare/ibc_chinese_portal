@@ -286,7 +286,7 @@ export class IbcFirebaseProvider {
         if (this.platform.is('core') || this.platform.is('mobileweb')) {
             this.afAuth.auth.currentUser.linkWithPopup(provider).then(linkSuccessHandler).catch(linkErrorHandler);
         } else {
-            this.afAuth.auth.currentUser.linkWithCredential(provider).then(linkSuccessHandler).catch(linkErrorHandler);
+            this.afAuth.auth.currentUser.linkWithCredential(<any>provider).then(linkSuccessHandler).catch(linkErrorHandler);
         }
 
     }
