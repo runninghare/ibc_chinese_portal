@@ -2,12 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { File, Entry } from '@ionic-native/file';
-import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
+import { FileTransfer } from '@ionic-native/file-transfer';
+// import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 import { Base64 } from '@ionic-native/base64';
 import { CommonProvider } from '../../providers/common/common';
 import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
 import { DomSanitizer } from '@angular/platform-browser'
-import * as moment from 'moment';
 
 export interface IntFileCache {
     target?: string;

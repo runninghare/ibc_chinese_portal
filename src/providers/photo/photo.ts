@@ -1,5 +1,5 @@
-import { Injectable, Injector, OnInit, Component } from '@angular/core';
-import { App, NavController, Platform, ViewController, NavParams } from 'ionic-angular';
+import { Injectable } from '@angular/core';
+import { App, NavController, Platform } from 'ionic-angular';
 import { PhotoEditPage, IntCropperSettings } from '../../pages/photo-edit/photo-edit';
 import 'rxjs/add/operator/map';
 import { Camera, CameraOptions } from '@ionic-native/camera';

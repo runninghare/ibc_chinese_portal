@@ -10,25 +10,22 @@ import { ListPage } from '../pages/list/list';
 import { BiblePage } from '../pages/bible/bible';
 import { ContactPage } from '../pages/contact/contact';
 import { AboutPage } from '../pages/about/about';
-import { UserProfilePage } from '../pages/user-profile/user-profile';
 import { MinistryPage } from '../pages/ministry/ministry';
-import { BrowserPage } from '../pages/browser/browser';
-import { ChatPage } from '../pages/chat/chat';
 
-import { MonthlyVersesPage } from '../pages/monthly-verses/monthly-verses';
+// import { MonthlyVersesPage } from '../pages/monthly-verses/monthly-verses';
 import { IbcFirebaseProvider } from '../providers/ibc-firebase/ibc-firebase';
 
 import { S2tProvider } from '../providers/s2t/s2t';
 import { DataProvider } from '../providers/data-adaptor/data-adaptor';
 
-import * as $ from 'jquery';
+// import * as $ from 'jquery';
 
-enum AuthLevel {
-  Anonymous,
-  LoggedIn,
-  Member,
-  Admin
-}
+// enum AuthLevel {
+//   Anonymous,
+//   LoggedIn,
+//   Member,
+//   Admin
+// }
 
 @Component({
   templateUrl: 'app.html'

@@ -6,7 +6,8 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { NavController, NavParams } from 'ionic-angular';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { ToastController } from 'ionic-angular';
-import { PhotoProvider, IntCropperSettings } from '../../providers/photo/photo';
+import { PhotoProvider } from '../../providers/photo/photo';
+// import { PhotoProvider, IntCropperSettings } from '../../providers/photo/photo';
 import { DataProvider, IntContact } from '../../providers/data-adaptor/data-adaptor';
 import { FileCacheProvider } from '../../providers/file-cache/file-cache';
 

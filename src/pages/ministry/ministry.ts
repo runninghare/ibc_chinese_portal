@@ -144,7 +144,6 @@ export class MinistryPage implements OnInit {
 
       if (sheetsDiffs.updatedItems.length > 0) {
         sheetsDiffs.updatedItems.forEach(item => {
-          let key = item.key;
           let oldSheet = item.oldItem;
           let newSheet = item.newItem;
           this.ministrySvc.ministryRoles.forEach(role => {

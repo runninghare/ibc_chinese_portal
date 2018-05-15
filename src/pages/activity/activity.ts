@@ -1,8 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { BrowserProvider } from '../../providers/browser/browser';
-import { CommonProvider, AlertController } from '../../providers/common/common';
-import { database, DataProvider, IntListItem, IntContact, IntActivity, IntActParticipant, IntPopupTemplateItem, TypeInputUI } from '../../providers/data-adaptor/data-adaptor';
+import { CommonProvider } from '../../providers/common/common';
+import { database, DataProvider, IntListItem, IntContact, IntActivity, IntPopupTemplateItem } from '../../providers/data-adaptor/data-adaptor';
 import { AudioProvider } from '../../providers/audio/audio';
 import { NotificationProvider } from '../../providers/notification/notification';
 import { Observable, Subscription } from 'rxjs';

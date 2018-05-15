@@ -29,7 +29,7 @@ import { MonthlyVersesPageModule } from '../pages/monthly-verses/monthly-verses.
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { LaunchNavigator, LaunchNavigatorOptions } from '@ionic-native/launch-navigator';
+import { LaunchNavigator } from '@ionic-native/launch-navigator';
 import { IonicImageLoader } from 'ionic-image-loader';
 import { Badge } from '@ionic-native/badge';
 
@@ -70,10 +70,12 @@ import { CommonProvider } from '../providers/common/common';
 
 import { FileOpener } from '@ionic-native/file-opener';
 import { File } from '@ionic-native/file';
-import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
+import { FileTransfer } from '@ionic-native/file-transfer';
+// import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 import { NativeAudio } from '@ionic-native/native-audio';
 import { AudioProvider } from '../providers/audio/audio';
-import { Media, MediaObject } from '@ionic-native/media';
+import { Media } from '@ionic-native/media';
+// import { Media, MediaObject } from '@ionic-native/media';
 import { FileCacheProvider } from '../providers/file-cache/file-cache';
 import { LoadTrackerProvider } from '../providers/load-tracker/load-tracker';
 import { NotificationProvider } from '../providers/notification/notification';

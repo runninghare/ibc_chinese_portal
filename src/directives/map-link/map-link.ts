@@ -1,5 +1,5 @@
 import { Directive, ElementRef, OnInit, Input, HostListener  } from '@angular/core';
-import { App, NavController, Platform } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 import { MapPage } from '../../pages/map/map';
 import * as $ from 'jquery';
 

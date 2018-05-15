@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { ModalController, NavController, NavParams} from 'ionic-angular';
-import { CommonProvider } from '../../providers/common/common';
+import { ModalController, NavParams} from 'ionic-angular';
 import { IntPopupTemplateItem, IntSummaryData } from '../../providers/data-adaptor/data-adaptor';
 
 /**

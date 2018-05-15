@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { App, Platform, ViewController, NavController, NavParams } from 'ionic-angular';
+import { App, ViewController, NavController, NavParams } from 'ionic-angular';
 import { UserProfilePage } from '../../pages/user-profile/user-profile';
 
 @Component({

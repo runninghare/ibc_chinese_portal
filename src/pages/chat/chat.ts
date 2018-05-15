@@ -9,7 +9,6 @@ import { FileCacheProvider } from '../../providers/file-cache/file-cache';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { AudioProvider } from '../../providers/audio/audio';
 import * as moment from 'moment';
-import * as $ from 'jquery';
 
 /**
  * Generated class for the ChatPage page.
@@ -22,7 +21,7 @@ import * as $ from 'jquery';
     selector: 'page-chat',
     templateUrl: 'chat.html',
 })
-export class ChatPage implements OnInit, AfterViewInit {
+export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild('chatArea') chatArea: ElementRef;
     @ViewChild('myInput') myInput: ElementRef;
@@ -116,7 +115,6 @@ export class ChatPage implements OnInit, AfterViewInit {
     }
 
     ngOnDestroy(): void {
-        console.log("=== Bye! ===");
         this.deactivate();
     }
 

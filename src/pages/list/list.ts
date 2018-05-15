@@ -1,8 +1,6 @@
 import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { ModalController, NavController, NavParams, Searchbar } from 'ionic-angular';
-import { AngularFireList } from 'angularfire2/database';
 import * as firebase from 'firebase/app';
-import * as moment from 'moment';
 import { CommonProvider } from '../../providers/common/common';
 import { BrowserProvider } from '../../providers/browser/browser';
 import { PopupComponent } from '../../components/popup/popup';
@@ -10,7 +8,7 @@ import { ActivityPage } from '../activity/activity';
 import { MinistryPage } from '../ministry/ministry';
 import { S2tProvider } from '../../providers/s2t/s2t';
 import { Observable, Subscription } from 'rxjs';
-import { DataProvider, IntPopupTemplateItem, IntSummaryData, IntListItem } from '../../providers/data-adaptor/data-adaptor';
+import { DataProvider, IntPopupTemplateItem, IntListItem } from '../../providers/data-adaptor/data-adaptor';
 
 export { IntListItem } from '../../providers/data-adaptor/data-adaptor';
 

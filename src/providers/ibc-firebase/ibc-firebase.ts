@@ -1,17 +1,16 @@
 import { Injectable, Inject } from '@angular/core';
 import { Http } from '@angular/http';
-import { NavController, Platform } from 'ionic-angular';
+import { Platform } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 import { AngularFireDatabase } from 'angularfire2/database';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
+import { AngularFirestore } from 'angularfire2/firestore';
+// import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
 // import * as firebase from 'firebase/app';
 import * as firebase from 'firebase/app';
 import 'firebase/storage';
 import { GooglePlus } from '@ionic-native/google-plus';
-import { Subject, BehaviorSubject, Observable } from 'rxjs';
-import { Camera, CameraOptions } from '@ionic-native/camera';
-import { Crop } from '@ionic-native/crop';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { ToastController } from 'ionic-angular';
 import { EnvVariables } from '../../app/environment/environment.token';
 import { AudioProvider } from '../audio/audio';
@@ -45,8 +44,6 @@ export class IbcFirebaseProvider {
         public afAuth: AngularFireAuth, 
         public afStore: AngularFirestore, 
         private googlePlus: GooglePlus, 
-        private camera: Camera, 
-        private crop: Crop,
         public http: Http,
         public loadTrackerSvc: LoadTrackerProvider,
         public toastCtrl: ToastController,
@@ -242,11 +239,7 @@ export class IbcFirebaseProvider {
         let provider = new firebase.auth.GoogleAuthProvider();
 
         let linkSuccessHandler = result => {
-            // Accounts successfully linked.
-            var credential = result.credential;
-            var user = result.user;
-
-            console.log(result);
+            // console.log(result);
 
             let toast = this.toastCtrl.create({
                 message: '成功關聯到Google帳戶',
@@ -310,7 +303,6 @@ export class IbcFirebaseProvider {
             console.error('Error: uploadFile function must have path, encoding and fileType.')
         }
 
-        let storageRef = firebase.storage().ref();
         try {
             let uploadTask = firebase.storage().ref(path).putString(fileContent, encoding, {contentType: fileType});
 

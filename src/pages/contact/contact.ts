@@ -1,8 +1,8 @@
 import { Component, ViewChild, OnDestroy } from '@angular/core';
-import { IonicPage, ModalController, NavController, NavParams, Searchbar } from 'ionic-angular';
+import { ModalController, NavController, NavParams, Searchbar } from 'ionic-angular';
 import { AudioProvider } from '../../providers/audio/audio';
 import { S2tProvider } from '../../providers/s2t/s2t';
-import { DataProvider, IntContact, IntPopupTemplateItem} from '../../providers/data-adaptor/data-adaptor';
+import { DataProvider, IntContact} from '../../providers/data-adaptor/data-adaptor';
 import { ChatPage } from '../../pages/chat/chat';
 import { MapPage } from '../../pages/map/map';
 import { SocialSharing } from '@ionic-native/social-sharing';
@@ -11,7 +11,7 @@ import { FileCacheProvider } from '../../providers/file-cache/file-cache';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PopupComponent } from '../../components/popup/popup';
 import { CommonProvider } from '../../providers/common/common';
-import { Observable, Subscriber, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import * as moment from 'moment';
 
 /**

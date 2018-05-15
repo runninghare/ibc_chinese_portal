@@ -1,11 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable, Inject, forwardRef } from '@angular/core';
 import { NativeAudio } from '@ionic-native/native-audio';
 import { Platform } from 'ionic-angular';
 import { File } from '@ionic-native/file';
 import { Media, MediaObject } from '@ionic-native/media';
-
-declare var cordova;
 
 const soundFileMap = {
     loginOk: 'assets/sounds/login-ok.mp3',
@@ -18,8 +15,6 @@ const soundFileMap = {
     outcomingCall: 'assets/sounds/outcoming-call.wav',
     startChatting: 'assets/sounds/start-chatting.wav',
 };
-
-const mediaSounds = {};
 
 /*
   Generated class for the AudioProvider provider.

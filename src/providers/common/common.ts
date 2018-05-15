@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Inject, forwardRef } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { DomSanitizer } from '@angular/platform-browser'
@@ -113,9 +113,6 @@ export class CommonProvider {
             newItems: []
         };
 
-        let added = [];
-        let updated = [];
-        let deleted = [];
         let oldKeys = [];
         let newKeys = [];
 

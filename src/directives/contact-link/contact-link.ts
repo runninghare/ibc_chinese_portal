@@ -1,6 +1,6 @@
 import { Directive, ElementRef, OnInit, Input, HostListener } from '@angular/core';
-import { App, NavController, Platform } from 'ionic-angular';
-import { DataProvider, IntContact} from '../../providers/data-adaptor/data-adaptor';
+import { NavController } from 'ionic-angular';
+import { IntContact} from '../../providers/data-adaptor/data-adaptor';
 import { ContactPage } from '../../pages/contact/contact';
 import * as $ from 'jquery';
 

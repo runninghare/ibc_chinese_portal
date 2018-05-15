@@ -1,8 +1,8 @@
 import { Directive, HostListener, Input, Output, EventEmitter } from '@angular/core';
-import { CommonProvider, AlertController } from '../../providers/common/common';
-import { DataProvider, IntPopupTemplateItem, TypeInputUI } from '../../providers/data-adaptor/data-adaptor';
+import { CommonProvider } from '../../providers/common/common';
+import { DataProvider, IntPopupTemplateItem } from '../../providers/data-adaptor/data-adaptor';
 import { NotificationProvider } from '../../providers/notification/notification';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
 /**
  * Generated class for the QuestionDirective directive.

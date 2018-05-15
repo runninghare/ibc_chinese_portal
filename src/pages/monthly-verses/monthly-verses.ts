@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 import { Http } from '@angular/http';
-import * as $ from 'jquery';
+// import * as $ from 'jquery';
 import { EnvVariables } from '../../app/environment/environment.token';
 import { IbcStyleProvider } from '../../providers/ibc-style/ibc-style';
 

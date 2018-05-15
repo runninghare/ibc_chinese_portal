@@ -1,11 +1,10 @@
-import { Component, OnInit, AfterViewInit, Inject, animate, state, trigger, style, transition, forwardRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Inject, animate, state, trigger, style, transition } from '@angular/core';
 import { App, NavController, Platform, PopoverController } from 'ionic-angular';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { CommonProvider } from '../../providers/common/common';
 import { BrowserProvider } from '../../providers/browser/browser';
 import { IbcStyleProvider } from '../../providers/ibc-style/ibc-style';
 import * as firebase from 'firebase/app';
-import { Subscription } from 'rxjs';
 import * as rxjs from 'rxjs';
 import { ToastController } from 'ionic-angular';
 import { EnvVariables } from '../../app/environment/environment.token';
@@ -15,13 +14,13 @@ import { ListPage } from '../../pages/list/list';
 // import { PhotoEditPage } from '../../pages/photo-edit/photo-edit';
 import { PhotoProvider } from '../../providers/photo/photo';
 import { FileCacheProvider } from '../../providers/file-cache/file-cache';
-import { InAppBrowser } from '@ionic-native/in-app-browser';
+// import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { StatusBar } from '@ionic-native/status-bar';
-import { DataProvider, IntHomeCard, IntContact } from '../../providers/data-adaptor/data-adaptor';
+import { DataProvider, IntHomeCard } from '../../providers/data-adaptor/data-adaptor';
 import { FileOpener } from '@ionic-native/file-opener';
 import { File } from '@ionic-native/file';
 
-declare var cordova;
+// declare var cordova;
 
 @Component({
     selector: 'page-home',

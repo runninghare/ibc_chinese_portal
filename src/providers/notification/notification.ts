@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { DataProvider, IntPopupTemplateItem, IntSummaryData, IntListItem } from '../../providers/data-adaptor/data-adaptor';
+import { DataProvider, IntListItem } from '../../providers/data-adaptor/data-adaptor';
+// import { DataProvider, IntPopupTemplateItem, IntSummaryData, IntListItem } from '../../providers/data-adaptor/data-adaptor';
 import { MinistryProvider } from '../../providers/ministry/ministry';
 import * as moment from 'moment';
 
@@ -19,6 +19,7 @@ export class NotificationProvider {
     parseMustache(s: string): string {
         if (!s) return s;
         let content = this.content;
+        if (content) {} // A trick to avoid tslint warning.
         return s.replace(/{{([^{}]*)}}/g, (m0, m1) => eval('content.' + m1));
     }
 
@@ -37,8 +38,6 @@ export class NotificationProvider {
     }
 
     addNotification(contactId: string, item: IntListItem) {
-        let key = item.key;
-
         this.content.myTasksDB.parent.child(`${contactId}`).child(`${item.key}`).once('value', snapshot => {
             let found = snapshot.val();
 

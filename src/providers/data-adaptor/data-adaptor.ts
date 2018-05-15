@@ -4,7 +4,6 @@ import * as firebase from 'firebase/app';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { FileCacheProvider } from '../../providers/file-cache/file-cache';
 import { Observable, Subscription } from 'rxjs';
-import { AngularFireList } from 'angularfire2/database';
 import { S2tProvider } from '../s2t/s2t';
 import { VideoProvider } from '../video/video';
 import * as moment from 'moment';
@@ -339,10 +338,10 @@ export class DataProvider {
                   return moment(item.createdDT).format('M月D日 HH:mm:ss 发送');
                 },
                 orderByFunc: (a,b) => {
-                  let newA = !a.isNew || 0;
-                  let newB = !b.isNew || 0;
-                  let readA = a.read || 0;
-                  let readB = b.read || 0;
+                  // let newA = !a.isNew || 0;
+                  // let newB = !b.isNew || 0;
+                  // let readA = a.read || 0;
+                  // let readB = b.read || 0;
                   let timeA = a.datetime || "2100-01-01";
                   let timeB = b.datetime || "2100-01-01";
                   let createdTimeA = a.createdDT || '2000-01-01 00:00:00';
@@ -402,6 +401,8 @@ export class DataProvider {
       this.existingSubscriptions.push(this.homeCards$.subscribe(cards => {
           this.homeCards = cards;
           let content = this;
+
+          if (content) {} // A trick to avoid tslint warning.
 
           this.homeCards.forEach(card => {
               try {

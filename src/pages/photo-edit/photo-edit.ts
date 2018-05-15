@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { ImageCropperComponent, CropperSettings, Bounds } from 'ng2-img-cropper';
-import { PhotoProvider } from '../../providers/photo/photo';
+// import { PhotoProvider } from '../../providers/photo/photo';
 
 export interface IntCropperSettings {
     canvasWidth?: number;

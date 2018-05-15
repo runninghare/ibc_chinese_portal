@@ -143,7 +143,7 @@ export class BrowserProvider {
     }
 
     openPage(sourceUrl: string, callback?: (browser: InAppBrowserObject) => void) {
-        let browser: InAppBrowserObject;
+        // let browser: InAppBrowserObject;
 
         if (!sourceUrl) return;
 
