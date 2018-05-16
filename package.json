@@ -9,7 +9,8 @@
         "build": "ionic-app-scripts build",
         "lint": "ionic-app-scripts lint",
         "ionic:build": "ionic-app-scripts build",
-        "ionic:serve": "ionic-app-scripts serve"
+        "ionic:serve": "ionic-app-scripts serve",
+        "ionic:sign": "pushd platforms/android && rm -rf build/outputs/apk/release/android-release*.apk && gradlew assembleRelease && cd build/outputs/apk/release && zipalign -v -p 4 android-release-unsigned.apk android-release-aligned.apk && apksigner sign --ks ~/android/android_keys/ibc-release.keystore --ks-key-alias ibc_chinese --out android-release-signed.apk android-release-aligned.apk && popd"
     },
     "dependencies": {
         "@angular/animations": "~5.1.0",
@@ -22,6 +23,7 @@
         "@angular/http": "~5.1.0",
         "@angular/platform-browser": "~5.1.0",
         "@angular/platform-browser-dynamic": "~5.1.0",
+        "@angular/tsc-wrapped": "^4.4.6",
         "@google-cloud/translate": "^1.1.0",
         "@ionic-native/badge": "^4.5.3",
         "@ionic-native/base64": "^4.5.3",
@@ -93,7 +95,7 @@
         "zone.js": "^0.8.20"
     },
     "devDependencies": {
-        "@ionic/app-scripts": "3.1.6",
+        "@ionic/app-scripts": "^3.1.9",
         "npm-install-webpack-plugin": "^4.0.5",
         "typescript": "2.4.2",
         "webpack-merge": "^4.1.1"
