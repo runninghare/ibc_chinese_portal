@@ -1,7 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { animate, state, trigger, style, transition } from '@angular/core';
 import { Http } from '@angular/http';
-import { EnvVariables } from '../../app/environment/environment.token';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavController, NavParams } from 'ionic-angular';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
@@ -10,6 +9,7 @@ import { PhotoProvider } from '../../providers/photo/photo';
 // import { PhotoProvider, IntCropperSettings } from '../../providers/photo/photo';
 import { DataProvider, IntContact } from '../../providers/data-adaptor/data-adaptor';
 import { FileCacheProvider } from '../../providers/file-cache/file-cache';
+import { ENV } from '@app/env';
 
 export class PasswordValidation {
     static MatchPassword(AC: AbstractControl) {
@@ -96,8 +96,7 @@ export class UserProfilePage implements OnInit {
         public photoSvc: PhotoProvider,
         public http: Http,
         public content: DataProvider,
-        public cacheSvc: FileCacheProvider,
-        @Inject(EnvVariables) public envVariables
+        public cacheSvc: FileCacheProvider
     ) {
         this.authForm = fb.group({
             username:     [null, Validators.required],
@@ -157,7 +156,7 @@ export class UserProfilePage implements OnInit {
                 return;
             }
 
-            this.http.post(`${this.envVariables.apiServer}/auth/changepassword`, this.authForm.value).subscribe(result => {
+            this.http.post(`${ENV.apiServer}/auth/changepassword`, this.authForm.value).subscribe(result => {
 
                 this.content.myselfContactDB.child('visited').set(true).then(data => {
                     let toast = this.toastCtrl.create({

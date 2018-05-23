@@ -8,6 +8,7 @@ import { S2tProvider } from '../s2t/s2t';
 import { VideoProvider } from '../video/video';
 import * as moment from 'moment';
 import { Badge } from '@ionic-native/badge';
+import { ENV } from '@app/env';
 
 export interface IntSummaryData {
     id?: any;
@@ -441,6 +442,9 @@ export class DataProvider {
 
     constructor(public http: HttpClient, public ibcFB: IbcFirebaseProvider, public badge: Badge,
         public s2t: S2tProvider, public videoSvc: VideoProvider, public cacheSvc: FileCacheProvider) {
+
+        window['ENV'] = ENV;
+        console.log(`======= RUNNING MODE: ${ENV.mode} ========`);
 
         this.userAuthHandler();
 

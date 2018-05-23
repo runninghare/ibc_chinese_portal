@@ -6,6 +6,8 @@
     "private": true,
     "scripts": {
         "clean": "ionic-app-scripts clean",
+        "serve": "IBC_ENV=ibc_dev ionic serve --no-open",
+        "serve-prod": "IBC_ENV=ibc_prod ionic serve --no-open",
         "build-www": "IBC_ENV=ibc_prod ionic-app-scripts build --aot --minifyjs --minifycss",
         "build-www-dev": "IBC_ENV=ibc_dev ionic-app-scripts build --aot --minifyjs --minifycss",
         "build": "IBC_ENV=ibc_prod ionic cordova build --aot --minifyjs --minifycss",

@@ -70,15 +70,12 @@ export class ContactPage implements OnDestroy {
 
           this.notifTracker = this.content.allStatusDB.child(this.content.myselfContact.id).on('value', snapshot => {
               let notifMap = snapshot.val();
-              console.log('----- check values -----');
-              console.log(notifMap);
 
               this.items.forEach(item => {
                   if (notifMap[item.id]) {
                       item.notifs = notifMap[item.id].chat_notifs;
                   }
               });
-              console.log(this.items);
           });
 
           let value = this.searchBar.value;

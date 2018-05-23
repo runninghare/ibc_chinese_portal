@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { Platform } from 'ionic-angular';
 import 'rxjs/add/operator/map';
@@ -12,9 +12,9 @@ import 'firebase/storage';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { ToastController } from 'ionic-angular';
-import { EnvVariables } from '../../app/environment/environment.token';
 import { AudioProvider } from '../audio/audio';
 import { LoadTrackerProvider } from '../load-tracker/load-tracker';
+import { ENV } from '@app/env';
 
 /*
   Generated class for the IbcFirebaseProvider provider.
@@ -47,8 +47,7 @@ export class IbcFirebaseProvider {
         public http: Http,
         public loadTrackerSvc: LoadTrackerProvider,
         public toastCtrl: ToastController,
-        public audioSvc: AudioProvider,
-        @Inject(EnvVariables) public envVariables
+        public audioSvc: AudioProvider
     ) {
 
         window['firebase'] = firebase;
@@ -125,7 +124,7 @@ export class IbcFirebaseProvider {
         // if (!uid.match(/^ibc_.*/)) {
 
             this.logoutGoogle().then(() => {
-                this.http.post(`${this.envVariables.apiServer}/auth/uid`, {
+                this.http.post(`${ENV.apiServer}/auth/uid`, {
                     uid
                 }).subscribe(res => {
                     let data = res.json();
@@ -221,7 +220,7 @@ export class IbcFirebaseProvider {
 
         console.log(username);
         this.loadTrackerSvc.loading = true;
-        this.http.post(`${this.envVariables.apiServer}/auth`, {
+        this.http.post(`${ENV.apiServer}/auth`, {
             username,
             password
         }).subscribe(res => {

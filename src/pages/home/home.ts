@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Inject, animate, state, trigger, style, transition } from '@angular/core';
+import { Component, OnInit, AfterViewInit, animate, state, trigger, style, transition } from '@angular/core';
 import { App, NavController, Platform, PopoverController, AlertController } from 'ionic-angular';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { CommonProvider } from '../../providers/common/common';
@@ -7,7 +7,6 @@ import { IbcStyleProvider } from '../../providers/ibc-style/ibc-style';
 import * as firebase from 'firebase/app';
 import * as rxjs from 'rxjs';
 import { ToastController } from 'ionic-angular';
-import { EnvVariables } from '../../app/environment/environment.token';
 import { HeaderPopoverPage } from '../../pages/Popover/header';
 import { MinistryPage } from '../../pages/ministry/ministry';
 import { ListPage } from '../../pages/list/list';
@@ -72,8 +71,7 @@ export class HomePage implements OnInit, AfterViewInit {
         public content: DataProvider,
         public fileOpener: FileOpener,
         public file: File,
-        public fileCacheSvc: FileCacheProvider,
-        @Inject(EnvVariables) public envVariables
+        public fileCacheSvc: FileCacheProvider
     ) {
 
         window['rxjs'] = rxjs;

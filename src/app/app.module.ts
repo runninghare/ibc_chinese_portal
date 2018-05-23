@@ -59,7 +59,6 @@ import { GooglePlus } from '@ionic-native/google-plus';
 // Local Services
 import { S2tProvider } from '../providers/s2t/s2t';
 
-import { EnvironmentsModule } from './environment/environment.module';
 import { IbcStyleProvider } from '../providers/ibc-style/ibc-style';
 import { PhotoProvider } from '../providers/photo/photo';
 import { MinistryProvider } from '../providers/ministry/ministry';
@@ -85,6 +84,8 @@ import { QuestionDirective } from '../directives/question/question';
 import { ContactLinkDirective } from '../directives/contact-link/contact-link';
 import { MapLinkDirective } from '../directives/map-link/map-link';
 
+import {ENV} from '@app/env';
+
 // const firebaseConfig = {
 //     apiKey: "AIzaSyDFkwr578ZYuu0PPQxd5MN2-OCh4O7oKtc",
 //     authDomain: "resplendent-heat-6828.firebaseapp.com",
@@ -93,16 +94,6 @@ import { MapLinkDirective } from '../directives/map-link/map-link';
 //     storageBucket: "resplendent-heat-6828.appspot.com",
 //     messagingSenderId: "870700462998"
 //   };
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyA-m-AkKYqeKusk0aXgdZax9n5MbRngyj0",
-    authDomain: "ibc-app-94466.firebaseapp.com",
-    databaseURL: "https://ibc-app-94466.firebaseio.com",
-    // databaseURL: "https://ibc-app-94466-c9f76.firebaseio.com",
-    projectId: "ibc-app-94466",
-    storageBucket: "ibc-app-94466.appspot.com",
-    messagingSenderId: "1050330285156"
-  };
 
 @NgModule({
   declarations: [
@@ -138,8 +129,7 @@ import { MapLinkDirective } from '../directives/map-link/map-link';
     HttpModule,
     IonicImageLoader.forRoot(),
     IonicModule.forRoot(MyApp),
-    EnvironmentsModule,
-    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireModule.initializeApp(ENV.firebaseConfig),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     AngularFirestoreModule,

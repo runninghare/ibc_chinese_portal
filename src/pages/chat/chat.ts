@@ -1,7 +1,6 @@
-import { Component, Inject, ViewChild, ElementRef, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { DataProvider, IntContact, IntMessage, IntThread } from '../../providers/data-adaptor/data-adaptor';
-import { EnvVariables } from '../../app/environment/environment.token';
 import { CommonProvider } from '../../providers/common/common';
 // import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Http, Headers, RequestOptions } from '@angular/http';
@@ -9,6 +8,7 @@ import { FileCacheProvider } from '../../providers/file-cache/file-cache';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { AudioProvider } from '../../providers/audio/audio';
 import * as moment from 'moment';
+import { ENV } from '@app/env';
 
 /**
  * Generated class for the ChatPage page.
@@ -40,7 +40,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
     height: string = '100%';
 
-    constructor(@Inject(EnvVariables) public envVariables, 
+    constructor( 
         public http: Http, 
         public navCtrl: NavController, 
         public navParams: NavParams,
@@ -65,7 +65,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
                            .child(this.partner.id)
                            .child('chat_notifs').set(0);
 
-                return http.post(`${this.envVariables.apiServer}/firebase/thread_with`, body, new RequestOptions({ headers }))
+                return http.post(`${ENV.apiServer}/firebase/thread_with`, body, new RequestOptions({ headers }))
                 .timeout(5000)
             }).flatMap(res => {
                 let data = res.json();
