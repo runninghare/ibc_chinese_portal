@@ -3,8 +3,34 @@ var fs = require('fs');
 var path = require('path');
 var useDefaultConfig = require('@ionic/app-scripts/config/webpack.config.js');
 
+// Use IBC_ENV instead of the default IONIC_ENV
+// var env = process.env.IONIC_ENV;
 var env = process.env.IBC_ENV;
 
+/* Note hereby useDefaultConfig.prod and useDefaultConfig.dev are preserved, which
+ * are always controlled by IONIC_ENV regardless of the environment name you use.
+ *
+ * Unfortunately even setting IONIC_ENV by yourself is of no use because "ionic" command
+ * will always overwrite its original value.
+ *
+ * i.e. Unless you use --prod, it's always running in Development mode even if you
+ * preset env value:
+ *
+ *   IONIC_ENV=prod ionic cordova build ios # ---> It's still in DEV because you didn't
+ *                                          # specify --prod
+ * 
+ * Therefore, if we want to control dev or prod by ourselves, we'll have to use other env values, and
+ * store them in useDefaultConfig.<otherValue>,
+ * 
+ * However if we want to use other values, apart from "dev" and "prod", then we have to
+ * change the environment variable name to IBC_ENV.
+ *
+ * IBC_ENV=ibc_prod command # production mode
+ * IBC_ENV=ibc_dev command  # development mode
+ *
+ * This way we wouldn't have to worry "ionic" overwrites our preset env values.
+ *
+ */
 useDefaultConfig.prod.resolve.alias = {
   "@app/env": path.resolve(environmentPath('prod'))
 };
@@ -22,6 +48,11 @@ if (env !== 'prod' && env !== 'dev') {
 }
 
 function environmentPath(env) {
+
+  /* Hereby we map ibc_prod to prod, and ibc_dev to dev,
+   * in order to reuse environment.ts for production,
+   * and environmetn.dev.ts for development.
+   */
   if (/^ibc_/.test(env)) {
     env = env.replace(/^ibc_/,'');
   }
