@@ -20,7 +20,7 @@ npm-debug.log*
 .gradle/
 coverage/
 dist/
-node_modules/
+node_modules*
 tmp/
 temp/
 hooks/

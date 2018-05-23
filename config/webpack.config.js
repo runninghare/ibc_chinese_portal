@@ -1,3 +1,44 @@
+var chalk = require("chalk");
+var fs = require('fs');
+var path = require('path');
+var useDefaultConfig = require('@ionic/app-scripts/config/webpack.config.js');
+
+var env = process.env.IBC_ENV;
+
+useDefaultConfig.prod.resolve.alias = {
+  "@app/env": path.resolve(environmentPath('prod'))
+};
+
+useDefaultConfig.dev.resolve.alias = {
+  "@app/env": path.resolve(environmentPath('dev'))
+};
+
+if (env !== 'prod' && env !== 'dev') {
+  // Default to dev config
+  useDefaultConfig[env] = useDefaultConfig.dev;
+  useDefaultConfig[env].resolve.alias = {
+    "@app/env": path.resolve(environmentPath(env))
+  };
+}
+
+function environmentPath(env) {
+  if (/^ibc_/.test(env)) {
+    env = env.replace(/^ibc_/,'');
+  }
+  var filePath = './src/app/environment/environment' + (env === 'prod' ? '' : '.' + (env || 'dev')) + '.ts';
+  if (!fs.existsSync(filePath)) {
+    console.log(chalk.red('\n' + filePath + ' does not exist!'));
+  } else {
+    return filePath;
+  }
+}
+
+module.exports = function () {
+  return useDefaultConfig;
+};
+
+//////////// Before Beta Release 2018/5 /////////////////////
+/*
 const webpackMerge = require('webpack-merge');
 const commonConfig = require('./webpack.common.js');
 const ionicConfig = require('@ionic/app-scripts/config/webpack.config.js');
@@ -6,6 +47,8 @@ module.exports = {
     dev: webpackMerge(commonConfig,ionicConfig.dev),
     prod: webpackMerge(commonConfig,ionicConfig.prod)
 }
+*/
+/////////////// Old Contents ////////////////////////////////
 
 /*
  * The webpack config exports an object that has a valid webpack configuration

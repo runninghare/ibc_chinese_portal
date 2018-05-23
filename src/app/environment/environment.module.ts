@@ -2,13 +2,16 @@ import { NgModule } from '@angular/core';
 import { EnvVariables } from './environment.token';
 import { environment as devVariables } from './development';
 import { environment as prodVariables } from './production';
+import { ENV } from '@app/env';
 
 declare const process: any; // Typescript compiler will complain without this
 
 export function environmentFactory() {
-    // console.log("----> ENV Injection: ");
+    console.log("----> ENV Injection: ");
     // console.log(JSON.stringify(process.env));
-  return process.env.IONIC_ENV === 'prod' ? prodVariables : devVariables;
+
+    console.log(ENV);
+    return process.env.IONIC_ENV === 'prod' ? prodVariables : devVariables;
 }
 
 @NgModule({

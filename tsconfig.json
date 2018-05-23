@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "noStrictGenericChecks": true,
     "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -12,13 +13,20 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "target": "es5",
-    "noStrictGenericChecks": true
+    "baseUrl": "./src",
+    "paths": {
+      "@app/env": [
+        "app/environment/environment"
+      ]
+    }
   },
   "include": [
     "src/**/*.ts"
   ],
   "exclude": [
     "node_modules",
+    "node_modules.old",
+    "node_modules.node.7.4",
     "src/**/*.spec.ts",
     "src/**/__tests__/*.ts"
   ],

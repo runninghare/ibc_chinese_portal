@@ -98,6 +98,7 @@ import { MapLinkDirective } from '../directives/map-link/map-link';
     apiKey: "AIzaSyA-m-AkKYqeKusk0aXgdZax9n5MbRngyj0",
     authDomain: "ibc-app-94466.firebaseapp.com",
     databaseURL: "https://ibc-app-94466.firebaseio.com",
+    // databaseURL: "https://ibc-app-94466-c9f76.firebaseio.com",
     projectId: "ibc-app-94466",
     storageBucket: "ibc-app-94466.appspot.com",
     messagingSenderId: "1050330285156"

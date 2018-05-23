@@ -553,7 +553,7 @@ export class DataProvider {
           checkNew: true,
           groupBy: 'past',
           groupOrderByFunc: (a,b) => (a?1:0) < (b?1:0) ? -1 : 1,
-          orderByFunc: (a,b) => a.datetime < b.datetime ? -1 : 1, 
+          orderByFunc: (a,b) => a.datetime > b.datetime ? -1 : 1, 
           templateForAdd: [
               {
                   key: 'title',

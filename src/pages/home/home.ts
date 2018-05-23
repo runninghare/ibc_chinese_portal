@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, Inject, animate, state, trigger, style, transition } from '@angular/core';
-import { App, NavController, Platform, PopoverController } from 'ionic-angular';
+import { App, NavController, Platform, PopoverController, AlertController } from 'ionic-angular';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { CommonProvider } from '../../providers/common/common';
 import { BrowserProvider } from '../../providers/browser/browser';
@@ -61,6 +61,7 @@ export class HomePage implements OnInit, AfterViewInit {
         public ibcFB: IbcFirebaseProvider,
         public platform: Platform,
         public toastCtrl: ToastController,
+        public alertCtrl: AlertController,
         public popOverCtrl: PopoverController,
         public ibcStyle: IbcStyleProvider,
         public photoSvc: PhotoProvider,
@@ -87,8 +88,31 @@ export class HomePage implements OnInit, AfterViewInit {
         });
     }
 
+    showNewVersionAlert() {
+        let alert = this.alertCtrl.create({
+          title: 'Use this lightsaber?',
+          message: 'Do you agree to use this lightsaber to do good across the intergalactic galaxy?',
+          buttons: [
+            {
+              text: 'Disagree',
+              handler: () => {
+                console.log('Disagree clicked');
+              }
+            },
+            {
+              text: 'Agree',
+              handler: () => {
+                console.log('Agree clicked');
+              }
+            }
+          ]
+        });
+
+        alert.present();
+    }
+
     get gmailLinkable(): boolean {
-      return this.ibcFB.myselfContact.email && /@gmail.com$/.test(this.ibcFB.myselfContact.email);
+      return this.content.myselfContact.email && /@gmail.com$/.test(this.content.myselfContact.email);
     }
 
     login(): void {

@@ -1,5 +1,9 @@
 var webpack = require('webpack');
 
+console.log("========= check webpack env plugin =========");
+
+console.log(process.env);
+
 module.exports = {
     plugins: [
       new webpack.EnvironmentPlugin({
