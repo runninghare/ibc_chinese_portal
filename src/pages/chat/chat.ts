@@ -1,10 +1,11 @@
 import { Component, ViewChild, ElementRef, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { DataProvider, IntContact, IntMessage, IntThread } from '../../providers/data-adaptor/data-adaptor';
+import { DataProvider, IntContact, IntMessage, IntThread, IntListItem } from '../../providers/data-adaptor/data-adaptor';
 import { CommonProvider } from '../../providers/common/common';
 // import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { FileCacheProvider } from '../../providers/file-cache/file-cache';
+import { NotificationProvider } from '../../providers/notification/notification';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { AudioProvider } from '../../providers/audio/audio';
 import * as moment from 'moment';
@@ -40,6 +41,8 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
     height: string = '100%';
 
+    partnerUnreadCount: number = 0;
+
     constructor( 
         public http: Http, 
         public navCtrl: NavController, 
@@ -47,6 +50,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
         public cacheSvc: FileCacheProvider,
         public commonSvc: CommonProvider,
         public audioSvc: AudioProvider,
+        public notificationSvc: NotificationProvider,
         public content: DataProvider) {
 
         this.partner = this.navParams.get('contact');
@@ -169,13 +173,19 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
                            .child(this.partner.id)
                            .child(this.content.myselfContact.id)
                            .child('chat_notifs').set(1);
+
+                     this.partnerUnreadCount = 1;
                    } else {
                      this.content.allStatusDB
                            .child(this.partner.id)
                            .child(this.content.myselfContact.id)
                            .child('chat_notifs').set(notif+1);
+
+                     this.partnerUnreadCount = notif + 1;
                    }
-               })
+
+                   this.sendAddNotification();    
+               });
        });
     }
 
@@ -229,5 +239,27 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
             this.addPartnerNotif();
         }, console.error);
     }
+
+    sendAddNotification(): void {
+        if (!this.partner) return;
+
+        let datetimeCaption = moment().format("M月D日 HH:mm");
+        let item: IntListItem = {
+            datetime: datetimeCaption,
+            isNew: true,
+            key: `${this.partner.id}-message`,
+            value: `${this.partner.id}-${this.partnerUnreadCount}`,
+            params: {
+                // itemIndex: this.activityIndex || null,
+                // itemId: this.activityId
+                contact: this.content.myselfContact
+            },
+            redirect: "ChatPage",
+            sender: this.content.myselfContact.id,
+            subtitle: "點擊查看",
+            title: `${this.content.myselfContact.name}給你發了消息`
+        }
+        this.notificationSvc.addNotification(this.partner.id, item);
+    } 
 
 }

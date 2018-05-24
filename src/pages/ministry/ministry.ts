@@ -69,7 +69,11 @@ export class MinistryPage implements OnInit {
       });
 
       /* Assign the new role to contactId */
-      sheet[roleKey] = contactId;
+      if (contactId == 'N/A') {
+        sheet[roleKey] = null;
+      } else {
+        sheet[roleKey] = contactId;
+      }
     }
 
     save(): void {
@@ -195,13 +199,21 @@ export class MinistryPage implements OnInit {
               key : `${datetime}-confirm-service`,
               subtitle : `{{myselfContact.name}} ({{myselfContact.chinese_name}}) 无法参加${datetimeCaption}敬拜`,
               title : `${datetimeCaption}事奉缺席 - ${roleCaption}`,
-              value : roleKey
+              value : roleKey,
+              redirect : "MinistryPage",
+              params : {
+                forDate : datetime
+              }
             }, {
               answer : "yes",
               key : `${datetime}-confirm-service`,
               subtitle : `{{myselfContact.name}} ({{myselfContact.chinese_name}}) 已确认事奉${datetimeCaption}敬拜`,
               title : `${datetimeCaption}事奉确认 - ${roleCaption}`,
-              value : roleKey
+              value : roleKey,
+              redirect : "MinistryPage",
+              params : {
+                forDate : datetime
+              }              
             } ],
             recipient : this.ministrySvc.content.myselfContact.id,
             type : TypeInputUI.Boolean

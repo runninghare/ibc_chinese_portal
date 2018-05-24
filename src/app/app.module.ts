@@ -23,6 +23,7 @@ import { ActivityPage } from '../pages/activity/activity';
 import { AboutPage } from '../pages/about/about';
 import { ChatPage } from '../pages/chat/chat';
 import { MapPage } from '../pages/map/map';
+import { SongPage } from '../pages/song/song';
 
 import { BiblePageModule } from '../pages/bible/bible.module';
 import { MonthlyVersesPageModule } from '../pages/monthly-verses/monthly-verses.module';
@@ -109,6 +110,7 @@ import {ENV} from '@app/env';
     ActivityPage,
     ChatPage,
     MapPage,
+    SongPage,
     AboutPage,
     PopupComponent,
     LoadTrackerComponent,
@@ -150,6 +152,7 @@ import {ENV} from '@app/env';
     ActivityPage,
     ChatPage,
     MapPage,
+    SongPage,
     PopupComponent,
     LoadTrackerComponent,
     IbcMapComponent

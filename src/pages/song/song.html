@@ -1,0 +1,37 @@
+<!--
+  Generated template for the SongPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{album}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+
+    <h3 text-center>{{title}} ({{language || '國語'}})</h3>
+
+    <div text-center class="ibc-full-width ibc-bottom-margin-10">
+        <ion-note>Set {{set}}</ion-note>
+    </div>
+
+    <div text-center>
+        <img width="400px" [src]="'https://img.youtube.com/vi/' + id + '/0.jpg'" (click)="play()"/>
+    </div>
+
+    <div text-center>
+        <button style="max-width: 400px; margin-left: auto; margin-right: auto;" ion-button block (click)="play()">
+          <ion-icon name="play" class="ibc-right-margin-10"></ion-icon>
+          播放
+        </button>
+    </div>
+
+
+    <pre text-center>{{lyric}}</pre>
+
+</ion-content>

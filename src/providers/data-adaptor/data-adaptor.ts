@@ -491,7 +491,37 @@ export class DataProvider {
               {
                   key: 'set',
                   caption: 'Set'
-              }
+              },
+              {
+                  key: 'album',
+                  caption: '专辑'
+              },              
+              {
+                  key: 'lyric',
+                  caption: '歌詞',
+                  type: TypeInputUI.Textarea
+              },
+              {
+                  key: 'language',
+                  caption: '语言',
+                  type: TypeInputUI.Dropdown,
+                  lookupSource: Observable.of([
+                      {
+                          val: '國語',
+                          cap: '國語'
+                      },
+                      {
+                          val: '粵語',
+                          cap: '粵語'
+                      },
+                      {
+                          val: '英語',
+                          cap: '英語'
+                      }                      
+                  ]),
+                  lookupCaption: 'cap',
+                  lookupValue: 'val'  
+              },                            
             ],
             filterFunc: (val, item) => {
                 if (!isNaN(<any>val)) {
@@ -506,13 +536,24 @@ export class DataProvider {
                     title: item.name,
                     set: item.set,
                     thumbnail: 'https://img.youtube.com/vi/' + item.id + '/0.jpg',
-                    callFunc: true
+                    redirect: 'SongPage',
+                    params: {
+                      id: item.id,
+                      album: item.album,
+                      title: item.name,
+                      set: item.set,
+                      lyric: item.lyric,
+                      language: item.language
+                    }
                 }
             },
             groupBy: 'set',
-            callFunc: (item) => {
-                this.videoSvc.play(item.id);
-            }
+            groupOrderByFunc: (a,b) => {
+              return parseInt(a) < parseInt(b) ? -1 : 1;
+            },
+            // callFunc: (item) => {
+            //     this.videoSvc.play(item.id);
+            // }
         };
 
         this.nextServiceSongsDB = this.ibcFB.afDB.database.ref('nextServiceSongs');

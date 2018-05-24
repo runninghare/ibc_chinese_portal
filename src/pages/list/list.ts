@@ -4,8 +4,14 @@ import * as firebase from 'firebase/app';
 import { CommonProvider } from '../../providers/common/common';
 import { BrowserProvider } from '../../providers/browser/browser';
 import { PopupComponent } from '../../components/popup/popup';
+
+/// Available Redirect Pages
 import { ActivityPage } from '../activity/activity';
 import { MinistryPage } from '../ministry/ministry';
+import { SongPage } from '../song/song';
+import { ChatPage } from '../chat/chat';
+
+/// Providers and Services
 import { S2tProvider } from '../../providers/s2t/s2t';
 import { Observable, Subscription } from 'rxjs';
 import { DataProvider, IntPopupTemplateItem, IntListItem } from '../../providers/data-adaptor/data-adaptor';
@@ -69,6 +75,13 @@ export class ListPage implements OnDestroy {
         this.items = items;
 
         if (this.groupBy) {
+          /* This trick is aiming at resolving the conflicts between number and string type during uniquification */
+          /* e.g. we may have this.groupValues = [1,2,3,4,"4"] if we don't convert the number to string */
+          this.items.forEach(item => {
+            if (typeof item[this.groupBy] == 'number') {
+              item[this.groupBy] = `${item[this.groupBy]}`;
+            }
+          });
           this.groupValues = this.items.map(item => item[this.groupBy]).filter(this.commonSvc.arrayUniq).sort(this.groupOrderByFunc);
         } else {
           this.groupValues =[null];
@@ -276,8 +289,6 @@ export class ListPage implements OnDestroy {
   // .sort((a,b) => (a['params'] && a['params']['datetime']) > (b['params'] && b['params']['datetime']) ? -1 : 1)
 
   itemTapped(event: any, item: IntListItem) {
-      console.log(event);
-
       let i = this.getItemIndex(item);
       let k = this.listHasKeys ? item.key : i;
 
@@ -297,6 +308,12 @@ export class ListPage implements OnDestroy {
               case "MinistryPage":
                   component = MinistryPage;
                   break;
+              case "SongPage":
+                  component = SongPage;
+                  break;
+              case "ChatPage":
+                  component = ChatPage;
+                  break;    
 
               default:
                   // code...
