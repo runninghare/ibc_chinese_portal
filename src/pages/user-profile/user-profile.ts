@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { animate, state, trigger, style, transition } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavController, NavParams } from 'ionic-angular';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
@@ -19,7 +19,6 @@ export class PasswordValidation {
             console.log('false');
             AC.get('password2').setErrors( {MatchPassword: true} )
         } else {
-            console.log('true');
             return null
         }
     }
@@ -129,11 +128,10 @@ export class UserProfilePage implements OnInit {
 
     ngOnInit(): void {
         this.uid = this.ibcFB.afAuth.auth.currentUser.uid
-        console.log(this.uid);
 
         this.content.currentUser$.subscribe((user: IntContact) => {
-            console.log("---- user ----");
-            console.log(JSON.stringify(user));
+            this.authForm.controls.username.setValue(user.username);
+
             if (!user.visited) {
                 this.showAuthInfo = true;
             }
@@ -148,6 +146,11 @@ export class UserProfilePage implements OnInit {
     }
 
     save(): void {
+
+        let headers = new Headers({ 
+            Authorization: `Bearer ${this.content.auth.uid}`, 
+            Accept: 'application/json', 
+            'Content-Type': 'application/json' });
 
         if (this.authForm.dirty) {
             this.submittingAuthForm = true;
@@ -195,28 +198,45 @@ export class UserProfilePage implements OnInit {
             // generate skill list
             this.userForm.controls['skills'].setValue(Object.keys(this.skills).filter(k => this.skills[k])); 
 
+            let success_toast = this.toastCtrl.create({
+                message: '您的個人資料已成功保存',
+                duration: 3000,
+                position: 'top',
+                cssClass: 'toast-success'
+            });
+
+            let failure_toast = this.toastCtrl.create({
+                message: '資料保存出錯',
+                duration: 3000,
+                position: 'top',
+                cssClass: 'toast-danger'
+            });
+
             this.content.myselfContactDB.update(this.userForm.value).then(data => {
-                let toast = this.toastCtrl.create({
-                    message: '您的個人資料已成功保存',
-                    duration: 3000,
-                    position: 'top',
-                    cssClass: 'toast-success'
-                });
 
-                toast.present();
-                this.userForm.markAsPristine();
+                if (this.userForm.controls.email.dirty) {
+                    this.http.post(`${ENV.apiServer}/auth/changeemail`, {
+                        email: this.userForm.controls.email.value
+                    }, new RequestOptions({ headers })).subscribe(res => {
+                        success_toast.present();
+                        this.userForm.markAsPristine();
+                        this.submittingUserForm = false;
+                        this.avatarDirty = false;
+                    }, err => { 
+                        failure_toast.present();
+                        this.userForm.markAsPristine();
+                        console.log(err);
+                        this.submittingUserForm = false;
+                    });
+                } else {
+                    success_toast.present();
+                    this.userForm.markAsPristine();
+                    this.submittingUserForm = false;
+                    this.avatarDirty = false;
+                }
 
-                this.submittingUserForm = false;
-                this.avatarDirty = false;
             }).catch(err => {
-                let toast = this.toastCtrl.create({
-                    message: '資料保存出錯',
-                    duration: 3000,
-                    position: 'top',
-                    cssClass: 'toast-danger'
-                });
-
-                toast.present();
+                failure_toast.present();
                 this.userForm.markAsPristine();
                 console.log(err);
                 this.submittingUserForm = false;

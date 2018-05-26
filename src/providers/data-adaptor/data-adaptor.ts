@@ -64,6 +64,7 @@ export interface IntHomeCard {
 
 export interface IntContact {
     id?: string;
+    username?: string;
     name?: string;
     chinese_name?: string;
     dob?: string;

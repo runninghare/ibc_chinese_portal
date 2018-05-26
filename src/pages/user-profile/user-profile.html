@@ -20,11 +20,12 @@
   </button>
    
   <form [formGroup]="authForm" *ngIf="authForm" [@showAnimation]="showAuthInfo?'visible':'invisible'">
+
         <ion-item>
             <ion-label floating>登錄用戶名</ion-label>
-            <ion-input required type="text" [formControl]="authForm.controls.username"></ion-input>
+            <ion-input disabled type="text" [formControl]="authForm.controls.username"></ion-input>
         </ion-item>
-        <ion-note style="color: red" ion-item text-right *ngIf="submittingAuthForm && authForm.controls.username.errors?.required">用戶名不能為空</ion-note>
+        <ion-note style="color: red" ion-item text-right *ngIf="submittingAuthForm && authForm.controls.username.errors?.required">用戶名不能為空</ion-note>        
 
         <ion-item>
             <ion-label floating>輸入舊密碼</ion-label>
@@ -74,7 +75,7 @@
         <ion-item>
             <ion-label floating>電子郵件</ion-label>
             <ion-input type="text" [formControl]="userForm.controls.email"></ion-input>
-        </ion-item>
+        </ion-item>   
 
         <ion-item>
             <ion-label floating>電話</ion-label>

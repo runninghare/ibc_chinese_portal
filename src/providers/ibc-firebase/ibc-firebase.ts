@@ -261,7 +261,7 @@ export class IbcFirebaseProvider {
         }).subscribe(res => {
             let data = res.json();
             if (data && data.token) {
-                console.log(data.token);
+                // console.log(data.token);
                 firebase.auth().signInWithCustomToken(data.token).then(this.authSuccessHandler, this.authFailureHandler);
             } else {
                 this.loadTrackerSvc.loading = false;
