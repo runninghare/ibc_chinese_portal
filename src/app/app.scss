@@ -263,6 +263,22 @@ ion-content {
   border-radius: 15px !important;
 }
 
+@keyframes anime-fade-in {
+  0% { 
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% { 
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.ibc-fade-in {
+  animation: anime-fade-in 5s cubic-bezier(.89,-0.93,.2,1.58) forwards;
+}
+
+
 body {
   // user-select: text;
 }

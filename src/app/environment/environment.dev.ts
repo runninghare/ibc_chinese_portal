@@ -1,6 +1,7 @@
 export const ENV = {
   mode: 'Development',
-  apiServer: 'http://35.201.19.92',
+  version: '0.0.3',
+  apiServer: 'http://192.168.0.21:3000',
   firebaseConfig: {
     apiKey: "AIzaSyA-m-AkKYqeKusk0aXgdZax9n5MbRngyj0",
     authDomain: "ibc-app-94466.firebaseapp.com",

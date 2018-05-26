@@ -21,6 +21,7 @@ import { HeaderPopoverPage } from '../pages/Popover/header';
 import { BrowserPage } from '../pages/browser/browser';
 import { ActivityPage } from '../pages/activity/activity';
 import { AboutPage } from '../pages/about/about';
+import { AboutAppPage } from '../pages/about-app/about-app';
 import { ChatPage } from '../pages/chat/chat';
 import { MapPage } from '../pages/map/map';
 import { SongPage } from '../pages/song/song';
@@ -112,6 +113,7 @@ import {ENV} from '@app/env';
     MapPage,
     SongPage,
     AboutPage,
+    AboutAppPage,
     PopupComponent,
     LoadTrackerComponent,
     ParseHtmlDirective,
@@ -144,6 +146,7 @@ import {ENV} from '@app/env';
     ListPage,
     ContactPage,
     AboutPage,
+    AboutAppPage,
     HeaderPopoverPage,
     PhotoEditPage,
     UserProfilePage,

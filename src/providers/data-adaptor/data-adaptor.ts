@@ -269,6 +269,8 @@ export class DataProvider {
     allStatusDB: firebase.database.Reference;
     allStatus$: Observable<{[index: string]: IntUserStatus}>;
 
+    versionDB: firebase.database.Reference;
+
     errorObservableHandler = err => {
         console.log(err);
         this.cleanDataWithAuth();
@@ -298,7 +300,7 @@ export class DataProvider {
                     this.ibcFB.access_level = 1;
                 }))
                 .catch(err => {
-                    this.ibcFB.access_level = 0;
+                  this.ibcFB.access_level = 0;
                 });
 
             return this.ibcFB.afDB.object<IntUserMapValue>(`userMap/${authUser.uid}`).valueChanges().flatMap(res => {
@@ -415,6 +417,21 @@ export class DataProvider {
           })
       }, console.error));
 
+      /* At this time we are not going to use badge because it only gets updated when
+         the app is open and running which is not very useful. */
+
+      // this.existingSubscriptions.push(this.myTasks$.subscribe(tasks => {
+      //   if (tasks) {
+      //     let newTaskCount = tasks.filter(t => t.isNew).length;
+      //     console.log(`newTaskCount = ${newTaskCount}`);
+      //     if (!newTaskCount) {
+      //       this.badge.clear();
+      //     } else {
+      //       this.badge.set(newTaskCount);
+      //     }
+      //   }
+      // }, e => {}));
+
       // this.existingSubscriptions.push(this.activities$.subscribe(activities => {
       //   this.activities = activities;
       // }, console.error));
@@ -445,6 +462,10 @@ export class DataProvider {
 
         window['ENV'] = ENV;
         console.log(`======= RUNNING MODE: ${ENV.mode} ========`);
+
+        // setTimeout(() => {
+        //   this.badge.clear();
+        // }, 1000);
 
         this.userAuthHandler();
 
@@ -709,6 +730,8 @@ export class DataProvider {
 
         this.allStatusDB = this.ibcFB.afDB.database.ref('status');
         this.allStatus$ = <Observable<any>>this.ibcFB.afDB.object('status').valueChanges();
+
+        this.versionDB = this.ibcFB.afDB.database.ref('version');
     }
 
 }

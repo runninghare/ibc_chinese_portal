@@ -10,6 +10,8 @@ import { ToastController } from 'ionic-angular';
 import { HeaderPopoverPage } from '../../pages/Popover/header';
 import { MinistryPage } from '../../pages/ministry/ministry';
 import { ListPage } from '../../pages/list/list';
+import { AboutPage } from '../../pages/about/about';
+import { AboutAppPage } from '../../pages/about-app/about-app';
 // import { PhotoEditPage } from '../../pages/photo-edit/photo-edit';
 import { PhotoProvider } from '../../providers/photo/photo';
 import { FileCacheProvider } from '../../providers/file-cache/file-cache';
@@ -35,12 +37,12 @@ import { File } from '@ionic-native/file';
                 state('visible', style({
                     opacity: 1,
                     visibility: 'visible',
-                    height: 'calc(100% - 100px)'
+                    height: 'calc(100% - 150px)'
                 })),
                 transition('invisible => visible', animate('300ms ease-in')),
                 transition('visible => invisible', animate('300ms ease-out'))
             ]
-        )
+        )      
     ]
 })
 export class HomePage implements OnInit, AfterViewInit {
@@ -78,39 +80,34 @@ export class HomePage implements OnInit, AfterViewInit {
 
         ibcFB.userProfile$.filter(auth => auth != null).subscribe(userProfile => {
             this.authUser = userProfile;
+            ibcFB.userProfile = userProfile;
+
             /* Set standard background for authenticated users */
-            this.bgClass = this.ibcStyle.stdBg;
+            if (this.authUser && this.ibcFB.access_level > 0) {
+                this.bgClass = this.ibcStyle.stdBg;
+            } else {
+                this.bgClass = 'home-bg-0';
+            }
         }, err => {
             this.authUser = undefined;
             this.bgClass = this.ibcStyle.randomBg;
         });
+
+        if (!common.doNotRemindUpdating) {
+            setTimeout(() => {
+                if (common.versionTooOld) {
+                    this.navCtrl.push(AboutAppPage);
+                }
+            }, 5000);
+        }
     }
 
-    showNewVersionAlert() {
-        let alert = this.alertCtrl.create({
-          title: 'Use this lightsaber?',
-          message: 'Do you agree to use this lightsaber to do good across the intergalactic galaxy?',
-          buttons: [
-            {
-              text: 'Disagree',
-              handler: () => {
-                console.log('Disagree clicked');
-              }
-            },
-            {
-              text: 'Agree',
-              handler: () => {
-                console.log('Agree clicked');
-              }
-            }
-          ]
-        });
-
-        alert.present();
+    aboutUs(): void {
+        this.navCtrl.push(AboutPage);
     }
 
     get gmailLinkable(): boolean {
-      return this.content.myselfContact.email && /@gmail.com$/.test(this.content.myselfContact.email);
+      return this.content.myselfContact && this.content.myselfContact.email && /@gmail.com$/.test(this.content.myselfContact.email);
     }
 
     login(): void {
@@ -120,6 +117,7 @@ export class HomePage implements OnInit, AfterViewInit {
     logout(): void {
         this.ibcFB.logoutGoogle();
         this.authUser = null;
+        this.ibcFB.access_level = null;
         this.bgClass = this.ibcStyle.randomBg;
     }
 
@@ -147,6 +145,10 @@ export class HomePage implements OnInit, AfterViewInit {
     }    
 
     presentPopover(myEvent) {
+        if (!this.authUser.uid || !this.ibcFB.access_level) {
+            return;
+        }
+
         let popover = this.popOverCtrl.create(HeaderPopoverPage, {
             logout: this.logout.bind(this)
         });

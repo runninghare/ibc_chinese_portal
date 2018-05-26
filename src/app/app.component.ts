@@ -10,6 +10,7 @@ import { ListPage } from '../pages/list/list';
 import { BiblePage } from '../pages/bible/bible';
 import { ContactPage } from '../pages/contact/contact';
 import { AboutPage } from '../pages/about/about';
+import { AboutAppPage } from '../pages/about-app/about-app';
 import { MinistryPage } from '../pages/ministry/ministry';
 
 // import { MonthlyVersesPage } from '../pages/monthly-verses/monthly-verses';
@@ -92,6 +93,7 @@ export class MyApp implements AfterViewInit {
       { title: '我的好友', component: ContactPage, needAuth: true, params: {myFriends: true, title: '我的好友'} },
       { title: '我的任务', component: ListPage, needAuth: true, params: () => this.content.myTasksParams },
       { title: '關於我們', component: AboutPage, needAuth: false },
+      { title: '關於APP', component: AboutAppPage, needAuth: false }
     ];
   }
 

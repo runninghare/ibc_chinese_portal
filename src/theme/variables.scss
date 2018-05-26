@@ -51,6 +51,10 @@ $colors: (
     base: transparent,
     contrast: #488aff
   ), 
+  blue-800: (
+    base: #00838F,
+    contrast: #FFF
+  ),   
   sidebar: (
     base: #B2DFDB,
     contrast: #000
@@ -62,7 +66,7 @@ $colors: (
   teal-1: (
     base: #004D40,
     contrast: #FFF
-  ),
+  ), 
   green-contrast: (
     base: transparent,
     contrast: #00C853

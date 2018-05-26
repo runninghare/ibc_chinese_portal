@@ -70,7 +70,7 @@
       <button ion-button block color="danger" ion-end *ngIf="myIndex >= 0" (click)="cancel()">取消報名</button>
     </ion-buttons>
 
-    <ion-buttons class="ibc-top-margin-20" ion-end *ngIf="content.auth && activity.chatId">
+    <ion-buttons class="ibc-top-margin-20" ion-end *ngIf="commonSvc.isMember && content.auth && activity.chatId">
       <button ion-button block ion-end (click)="goToChat()">留言評論</button>
     </ion-buttons>
 

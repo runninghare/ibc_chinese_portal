@@ -5,6 +5,7 @@ import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { DomSanitizer } from '@angular/platform-browser'
 import { ToastController, AlertController } from 'ionic-angular';
 import * as moment from 'moment';
+import { ENV } from '@app/env';
 
 export { ToastController, AlertController } from 'ionic-angular';
 
@@ -25,6 +26,46 @@ export class CommonProvider {
 
     constructor(public http: HttpClient, public toastCtrl: ToastController, public sanitizer: DomSanitizer,
         public platform: Platform, public ibcFB: IbcFirebaseProvider, public alertCtrl: AlertController) {
+
+        ibcFB.afDB.database.ref('version').once('value', snapshot => {
+          this.newVersion = snapshot.val();
+        });
+    }
+
+    newVersion: string;
+
+    get versionTooOld(): boolean {
+        if (ENV.version && this.newVersion) {
+            let pattern = new RegExp(/^(\d+)\.(\d+)\.(\d+)$/);
+            let oldPatternMatches = ENV.version.match(pattern);
+            let newPatternMatches = this.newVersion.match(pattern);
+
+            if (oldPatternMatches.length == 4 && newPatternMatches.length == 4) {
+                return parseInt(oldPatternMatches[1]) < parseInt(newPatternMatches[1]) ||
+                    parseInt(oldPatternMatches[2]) < parseInt(newPatternMatches[2]) ||
+                    parseInt(oldPatternMatches[3]) < parseInt(newPatternMatches[3])
+            } else {
+                return false;
+            }
+        }
+    }
+
+    get appStoreLink(): string {
+        if (this.isIos) {
+            return "https://itunes.apple.com/us/app/依斯靈頓中文教會/id1338517393?ls=1&mt=8";
+        } else {
+            return "https://play.google.com/store/apps/details?id=com.rjwebsolution.ibcchinese";
+        }
+    }
+
+    doNotRemindUpdating: boolean = false;
+
+    goToStorePage(): void {
+        window.open(this.appStoreLink, '_system', 'location=no');
+    }
+
+    ignoreUpdate(): void {
+        this.doNotRemindUpdating = true;
     }
 
     get isWeb(): boolean {
@@ -35,8 +76,30 @@ export class CommonProvider {
         return !this.isWeb;
     }
 
+    get isAndroid(): boolean {
+        return this.platform.is('android');
+    }
+
+    get isIos(): boolean {
+        return this.platform.is('ios');
+    }
+
     get readonly(): boolean {
         return this.ibcFB.access_level < 2;
+    }
+
+    /// Note: It's possible that both isMember and isNotMember being false
+    /// because access_level can be null or undefined.
+    get isMember(): boolean {
+        return this.isLoggedIn && this.ibcFB.access_level > 0;
+    }
+
+    get isNotMember(): boolean {
+        return this.isLoggedIn && this.ibcFB.access_level === 0;
+    }
+
+    get isLoggedIn(): boolean {
+        return !!this.ibcFB.userProfile
     }
 
     differDays(timestamp: string): number {

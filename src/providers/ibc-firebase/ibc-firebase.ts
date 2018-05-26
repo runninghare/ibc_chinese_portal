@@ -36,7 +36,7 @@ export class IbcFirebaseProvider {
 
     public userProfile: firebase.User;
 
-    public access_level: number = 0;
+    public access_level: number;
 
     constructor(
         public platform: Platform, 
@@ -101,13 +101,41 @@ export class IbcFirebaseProvider {
         this.loadTrackerSvc.loading = false;
     }
 
-    authFailureHandler = err => {
+    passwordFailureHandler = err => {
         // console.log("Error (App): Sign-In failed: ", JSON.stringify(err,null,2));
 
         this.loadTrackerSvc.loading = false;
 
         let toast = this.toastCtrl.create({
             message: '用戶名和密碼錯誤',
+            duration: 3000,
+            position: 'top',
+            cssClass: 'toast-danger'
+        });
+
+        toast.present();
+    }
+
+    authFailureHandler = err => {
+        // console.log("Error (App): Sign-In failed: ", JSON.stringify(err,null,2));
+
+        this.loadTrackerSvc.loading = false;
+
+        let toast = this.toastCtrl.create({
+            message: '登入失敗',
+            duration: 3000,
+            position: 'top',
+            cssClass: 'toast-danger'
+        });
+
+        toast.present();
+    }    
+
+    logOutFailureHandler = err => {
+        this.loadTrackerSvc.loading = false;
+
+        let toast = this.toastCtrl.create({
+            message: '登出失敗！',
             duration: 3000,
             position: 'top',
             cssClass: 'toast-danger'
@@ -135,8 +163,11 @@ export class IbcFirebaseProvider {
                     } else {
                         this.loadTrackerSvc.loading = false;
                     }
-                }, this.authFailureHandler);                
-            }, this.authFailureHandler);
+                }, () => {
+                    console.log('--- Authentication passed, however the user is not the church member ---');
+                    this.loadTrackerSvc.loading = false;
+                });
+            }, this.logOutFailureHandler);
 
         // } else {
         //     this.authSuccessHandler(this.afAuth.auth.currentUser);
@@ -157,6 +188,7 @@ export class IbcFirebaseProvider {
         if (this.platform.is('core') || this.platform.is('mobileweb')) {
             return this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
                             .then(this.providerAuthSuccessHandler, this.authFailureHandler);
+                            // .then(this.authSuccessHandler, this.authFailureHandler);
         } else {
 
             return this.googlePlus.login({
@@ -165,12 +197,15 @@ export class IbcFirebaseProvider {
                 'offline': true
             }).then(res => {
 
+                console.log('--- login successfully ---');
+
                 /* SignIn to Firebase */
 
                 const googleCredential = firebase.auth.GoogleAuthProvider.credential(res.idToken);
 
                 return firebase.auth().signInWithCredential(googleCredential)
                     .then(this.providerAuthSuccessHandler, this.authFailureHandler);
+                    // .then(this.authSuccessHandler, this.authFailureHandler);
 
             }, this.authFailureHandler);
         }
@@ -231,11 +266,14 @@ export class IbcFirebaseProvider {
             } else {
                 this.loadTrackerSvc.loading = false;
             }
-        }, this.authFailureHandler);
+        }, this.passwordFailureHandler);
     }
 
     linkAccount(): void {
         let provider = new firebase.auth.GoogleAuthProvider();
+
+        console.log('--- provider ---');
+        console.log(provider);
 
         let linkSuccessHandler = result => {
             // console.log(result);
@@ -249,13 +287,15 @@ export class IbcFirebaseProvider {
 
             toast.present();
 
-            window['result_user'] = result.user;
+            this.logoutGoogle();
 
-            if (this.afAuth.auth.currentUser.providerData.length > 0) {
-                let displayName = this.afAuth.auth.currentUser.providerData[0].displayName;
-                let photoURL = this.afAuth.auth.currentUser.providerData[0].photoURL;
-                this.updateAuthUserProfile(this.afAuth.auth.currentUser, displayName, photoURL);
-            }
+            // window['result_user'] = result.user;
+
+            // if (this.afAuth.auth.currentUser.providerData.length > 0) {
+            //     let displayName = this.afAuth.auth.currentUser.providerData[0].displayName;
+            //     let photoURL = this.afAuth.auth.currentUser.providerData[0].photoURL;
+            //     this.updateAuthUserProfile(this.afAuth.auth.currentUser, displayName, photoURL);
+            // }
 
             // ...
         };

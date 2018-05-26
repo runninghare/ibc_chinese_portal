@@ -9,6 +9,7 @@ import { NotificationProvider } from '../../providers/notification/notification'
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { AudioProvider } from '../../providers/audio/audio';
 import * as moment from 'moment';
+import * as $ from 'jquery';
 import { ENV } from '@app/env';
 
 /**
@@ -214,6 +215,20 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
     ngAfterViewInit(): void {
         this.resize();
+
+        setTimeout(() => {
+            $('textarea').keyup((event) => {
+                if (event.keyCode == 13) {
+                    if (event.shiftKey) {
+                        event.stopPropagation();
+                    } else {
+                        setTimeout(() => {
+                            this.send(<any>this.myInput);
+                        })
+                    }
+                }
+            });
+        }, 1000);
     }
 
     formatMessageBody(text: string) {
