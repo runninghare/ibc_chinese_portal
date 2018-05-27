@@ -56,9 +56,9 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
     time_today:     moment.Moment;
     time_yesterday: moment.Moment;
-    time_thisWeek:  moment.Moment;
-    time_thisMonth: moment.Moment;
-    time_thisYear:  moment.Moment;
+    time_lastWeek:  moment.Moment;
+    time_lastMonth: moment.Moment;
+    time_lastYear:  moment.Moment;
 
     constructor( 
         public http: Http, 
@@ -74,9 +74,9 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
         this.time_today = moment().startOf('day');
         this.time_yesterday = moment().subtract(1, 'day').startOf('day');
-        this.time_thisWeek = moment().startOf('isoWeek');
-        this.time_thisMonth = moment().startOf('month');
-        this.time_thisYear = moment().startOf('year');
+        this.time_lastWeek = moment().subtract(1, 'week').startOf('isoWeek');
+        this.time_lastMonth = moment().subtract(1, 'month').startOf('month');
+        this.time_lastYear = moment().subtract(1, 'year').startOf('year');
 
         this.partner = this.navParams.get('contact');
 
@@ -181,12 +181,14 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
             return "今天";
         } else if (dt >= this.time_yesterday) {
             return "昨天";
-        } else if (dt >= this.time_thisWeek) {
-            return "本周";
-        } else if (dt >= this.time_thisYear){
-            return dt.startOf('month').format('M月');
+        } else if (dt >= this.time_lastWeek) {
+            return dt.format('MM/DD');
+        } else if (dt >= this.time_lastMonth){
+            return dt.format('MM/DD non');
+        } else if (dt >= this.time_lastYear){
+            return dt.format('MM');
         } else {
-            return dt.startOf('year').format('YYYY年');
+            return dt.format('YYYY');
         }
     }
 
@@ -194,12 +196,14 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
         let dt = moment(timestamp);
         if (divider == '今天' || divider == '昨天') {
             return divider + ' ' + dt.format('H:mm a');
-        } else if (divider == '本周') {
+        } else if (divider.match(/^\d\d\/\d\d$/)) {
             return dt.format('dddd M月D日 h:mm a');
-        } else if (divider.match(/\d+月/)) {
+        } else if (divider.match(/^\d\d\/\d\d non$/)) {
             return dt.format('M月D日');
+        } else if (divider.match(/^\d\d$/)) {
+            return dt.format('M月');
         } else {
-            return dt.format('YYYY年M月D日')
+            return dt.format('YYYY年')
         }
     }
 
