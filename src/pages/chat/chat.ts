@@ -54,6 +54,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
     partnerUnreadCount: number = 0;
 
+    time_lastHour:  moment.Moment;
     time_today:     moment.Moment;
     time_yesterday: moment.Moment;
     time_lastWeek:  moment.Moment;
@@ -72,6 +73,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
         window['moment'] = moment;
 
+        this.time_lastHour = moment().startOf('hour');
         this.time_today = moment().startOf('day');
         this.time_yesterday = moment().subtract(1, 'day').startOf('day');
         this.time_lastWeek = moment().subtract(1, 'week').startOf('isoWeek');
@@ -177,7 +179,9 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
     timeDivider(time: string): string {
         let dt = moment(time);
-        if (dt >= this.time_today) {
+        if (dt >= this.time_lastHour) {
+            return dt.format('HH:');
+        } else if (dt >= this.time_today) {
             return "今天";
         } else if (dt >= this.time_yesterday) {
             return "昨天";
@@ -194,7 +198,9 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
     timeDividerMessage(divider: string, timestamp: string): string {
         let dt = moment(timestamp);
-        if (divider == '今天' || divider == '昨天') {
+        if (divider.match(/^\d\d:$/)) {
+            return dt.format('H:mm a');
+        } else if (divider == '今天' || divider == '昨天') {
             return divider + ' ' + dt.format('H:mm a');
         } else if (divider.match(/^\d\d\/\d\d$/)) {
             return dt.format('dddd M月D日 h:mm a');
