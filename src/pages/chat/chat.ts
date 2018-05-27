@@ -22,6 +22,16 @@ import { ENV } from '@app/env';
 @Component({
     selector: 'page-chat',
     templateUrl: 'chat.html',
+    styles: [`
+        .timestamp {
+            max-width: 150px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            background-color: #CCC !important;
+            border-radius: 10px !important;
+            color: #FFF !important;
+        }
+    `]
 })
 export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
@@ -44,6 +54,12 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
     partnerUnreadCount: number = 0;
 
+    time_today:     moment.Moment;
+    time_yesterday: moment.Moment;
+    time_thisWeek:  moment.Moment;
+    time_thisMonth: moment.Moment;
+    time_thisYear:  moment.Moment;
+
     constructor( 
         public http: Http, 
         public navCtrl: NavController, 
@@ -53,6 +69,14 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
         public audioSvc: AudioProvider,
         public notificationSvc: NotificationProvider,
         public content: DataProvider) {
+
+        window['moment'] = moment;
+
+        this.time_today = moment().startOf('day');
+        this.time_yesterday = moment().subtract(1, 'day').startOf('day');
+        this.time_thisWeek = moment().startOf('isoWeek');
+        this.time_thisMonth = moment().startOf('month');
+        this.time_thisYear = moment().startOf('year');
 
         this.partner = this.navParams.get('contact');
 
@@ -149,6 +173,34 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
             this.myInput['_elementRef'].nativeElement.style.height = (scrollHeight + 25) + 'px';
         }
         this.scrollDown();
+    }
+
+    timeDivider(time: string): string {
+        let dt = moment(time);
+        if (dt >= this.time_today) {
+            return "今天";
+        } else if (dt >= this.time_yesterday) {
+            return "昨天";
+        } else if (dt >= this.time_thisWeek) {
+            return "本周";
+        } else if (dt >= this.time_thisYear){
+            return dt.startOf('month').format('M月');
+        } else {
+            return dt.startOf('year').format('YYYY年');
+        }
+    }
+
+    timeDividerMessage(divider: string, timestamp: string): string {
+        let dt = moment(timestamp);
+        if (divider == '今天' || divider == '昨天') {
+            return divider + ' ' + dt.format('H:mm a');
+        } else if (divider == '本周') {
+            return dt.format('dddd M月D日 h:mm a');
+        } else if (divider.match(/\d+月/)) {
+            return dt.format('M月D日');
+        } else {
+            return dt.format('YYYY年M月D日')
+        }
     }
 
     addPartnerNotif(): void {

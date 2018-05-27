@@ -27,6 +27,8 @@ export class IbcMapComponent implements OnInit {
     map: GoogleMap;
     iframeUrl: string;
 
+    sanitizedUrl: any;
+
     constructor(public common: CommonProvider, public nativeGeocoder: NativeGeocoder, public navLauncher: LaunchNavigator) {
         // platform.ready().then(() => {
         //     setTimeout(() => {
@@ -40,6 +42,7 @@ export class IbcMapComponent implements OnInit {
 
         if (this.common.isWeb && this.address) {
             this.iframeUrl = `https://maps.google.com/maps?width=100&height=600&hl=en&q=${this.address}&ie=UTF8&t=&z=14&iwloc=B&output=embed`;
+            this.sanitizedUrl = this.common.sanitize(this.iframeUrl);
             return;
         } 
 

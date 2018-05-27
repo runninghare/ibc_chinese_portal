@@ -35,7 +35,9 @@ export class MinistryProvider {
         { key: 'assistant1', caption: '司事1', optionGetter: 'assistantCandidates' },
         { key: 'assistant2', caption: '司事2', optionGetter: 'assistantCandidates' },
         { key: 'music', caption: '司琴', optionGetter: 'musicCandidates' },
-        { key: 'technician', caption: '影音', optionGetter: 'techCandidates' }
+        { key: 'technician', caption: '影音', optionGetter: 'techCandidates' },
+        { key: 'communion1', caption: '主餐1', optionGetter: 'communionCandidates' },
+        { key: 'communion2', caption: '主餐2', optionGetter: 'communionCandidates' }
     ];
 
     allContacts: IntContact[] = [];
@@ -113,6 +115,10 @@ export class MinistryProvider {
 
     get interpreterCandidates(): IntContact[] {
         return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('翻譯') > -1);
+    }
+
+    get communionCandidates(): IntContact[] {
+        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('主餐') > -1);
     }
 
     saveSheet(): Promise<any> {

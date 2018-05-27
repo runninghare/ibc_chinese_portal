@@ -79,7 +79,8 @@ export class UserProfilePage implements OnInit {
         "司事": false,
         "司琴": false,
         "翻譯": false,
-        "影音": false
+        "影音": false,
+        "主餐": false
     };
 
     get allSkills(): string[] {

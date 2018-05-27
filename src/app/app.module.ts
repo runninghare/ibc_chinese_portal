@@ -85,6 +85,7 @@ import { ParseHtmlDirective } from '../directives/parse-html/parse-html';
 import { QuestionDirective } from '../directives/question/question';
 import { ContactLinkDirective } from '../directives/contact-link/contact-link';
 import { MapLinkDirective } from '../directives/map-link/map-link';
+import { OneTimeDirective } from '../directives/one-time/one-time';
 
 import {ENV} from '@app/env';
 
@@ -120,6 +121,7 @@ import {ENV} from '@app/env';
     QuestionDirective,
     ContactLinkDirective,
     MapLinkDirective,
+    OneTimeDirective,
     IbcMapComponent
   ],
   imports: [

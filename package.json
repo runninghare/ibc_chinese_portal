@@ -12,6 +12,8 @@
         "build-www-dev": "IBC_ENV=ibc_dev ionic-app-scripts build --aot --minifyjs --minifycss",
         "build": "IBC_ENV=ibc_prod ionic cordova build --aot --minifyjs --minifycss",
         "build-dev": "IBC_ENV=ibc_dev ionic cordova build --aot --minifyjs --minifycss",
+        "run": "IBC_ENV=ibc_prod ionic cordova run --aot --minifyjs --minifycss",
+        "run-dev": "IBC_ENV=ibc_dev ionic cordova run --aot --minifyjs --minifycss",
         "lint": "ionic-app-scripts lint",
         "ionic:build": "ionic-app-scripts build",
         "ionic:serve": "ionic-app-scripts serve",
