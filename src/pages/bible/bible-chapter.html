@@ -8,20 +8,30 @@
   <ion-list>
     <ng-container *ngFor="let verse of verses">
       <div ion-item>
-        <div item-left>{{verse?.VerseSN}}</div>
+        <div item-left style="width: 25px">{{verse?.VerseSN}}</div>
         <div class="item-note" item-left>
-          {{verse?.Chinese}}
+          {{bibleSvc.useTraditional ? bibleSvc.s2tConvert(verse?.Chinese) : verse?.Chinese}}
         </div>
       </div>
 
-      <div ion-item>
-        <div item-left>{{verse?.VerseSN}}</div>
+      <div ion-item *ngIf="bibleSvc.useEnglish">
+        <div item-left style="width: 25px"></div>
         <div class="item-note" item-left>
           {{verse?.English}}
         </div>
       </div>          
     </ng-container>
   </ion-list>
+
+  <ion-fab right bottom>
+    <button ion-fab color="primary"><ion-icon name="arrow-dropup"></ion-icon></button>
+    <ion-fab-list side="top">
+      <button ion-fab color="teal-1" (click)="bibleSvc.useEnglish = false; bibleSvc.useTraditional = false">简</button>
+      <button ion-fab color="teal" (click)="bibleSvc.useEnglish = false; bibleSvc.useTraditional = true">繁</button>
+      <button ion-fab color="dark" (click)="bibleSvc.useEnglish = !bibleSvc.useEnglish">Eng</button>
+      <button ion-fab color="dark" (click)="reference()">參考</button>
+    </ion-fab-list>
+  </ion-fab>   
 </ion-content>
 
 

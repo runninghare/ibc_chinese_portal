@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 import { SQLite } from 'ionic-native';
 import { BibleBookPage } from './bible-book';
+import { BibleProvider, IntBibleBook } from '../../providers/bible/bible';
 import { S2tProvider } from '../../providers/s2t/s2t';
 
 /**
@@ -23,7 +24,6 @@ export interface BibleID {
     EnglishName: string;
 };
 
-@IonicPage()
 @Component({
     selector: 'page-bible',
     templateUrl: 'bible.html',
@@ -32,9 +32,19 @@ export class BiblePage {
 
     storage: SQLite;
 
-    books: BibleID[] = [];
+    books: IntBibleBook[] = [];
 
-    constructor(public navCtrl: NavController, public navParams: NavParams, public platform: Platform, public s2t: S2tProvider) {
+    referenced: boolean;
+
+    constructor(
+        public navCtrl: NavController, 
+        public navParams: NavParams, 
+        public platform: Platform, 
+        public s2t: S2tProvider,
+        public bibleSvc: BibleProvider
+        ) {
+
+        this.referenced = this.navParams.get('referenced');
 
         if (this.platform.is('mobileweb')) {
             this.books = [
@@ -43,37 +53,10 @@ export class BiblePage {
             ]
         } else {
             this.platform.ready().then(() => {
-
-                this.storage = new SQLite();
-
-                this.storage.openDatabase({
-                    name: 'bible.db',
-                    location: 'default',
-                    createFromLocation: 1
-                }).then(() => {
-                    console.log("=== SQLite Connected! ===");
-
-                    this.storage.executeSql("SELECT * from BibleID", []).then((data) => {
-                        // console.log("Data received: ", data);
-                        let rows = data.rows;
-                        for (let i = 0; i < rows.length; i++) {
-                            // console.log(JSON.stringify(rows.item(i)));
-                            let book: BibleID = rows.item(i);
-                            book.ShortName = this.s2t.tranStr(book.ShortName, true);
-                            book.FullName = this.s2t.tranStr(book.FullName, true);
-                            this.books.push(book);
-                        }
-                        this.storage.close();
-                    }, (error) => {
-                        console.error("Unable to execute sql", JSON.stringify(error));
-                        this.storage.close();
-                    });
-
-                }, () => {
-                    console.error("Can't connect to SQLite!");
-                    this.storage.close();
+                this.bibleSvc.getBooks().then(books => {
+                    this.books = books;
+                }).catch(err => {
                 });
-
             });
         }
 
@@ -81,7 +64,8 @@ export class BiblePage {
 
     bookTapped(event, item): void {
         this.navCtrl.push(BibleBookPage, {
-            item: item
+            item: item,
+            referenced: this.referenced
         });
     }
 

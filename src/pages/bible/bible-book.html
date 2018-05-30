@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar>
-    <ion-title #title>{{book?.FullName}}</ion-title>
+    <ion-title #title>{{bibleSvc.useEnglish ? book?.EnglishName : (bibleSvc.useTraditional ? bibleSvc.s2tConvert(book?.FullName) : book?.FullName)}}</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -10,12 +10,22 @@
       <ion-col col-3 *ngFor="let i of chapters;">
         <div>
           <a (click)="chapterTapped($event, {bookId: book?.SN, book: book?.FullName, chapter: i})">
-            <div style="font-size: 1.8rem">第{{i}}章</div>
+            <div style="font-size: 1.8rem" *ngIf="!bibleSvc.useEnglish">第{{i}}章</div>
+            <div style="font-size: 1.8rem" *ngIf="bibleSvc.useEnglish">{{i}}</div>
           </a>
         </div>
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <ion-fab right bottom>
+    <button ion-fab color="primary"><ion-icon name="arrow-dropup"></ion-icon></button>
+    <ion-fab-list side="top">
+      <button ion-fab color="teal-1" (click)="bibleSvc.useEnglish = false; bibleSvc.useTraditional = false">简</button>
+      <button ion-fab color="teal" (click)="bibleSvc.useEnglish = false; bibleSvc.useTraditional = true">繁</button>
+      <button ion-fab color="dark" (click)="bibleSvc.useEnglish = true">Eng</button>
+    </ion-fab-list>
+  </ion-fab> 
 </ion-content>
 
 

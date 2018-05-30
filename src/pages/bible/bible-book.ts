@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 import { SQLite } from 'ionic-native';
-import { BibleID } from './bible';
+import { BibleProvider, IntBibleBook, IntBibleChapter } from '../../providers/bible/bible';
 import { BibleChapterPage } from './bible-chapter';
 
 /**
@@ -11,12 +11,6 @@ import { BibleChapterPage } from './bible-chapter';
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-
-export interface BibleChapter {
-    bookId: number;
-    book: string;
-    chapter: number;
-}
 
 @Component({
     selector: 'page-bible-book',
@@ -28,11 +22,15 @@ export class BibleBookPage {
 
     storage: SQLite;
 
-    book: BibleID;
+    book: IntBibleBook;
 
     chapters: number[] = [];
 
-    constructor(public navCtrl: NavController, public navParams: NavParams, public platform: Platform) {
+    referenced: boolean;
+
+    constructor(public navCtrl: NavController, public navParams: NavParams, public platform: Platform, public bibleSvc: BibleProvider) {
+
+        this.referenced = this.navParams.get('referenced');
 
         if (navParams.data) {
             this.book = navParams.data.item;
@@ -85,7 +83,8 @@ export class BibleBookPage {
 
     chapterTapped(event, item): void {
         this.navCtrl.push(BibleChapterPage, {
-            item
+            item,
+            referenced: this.referenced
         });
     }
 

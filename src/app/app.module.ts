@@ -26,7 +26,10 @@ import { ChatPage } from '../pages/chat/chat';
 import { MapPage } from '../pages/map/map';
 import { SongPage } from '../pages/song/song';
 
-import { BiblePageModule } from '../pages/bible/bible.module';
+import { BiblePage } from '../pages/bible/bible';
+import { BibleBookPage } from '../pages/bible/bible-book';
+import { BibleChapterPage } from '../pages/bible/bible-chapter';
+
 import { MonthlyVersesPageModule } from '../pages/monthly-verses/monthly-verses.module';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -88,6 +91,7 @@ import { MapLinkDirective } from '../directives/map-link/map-link';
 import { OneTimeDirective } from '../directives/one-time/one-time';
 
 import {ENV} from '@app/env';
+import { BibleProvider } from '../providers/bible/bible';
 
 // const firebaseConfig = {
 //     apiKey: "AIzaSyDFkwr578ZYuu0PPQxd5MN2-OCh4O7oKtc",
@@ -122,7 +126,10 @@ import {ENV} from '@app/env';
     ContactLinkDirective,
     MapLinkDirective,
     OneTimeDirective,
-    IbcMapComponent
+    IbcMapComponent,
+    BiblePage,
+    BibleBookPage,
+    BibleChapterPage    
   ],
   imports: [
     BrowserModule,
@@ -130,7 +137,6 @@ import {ENV} from '@app/env';
     FormsModule,
     HttpClientModule,
     FlexLayoutModule,
-    BiblePageModule,
     MonthlyVersesPageModule,
     HttpModule,
     IonicImageLoader.forRoot(),
@@ -160,7 +166,10 @@ import {ENV} from '@app/env';
     SongPage,
     PopupComponent,
     LoadTrackerComponent,
-    IbcMapComponent
+    IbcMapComponent,
+    BiblePage,
+    BibleBookPage,
+    BibleChapterPage    
   ],
   providers: [
     File,
@@ -194,7 +203,8 @@ import {ENV} from '@app/env';
     FileCacheProvider,
     LoadTrackerProvider,
     Badge,
-    NotificationProvider
+    NotificationProvider,
+    BibleProvider
   ]
 })
 export class AppModule {}
