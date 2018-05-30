@@ -20,6 +20,7 @@ export interface BibleID {
     PinYin: string;
     ShortName: string;
     FullName: string;
+    EnglishName: string;
 };
 
 @IonicPage()
@@ -37,8 +38,8 @@ export class BiblePage {
 
         if (this.platform.is('mobileweb')) {
             this.books = [
-                { SN: 1, KindSN: 1, ChapterNumber: 50, NewOrOld: 0, PinYin: 'CSJ', ShortName: '創', FullName: '創世紀' },
-                { SN: 2, KindSN: 1, ChapterNumber: 40, NewOrOld: 0, PinYin: 'CAJ', ShortName: '出', FullName: '出埃及記' }
+                { SN: 1, KindSN: 1, ChapterNumber: 50, NewOrOld: 0, PinYin: 'CSJ', ShortName: '創', FullName: '創世紀', EnglishName: 'Genesis' },
+                { SN: 2, KindSN: 1, ChapterNumber: 40, NewOrOld: 0, PinYin: 'CAJ', ShortName: '出', FullName: '出埃及記', EnglishName: 'Exodus' }
             ]
         } else {
             this.platform.ready().then(() => {

@@ -17,7 +17,8 @@ export interface BibleVerse {
   VolumeSN: number;
   ChapterSN: number;
   VerseSN: number;
-  Lection: string;
+  Chinese: string;
+  English: string;
   SoundBegin: number;
   SoundEnd: number; 
 }
@@ -62,7 +63,8 @@ export class BibleChapterPage {
                         for (let i = 0; i < rows.length; i++) {
                             // console.log(JSON.stringify(rows.item(i)));
                             let verse: BibleVerse = rows.item(i);
-                            verse.Lection = this.s2t.tranStr(verse.Lection, true);
+                            verse.Chinese = this.s2t.tranStr(verse.Chinese, true);
+                            verse.English = verse.English && verse.English.replace(/\\/g,'');
                             this.verses.push(verse);
                         }
                         this.storage.close();

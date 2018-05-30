@@ -18,10 +18,23 @@
   <ion-list>
     <button ion-item *ngFor="let book of books" (click)="bookTapped($event, book)">
       <!-- <ion-icon [name]="item.icon" item-left></ion-icon> -->
-      {{book.FullName}}
+      <div>
+        <div>{{book.FullName}}</div>
+        <div>{{book.EnglishName}}</div>
+      </div>
       <div class="item-note" item-right>
         (共{{book.ChapterNumber}}章)
       </div>
     </button>
   </ion-list>
+
+  <ion-fab left bottom>
+    <button ion-fab color="primary"><ion-icon name="arrow-dropup"></ion-icon></button>
+    <ion-fab-list side="top">
+      <button ion-fab><ion-icon name="logo-facebook"></ion-icon></button>
+      <button ion-fab><ion-icon name="logo-twitter"></ion-icon></button>
+      <button ion-fab><ion-icon name="logo-vimeo"></ion-icon></button>
+      <button ion-fab><ion-icon name="logo-googleplus"></ion-icon></button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>

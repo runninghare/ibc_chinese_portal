@@ -6,12 +6,21 @@
 
 <ion-content padding no-bounce>
   <ion-list>
-    <div ion-item *ngFor="let verse of verses">
-      <div item-left>{{verse?.VerseSN}}</div>
-      <div class="item-note" item-left>
-        {{verse?.Lection}}
+    <ng-container *ngFor="let verse of verses">
+      <div ion-item>
+        <div item-left>{{verse?.VerseSN}}</div>
+        <div class="item-note" item-left>
+          {{verse?.Chinese}}
+        </div>
       </div>
-    </div>
+
+      <div ion-item>
+        <div item-left>{{verse?.VerseSN}}</div>
+        <div class="item-note" item-left>
+          {{verse?.English}}
+        </div>
+      </div>          
+    </ng-container>
   </ion-list>
 </ion-content>
 
