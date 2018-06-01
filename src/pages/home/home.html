@@ -93,10 +93,17 @@
             </ng-container>      
         </ng-container>
 
-        <button ion-button block color="teal-1" (click)="login()">
-          <ion-icon name="logo-googleplus"></ion-icon>&nbsp;
-          用Google帳戶登入
-        </button>
+        <div fxLayout="row" fxLayout="start center" fxLayoutGap="5px">
+          <button fxFlex ion-button color="teal-1" (click)="googleLogin()">
+            <ion-icon name="logo-googleplus"></ion-icon>&nbsp;
+            Google登入
+          </button>
+
+          <button fxFlex ion-button color="teal-1" (click)="wechatLogin()">
+            <ion-icon name="logo-wechat"></ion-icon>&nbsp;
+            微信登入
+          </button>           
+        </div>       
 
         <button ion-button block color="blue-800" (click)="aboutUs()">
           關於我們

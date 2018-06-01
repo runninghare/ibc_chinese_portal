@@ -22,6 +22,8 @@
     <allow-navigation href="http://172.20.10.3:8100" />
     <allow-navigation href="http://192.168.0.133:8100" />
     <allow-navigation href="http://192.168.0.184:8100" />
+    <allow-navigation href="http://192.168.0.111:8101" />
+    <allow-navigation href="http://192.168.0.21:8100" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
@@ -151,9 +153,11 @@
     <plugin name="cordova-plugin-file-transfer" spec="^1.6.3" />
     <plugin name="cordova-plugin-zip" spec="^3.1.0" />
     <plugin name="cordova-plugin-file" spec="^4.3.3" />
-    <allow-navigation href="http://192.168.0.111:8101" />
-    <allow-navigation href="http://192.168.0.21:8100" />
+    <plugin name="cordova-plugin-appversion" spec="^1.0.0" />
+    <plugin name="cordova-plugin-wechat" spec="^2.1.0">
+        <variable name="WECHATAPPID" value="wx89037f9e4c83dc79" />
+    </plugin>
     <engine name="ios" spec="4.5.4" />
-    <engine name="android" spec="6.4.0" />
     <engine name="browser" spec="5.0.3" />
+    <engine name="android" spec="6.4.0" />
 </widget>

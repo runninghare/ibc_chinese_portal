@@ -19,6 +19,8 @@ import { IbcFirebaseProvider } from '../providers/ibc-firebase/ibc-firebase';
 import { S2tProvider } from '../providers/s2t/s2t';
 import { DataProvider } from '../providers/data-adaptor/data-adaptor';
 
+declare var Wechat;
+
 // import * as $ from 'jquery';
 
 // enum AuthLevel {

@@ -18,8 +18,10 @@ import { FileCacheProvider } from '../../providers/file-cache/file-cache';
 // import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { StatusBar } from '@ionic-native/status-bar';
 import { DataProvider, IntHomeCard } from '../../providers/data-adaptor/data-adaptor';
+import { WechatProvider } from '../../providers/wechat/wechat';
 import { FileOpener } from '@ionic-native/file-opener';
 import { File } from '@ionic-native/file';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 // declare var cordova;
 
@@ -73,7 +75,9 @@ export class HomePage implements OnInit, AfterViewInit {
         public content: DataProvider,
         public fileOpener: FileOpener,
         public file: File,
-        public fileCacheSvc: FileCacheProvider
+        public fileCacheSvc: FileCacheProvider,
+        public socialSharing: SocialSharing,
+        public wechat: WechatProvider
     ) {
 
         window['rxjs'] = rxjs;
@@ -110,8 +114,14 @@ export class HomePage implements OnInit, AfterViewInit {
       return this.content.myselfContact && this.content.myselfContact.email && /@gmail.com$/.test(this.content.myselfContact.email);
     }
 
-    login(): void {
+    googleLogin(): void {
         this.ibcFB.loginGoogle();
+    }
+
+    wechatLogin(): void {
+        this.wechat.weChatAuth().then((res) => {
+            console.log(JSON.stringify(res, null, 2));
+        }, err => {});
     }
 
     logout(): void {
@@ -194,6 +204,10 @@ export class HomePage implements OnInit, AfterViewInit {
 
     badgeCountIsNumber(badgeCount: any): boolean {
         return badgeCount != null && !isNaN(badgeCount);
+    }
+
+    socialShare(): void {
+        this.socialSharing['share']("Hello World!", null, null);
     }
 
     ngOnInit(): void {

@@ -92,6 +92,7 @@ import { OneTimeDirective } from '../directives/one-time/one-time';
 
 import {ENV} from '@app/env';
 import { BibleProvider } from '../providers/bible/bible';
+import { WechatProvider } from '../providers/wechat/wechat';
 
 // const firebaseConfig = {
 //     apiKey: "AIzaSyDFkwr578ZYuu0PPQxd5MN2-OCh4O7oKtc",
@@ -204,7 +205,8 @@ import { BibleProvider } from '../providers/bible/bible';
     LoadTrackerProvider,
     Badge,
     NotificationProvider,
-    BibleProvider
+    BibleProvider,
+    WechatProvider
   ]
 })
 export class AppModule {}
