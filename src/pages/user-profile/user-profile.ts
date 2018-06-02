@@ -3,7 +3,7 @@ import { animate, state, trigger, style, transition } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavController, NavParams } from 'ionic-angular';
-import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
+import { IbcFirebaseProvider, IntProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { ToastController } from 'ionic-angular';
 import { PhotoProvider } from '../../providers/photo/photo';
 // import { PhotoProvider, IntCropperSettings } from '../../providers/photo/photo';
@@ -98,6 +98,8 @@ export class UserProfilePage implements OnInit {
         public content: DataProvider,
         public cacheSvc: FileCacheProvider
     ) {
+        console.log(JSON.stringify(ibcFB.afAuth.auth.currentUser.providerData));
+
         this.authForm = fb.group({
             username:     [null, Validators.required],
             oldpassword:  [null, Validators.required],
@@ -215,26 +217,39 @@ export class UserProfilePage implements OnInit {
 
             this.content.myselfContactDB.update(this.userForm.value).then(data => {
 
-                if (this.userForm.controls.email.dirty) {
-                    this.http.post(`${ENV.apiServer}/auth/changeemail`, {
-                        email: this.userForm.controls.email.value
-                    }, new RequestOptions({ headers })).subscribe(res => {
-                        success_toast.present();
-                        this.userForm.markAsPristine();
-                        this.submittingUserForm = false;
-                        this.avatarDirty = false;
-                    }, err => { 
-                        failure_toast.present();
-                        this.userForm.markAsPristine();
-                        console.log(err);
-                        this.submittingUserForm = false;
-                    });
-                } else {
-                    success_toast.present();
-                    this.userForm.markAsPristine();
-                    this.submittingUserForm = false;
-                    this.avatarDirty = false;
-                }
+                success_toast.present();
+                this.userForm.markAsPristine();
+                this.submittingUserForm = false;
+                this.avatarDirty = false;
+
+                /* 2018-06-02: At the moment we don't want to update email on API server because 
+                 the email on API server is associated with the login Gmail account, which doesn't have
+                 to be the same as the one in firebase. 
+
+                 The email on API server will only be updated when user associated their account with
+                 Gmail plus. See ibcFB.linkGoogle()
+                 */
+
+                // if (this.userForm.controls.email.dirty) {
+                //     this.http.post(`${ENV.apiServer}/auth/changeemail`, {
+                //         email: this.userForm.controls.email.value
+                //     }, new RequestOptions({ headers })).subscribe(res => {
+                //         success_toast.present();
+                //         this.userForm.markAsPristine();
+                //         this.submittingUserForm = false;
+                //         this.avatarDirty = false;
+                //     }, err => { 
+                //         failure_toast.present();
+                //         this.userForm.markAsPristine();
+                //         console.log(err);
+                //         this.submittingUserForm = false;
+                //     });
+                // } else {
+                //     success_toast.present();
+                //     this.userForm.markAsPristine();
+                //     this.submittingUserForm = false;
+                //     this.avatarDirty = false;
+                // }
 
             }).catch(err => {
                 failure_toast.present();

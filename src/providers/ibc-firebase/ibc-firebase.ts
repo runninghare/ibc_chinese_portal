@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 import { Platform } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 import { AngularFireDatabase } from 'angularfire2/database';
@@ -14,6 +14,7 @@ import { Subject, BehaviorSubject } from 'rxjs';
 import { ToastController } from 'ionic-angular';
 import { AudioProvider } from '../audio/audio';
 import { LoadTrackerProvider } from '../load-tracker/load-tracker';
+import { WechatProvider } from '../wechat/wechat';
 import { ENV } from '@app/env';
 
 /*
@@ -27,6 +28,15 @@ export interface IntUser {
     name?: string;
     email?: string;
     mobile?: string;
+}
+
+export interface IntProvider {
+    uid?: string;
+    displayName?: string;
+    email?: string;
+    photoURL?: string;
+    phoneNumber?: string;
+    providerId?: string;
 }
 
 @Injectable()
@@ -47,26 +57,25 @@ export class IbcFirebaseProvider {
         public http: Http,
         public loadTrackerSvc: LoadTrackerProvider,
         public toastCtrl: ToastController,
-        public audioSvc: AudioProvider
+        public audioSvc: AudioProvider,
+        public wechatSvc: WechatProvider
     ) {
 
         window['firebase'] = firebase;
         window['ibcFB'] = this;
 
+        /* If user has already logged In, but didn't logout, when they reopen the App,
+         * authSuccessHandler will not be called, but following event onAuthStateChanged
+         * will still be triggered.
+         */
         firebase.auth().onAuthStateChanged(user => {
-            // Unlike firebase.auth().signInWithCredential, this event is only triggered once when
-            // the user is redirected from Google's sign-in page.
             if (user) {
-                console.log("======= Redirected from Google SignIn page ====");
-
                 // let subscription = this.afDB.object(`/users/${user.uid}`).valueChanges().subscribe((res) => {
                 //     this.myselfContact = res;
                 //     console.log('---- myself contact ---');
                 //     console.log(this.myselfContact);
                 //     subscription.unsubscribe();
                 // }, err => subscription.unsubscribe());
-
-                this.audioSvc.play('loginOk');
 
                 if (user != this.userProfile ||
                     user && this.userProfile && user.uid != this.userProfile.uid) {
@@ -85,25 +94,65 @@ export class IbcFirebaseProvider {
         return this.afAuth && this.afAuth.auth && this.afAuth.auth.currentUser ? true : false;
     }
 
+    get providerData(): IntProvider[] {
+        if (this.afAuth && 
+            this.afAuth.auth.currentUser &&
+            this.afAuth.auth.currentUser.providerData &&
+            this.afAuth.auth.currentUser.providerData.length > 0) {
+            return this.afAuth.auth.currentUser.providerData;
+        } else {
+            return [];
+        }
+    }    
+
     myselfContact: any = {};
+
+/*=========================================
+=            Succeess Handlers            =
+=========================================*/
 
     authSuccessHandler = (user) => {
         console.log("Info (App): Sign-In successfully!");
-        // console.log("Firebase success: " + JSON.stringify(user, null, 2));
-
-        if (this.afAuth.auth.currentUser != this.userProfile ||
-            this.afAuth.auth.currentUser && this.userProfile && this.afAuth.auth.currentUser.uid != this.userProfile.uid)
-        {
-            this.userProfile = this.afAuth.auth.currentUser;
-            this.userProfile$.next(this.userProfile);
-        }
-
+        this.audioSvc.play('loginOk');
         this.loadTrackerSvc.loading = false;
     }
 
-    passwordFailureHandler = err => {
-        // console.log("Error (App): Sign-In failed: ", JSON.stringify(err,null,2));
+    providerAuthSuccessHandler = () => {
+        let uid = this.afAuth.auth.currentUser.uid;
 
+        /* Only church members have uid with pattern ^ibc_.*, however, no matter it is a church member or not,
+           we should always call /auth/uid because that API deletes that invalid account from firebase, otherwise
+           you would have no chance to connect that gmail account with the correct uid.
+         */
+        
+        /* Provider doesn't carry additional token data such as access_leve, to make additional token
+         * data available, regardless whether it matches ^ibc_.* or not, we have to logout firebase first, 
+         * send uid to API server, and then signIn with customer token.
+         */
+        this.logoutGoogle().then(() => {
+            this.http.post(`${ENV.apiServer}/auth/uid`, {
+                uid
+            }).subscribe(res => {
+                let data = res.json();
+                if (data && data.token) {
+                    firebase.auth().signInWithCustomToken(data.token).then(this.authSuccessHandler, this.authFailureHandler);
+                } else {
+                    this.loadTrackerSvc.loading = false;
+                }
+            }, () => {
+                this.loadTrackerSvc.loading = false;
+            });
+        }, this.authFailureHandler);
+
+    }   
+
+/*=====  End of Succeess Handlers  ======*/
+ 
+ /*========================================
+ =            Failure Handlers            =
+ ========================================*/
+ 
+     passwordFailureHandler = err => {
         this.loadTrackerSvc.loading = false;
 
         let toast = this.toastCtrl.create({
@@ -117,8 +166,6 @@ export class IbcFirebaseProvider {
     }
 
     authFailureHandler = err => {
-        // console.log("Error (App): Sign-In failed: ", JSON.stringify(err,null,2));
-
         this.loadTrackerSvc.loading = false;
 
         let toast = this.toastCtrl.create({
@@ -143,35 +190,16 @@ export class IbcFirebaseProvider {
 
         toast.present();
     }
+ 
+ /*=====  End of Failure Handlers  ======*/
 
-    providerAuthSuccessHandler = () => {
-        let uid = this.afAuth.auth.currentUser.uid;
-
-        console.log(`uid = ${uid}`);
-
-        // if (!uid.match(/^ibc_.*/)) {
-
-            this.logoutGoogle().then(() => {
-                this.http.post(`${ENV.apiServer}/auth/uid`, {
-                    uid
-                }).subscribe(res => {
-                    let data = res.json();
-                    if (data && data.token) {
-                        console.log("=== token ===");
-                        console.log(data.token);
-                        firebase.auth().signInWithCustomToken(data.token).then(this.authSuccessHandler, this.authFailureHandler);
-                    } else {
-                        this.loadTrackerSvc.loading = false;
-                    }
-                }, () => {
-                    console.log('--- Authentication passed, however the user is not the church member ---');
-                    this.loadTrackerSvc.loading = false;
-                });
-            }, this.logOutFailureHandler);
-
-        // } else {
-        //     this.authSuccessHandler(this.afAuth.auth.currentUser);
-        // }
+    // Utility function called by both loginGoogle and linkGoogle
+    googleAuth(): Promise<any> {
+        return this.googlePlus.login({
+                // 'webClientId': '870700462998-0nfjspo3fkbqp1jft5jm985t41p5v0tj.apps.googleusercontent.com', // this is the web app client Id, not iOS client Id, nor Android client ID.
+                'webClientId': '1050330285156-njj7aova0gar2q26l8spgu2hkv5fo7lb.apps.googleusercontent.com',
+                'offline': true
+            });
     }
 
     /* Old Android SHA-1: 49:70:97:F3:CB:99:31:40:F8:B7:95:9E:14:2F:8C:BD:40:C2:EB:16 */
@@ -182,7 +210,6 @@ export class IbcFirebaseProvider {
     loginGoogle(): Promise<any> {
 
         /* SignIn to GooglePlus */
-        
         this.loadTrackerSvc.loading = true;
 
         if (this.platform.is('core') || this.platform.is('mobileweb')) {
@@ -191,16 +218,9 @@ export class IbcFirebaseProvider {
                             // .then(this.authSuccessHandler, this.authFailureHandler);
         } else {
 
-            return this.googlePlus.login({
-                // 'webClientId': '870700462998-0nfjspo3fkbqp1jft5jm985t41p5v0tj.apps.googleusercontent.com', // this is the web app client Id, not iOS client Id, nor Android client ID.
-                'webClientId': '1050330285156-njj7aova0gar2q26l8spgu2hkv5fo7lb.apps.googleusercontent.com',
-                'offline': true
-            }).then(res => {
-
-                console.log('--- login successfully ---');
+            this.googleAuth().then(res => {
 
                 /* SignIn to Firebase */
-
                 const googleCredential = firebase.auth.GoogleAuthProvider.credential(res.idToken);
 
                 return firebase.auth().signInWithCredential(googleCredential)
@@ -222,7 +242,6 @@ export class IbcFirebaseProvider {
         } else {
             return firebase.auth().signOut().then(() => {
                 this.googlePlus.logout();
-                this.audioSvc.play('logoutOk');
             });
         }
     }
@@ -269,42 +288,10 @@ export class IbcFirebaseProvider {
         }, this.passwordFailureHandler);
     }
 
-    linkAccount(): void {
+    linkGoogle(): void {
         let provider = new firebase.auth.GoogleAuthProvider();
 
-        console.log('--- provider ---');
-        console.log(provider);
-
-        let linkSuccessHandler = result => {
-            // console.log(result);
-
-            let toast = this.toastCtrl.create({
-                message: '成功關聯到Google帳戶',
-                duration: 3000,
-                position: 'top',
-                cssClass: 'toast-success'
-            });
-
-            toast.present();
-
-            this.logoutGoogle();
-
-            // window['result_user'] = result.user;
-
-            // if (this.afAuth.auth.currentUser.providerData.length > 0) {
-            //     let displayName = this.afAuth.auth.currentUser.providerData[0].displayName;
-            //     let photoURL = this.afAuth.auth.currentUser.providerData[0].photoURL;
-            //     this.updateAuthUserProfile(this.afAuth.auth.currentUser, displayName, photoURL);
-            // }
-
-            // ...
-        };
-
         let linkErrorHandler = error => {
-            // Handle Errors here.
-            // ...
-            console.log(error);
-
             let toast = this.toastCtrl.create({
                 message: 'Google帳戶關聯失敗！',
                 duration: 3000,
@@ -313,14 +300,85 @@ export class IbcFirebaseProvider {
             });
 
             toast.present();
+
+            this.loadTrackerSvc.loading = false;
+        };        
+
+        let linkSuccessHandler = result => {
+            console.log('=== gmail linked ===');
+            console.log(JSON.stringify(result));
+
+            let headers = new Headers({
+                Authorization: `Bearer ${result.uid}`,
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }); 
+
+            this.http.post(`${ENV.apiServer}/auth/changeemail`, {
+                email: result.email
+            }, new RequestOptions({ headers })).subscribe(res => {
+
+                let toast = this.toastCtrl.create({
+                    message: '成功關聯到Google帳戶',
+                    duration: 3000,
+                    position: 'top',
+                    cssClass: 'toast-success'
+                });
+
+                toast.present();
+
+                this.loadTrackerSvc.loading = false;
+
+                this.providerAuthSuccessHandler();
+            }, err => {
+                linkErrorHandler(err);
+            });
+
+            // this.logoutGoogle();
+
+            // window['result_user'] = result.user;
+
+            // if (this.afAuth.auth.currentUser.providerData.length > 0) {
+            //     let displayName = this.afAuth.auth.currentUser.providerData[0].displayName;
+            //     let photoURL = this.afAuth.auth.currentUser.providerData[0].photoURL;
+            //     this.updateAuthUserProfile(this.afAuth.auth.currentUser, displayName, photoURL);
+            // }
         };
+
+        this.loadTrackerSvc.loading = true;
 
         if (this.platform.is('core') || this.platform.is('mobileweb')) {
             this.afAuth.auth.currentUser.linkWithPopup(provider).then(linkSuccessHandler).catch(linkErrorHandler);
         } else {
-            this.afAuth.auth.currentUser.linkWithCredential(<any>provider).then(linkSuccessHandler).catch(linkErrorHandler);
-        }
+            this.googleAuth().then(res => {
 
+                const googleCredential = firebase.auth.GoogleAuthProvider.credential(res.idToken);
+                this.afAuth.auth.currentUser.linkWithCredential(googleCredential).then(linkSuccessHandler).catch(linkErrorHandler);
+
+            }, linkErrorHandler);
+        }
+    }
+
+    linkWechat(): void {
+        this.wechatSvc.weChatLink(this.userProfile.uid).then(userInfo => {
+            let toast = this.toastCtrl.create({
+                message: '成功關聯到WeChat帳戶',
+                duration: 3000,
+                position: 'top',
+                cssClass: 'toast-success'
+            });
+
+            toast.present();
+        }).catch(e => {
+            let toast = this.toastCtrl.create({
+                message: 'Wechat帳戶關聯失敗！',
+                duration: 3000,
+                position: 'top',
+                cssClass: 'toast-danger'
+            });
+
+            toast.present();           
+        })
     }
 
     uploadFile(
@@ -358,18 +416,6 @@ export class IbcFirebaseProvider {
             console.log(JSON.stringify(error));
             failureHandler && failureHandler(error);
         }
-
-
-        // firebase.storage().ref().child('homecards.json').getDownloadURL()
-        //     .then((savedPicture) => {
-        //         console.log("=== image saved! ===");
-        //     }, err => {
-        //         console.log("=== image uploading failed ===");
-        //         console.log(JSON.stringify(err));
-        //     })
-        //     .catch(err => {
-        //         console.log(JSON.stringify(err));
-        //     })
     }
 
     updateAuthUserEmail(user: firebase.User, email: string): void {

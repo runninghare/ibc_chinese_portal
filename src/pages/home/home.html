@@ -94,7 +94,7 @@
         </ng-container>
 
         <div fxLayout="row" fxLayout="start center" fxLayoutGap="5px">
-          <button fxFlex ion-button color="teal-1" (click)="googleLogin()">
+          <button fxFlex ion-button color="danger" (click)="googleLogin()">
             <ion-icon name="logo-googleplus"></ion-icon>&nbsp;
             Google登入
           </button>
@@ -105,20 +105,14 @@
           </button>           
         </div>       
 
-        <button ion-button block color="blue-800" (click)="aboutUs()">
+<!--         <button ion-button block color="blue-800" (click)="aboutUs()">
           關於我們
-        </button>          
+        </button>     -->      
 
       </div> 
     </ng-container>  
 
     <ng-container *ngIf="common.isMember">
-
-<!--         <button *ngIf="authUser && ibcFB?.afAuth?.auth?.currentUser?.providerData?.length == 0 && gmailLinkable" ion-button block color="danger" (click)="ibcFB.linkAccount()">
-          <ion-icon name="logo-googleplus"></ion-icon>
-          關聯到Google帳戶
-        </button> -->
-
         <ion-list>
           <button ion-item *ngFor="let card of cards" (click)="homecardRedirect(card)">
             <img class="ratio-4-3" [ngStyle]="common.isWeb ? {width: '160px', height: '120px'} : {}" [src]="card.thumbnail" alt="" item-left>
@@ -130,7 +124,6 @@
             </div>
           </button>
         </ion-list>
-
     </ng-container>
 
     <ng-container *ngIf="common.isNotMember">

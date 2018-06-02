@@ -22,6 +22,7 @@ import { WechatProvider } from '../../providers/wechat/wechat';
 import { FileOpener } from '@ionic-native/file-opener';
 import { File } from '@ionic-native/file';
 import { SocialSharing } from '@ionic-native/social-sharing';
+import { AudioProvider } from '../../providers/audio/audio';
 
 // declare var cordova;
 
@@ -39,7 +40,7 @@ import { SocialSharing } from '@ionic-native/social-sharing';
                 state('visible', style({
                     opacity: 1,
                     visibility: 'visible',
-                    height: 'calc(100% - 150px)'
+                    height: 'calc(100% - 100px)'
                 })),
                 transition('invisible => visible', animate('300ms ease-in')),
                 transition('visible => invisible', animate('300ms ease-out'))
@@ -76,6 +77,7 @@ export class HomePage implements OnInit, AfterViewInit {
         public fileOpener: FileOpener,
         public file: File,
         public fileCacheSvc: FileCacheProvider,
+        public audioSvc: AudioProvider,
         public socialSharing: SocialSharing,
         public wechat: WechatProvider
     ) {
@@ -119,13 +121,15 @@ export class HomePage implements OnInit, AfterViewInit {
     }
 
     wechatLogin(): void {
-        this.wechat.weChatAuth().then((res) => {
+        this.wechat.weChatLogin().then((res) => {
             console.log(JSON.stringify(res, null, 2));
         }, err => {});
     }
 
     logout(): void {
-        this.ibcFB.logoutGoogle();
+        this.ibcFB.logoutGoogle().then(() => {
+            this.audioSvc.play('logoutOk');
+        });
         this.authUser = null;
         this.ibcFB.access_level = null;
         this.bgClass = this.ibcStyle.randomBg;

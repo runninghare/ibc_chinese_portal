@@ -282,6 +282,8 @@ export class DataProvider {
         this.currentUser$ = this.ibcFB.userProfile$.filter(u => u != null).flatMap(authUser => {
             this.auth = authUser;
 
+            console.log('====== get auth user ======');
+
             /* Update Auth User profile we have it in auth.providedData */
             if ((!authUser.displayName || !authUser.photoURL) && authUser.providerData && authUser.providerData[0]) {
                 this.ibcFB.updateAuthUserProfile(authUser, authUser.providerData[0].displayName, authUser.providerData[0].photoURL);
@@ -301,6 +303,7 @@ export class DataProvider {
                     this.ibcFB.access_level = 1;
                 }))
                 .catch(err => {
+                  console.log('--- no access_level ---');
                   this.ibcFB.access_level = 0;
                 });
 
@@ -321,7 +324,7 @@ export class DataProvider {
 
             /* Update email & displayName property of auth using the info from /users (firebase DB) */
             if (!this.auth.email) {
-                this.ibcFB.updateAuthUserEmail(this.auth, contact.email);
+                // this.ibcFB.updateAuthUserEmail(this.auth, contact.email);
             }
 
             if (!this.auth.displayName) {

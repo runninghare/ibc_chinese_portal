@@ -11,6 +11,7 @@
 
 </ion-header>
 
+<load-tracker></load-tracker>
 
 <ion-content>
 
@@ -77,6 +78,11 @@
             <ion-input type="text" [formControl]="userForm.controls.email"></ion-input>
         </ion-item>   
 
+        <ion-item *ngIf="ibcFB.providerData.length > 0">
+            <ion-label floating>Gmail登錄郵件</ion-label>
+            <ion-input type="text" disabled [value]="ibcFB.providerData[0]?.email"></ion-input>
+        </ion-item>         
+
         <ion-item>
             <ion-label floating>電話</ion-label>
             <ion-input type="text" [formControl]="userForm.controls.mobile"></ion-input>
@@ -131,4 +137,15 @@
       <ion-checkbox color="dark" [(ngModel)]="skills[skill]" (click)="userForm.markAsDirty()" [ngModelOptions]="{standalone: true}" [name]="skill"></ion-checkbox>
     </ion-item>
   </form>
+
+  <button ion-button block color="danger" [disabled]="ibcFB.providerData.length > 0" (click)="ibcFB.linkGoogle()">
+    <ion-icon name="logo-arrow-forward"></ion-icon>
+    關聯到Google帳號 {{ibcFB.providerData.length > 0 ? '(已關聯)' : ''}}
+  </button>
+
+  <button ion-button block color="teal-1" (click)="ibcFB.linkWechat()">
+    <ion-icon name="logo-arrow-forward"></ion-icon>
+    關聯到微信帳號
+  </button>
+
 </ion-content>

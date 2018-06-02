@@ -42,7 +42,7 @@ export class FileCacheProvider {
         }
 
         if (this.cachingMap[s]) {
-            console.log(`=== Reading from cache: ${JSON.stringify(this.cachingMap[s])}`);
+            // console.log(`=== Reading from cache: ${JSON.stringify(this.cachingMap[s])}`);
             return new Promise((resolve, reject) => {
                 resolve(this.cachingMap[s].target);
             });
@@ -52,7 +52,7 @@ export class FileCacheProvider {
 
         return this.file.resolveLocalFilesystemUrl(targetFile)
             .then(entry => {
-                console.log(`====== Read existing file: ${entry.toInternalURL()}`);
+                // console.log(`====== Read existing file: ${entry.toInternalURL()}`);
                 return this.createCache(s, entry, type);
             })
             .catch(err => {
@@ -99,11 +99,10 @@ export class FileCacheProvider {
                 // console.log(`-------- path = ${path}`);
                 // console.log(`-------- file = ${normalizedFileName}`);                
                 // console.log(`${JSON.stringify(entry)}`);
-                console.log(`${entry.toInternalURL()}`);
+                // console.log(`${entry.toInternalURL()}`);
 
                 this.file.readAsDataURL(path, normalizedFileName)
                     .then(base64File => {
-                        console.log("here is encoded image ")
                         entry.getMetadata(meta => {
                             this.cachingMap[source] = {
                                 target: base64File,
@@ -113,8 +112,6 @@ export class FileCacheProvider {
                         });
                     })
                     .catch(err => {
-                        console.log('--- error building base64 ----');
-                        console.error(JSON.stringify(err));
                         reject(err);
                     })
             } else {
@@ -157,12 +154,9 @@ export class FileCacheProvider {
         /* Empty the cache of this url */
         this.cachingMap[url] = undefined;
 
-        console.log(targetFile);
-
         /* Remove existing cache file */
         this.file.resolveLocalFilesystemUrl(targetFile)
             .then(entry => {
-                console.log('--- entry ---');
                 entry.getMetadata(meta => {
                     if (meta.modificationTime.getTime() < timestamp.getTime()) {
                         console.log(`====== URL cache outofdate! Cleaning URL: ${entry.nativeURL}`);
