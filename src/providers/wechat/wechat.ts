@@ -2,6 +2,19 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import { Injectable } from '@angular/core';
 import { ENV } from '@app/env';
 
+export interface IntWeChatAuth {
+    openid?: string;
+    unionid?: string;
+    nickname?: string;
+    sex?: number;
+    language?: string;
+    city?: string;
+    province?: string;
+    country?: string;
+    headimgurl?: string;
+    privilege?: any[];
+}
+
 declare var Wechat;
 
 /*

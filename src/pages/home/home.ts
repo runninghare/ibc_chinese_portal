@@ -121,9 +121,10 @@ export class HomePage implements OnInit, AfterViewInit {
     }
 
     wechatLogin(): void {
-        this.wechat.weChatLogin().then((res) => {
-            console.log(JSON.stringify(res, null, 2));
-        }, err => {});
+        this.ibcFB.loginWechat();
+        // this.wechat.weChatLogin().then((res) => {
+        //     console.log(JSON.stringify(res, null, 2));
+        // }, err => {});
     }
 
     logout(): void {

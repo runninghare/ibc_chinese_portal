@@ -14,7 +14,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { PhotoEditPage } from '../pages/photo-edit/photo-edit';
-import { UserProfilePage } from '../pages/user-profile/user-profile';
+import { UserProfilePage, ModalSelectAvatar } from '../pages/user-profile/user-profile';
 import { MinistryPage } from '../pages/ministry/ministry';
 import { ContactPage } from '../pages/contact/contact';
 import { HeaderPopoverPage } from '../pages/Popover/header';
@@ -112,6 +112,7 @@ import { WechatProvider } from '../providers/wechat/wechat';
     HeaderPopoverPage,
     PhotoEditPage,
     UserProfilePage,
+    ModalSelectAvatar,
     MinistryPage,
     BrowserPage,
     ActivityPage,
@@ -159,6 +160,7 @@ import { WechatProvider } from '../providers/wechat/wechat';
     HeaderPopoverPage,
     PhotoEditPage,
     UserProfilePage,
+    ModalSelectAvatar,
     MinistryPage,
     BrowserPage,
     ActivityPage,

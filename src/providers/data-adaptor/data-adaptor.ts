@@ -282,8 +282,6 @@ export class DataProvider {
         this.currentUser$ = this.ibcFB.userProfile$.filter(u => u != null).flatMap(authUser => {
             this.auth = authUser;
 
-            console.log('====== get auth user ======');
-
             /* Update Auth User profile we have it in auth.providedData */
             if ((!authUser.displayName || !authUser.photoURL) && authUser.providerData && authUser.providerData[0]) {
                 this.ibcFB.updateAuthUserProfile(authUser, authUser.providerData[0].displayName, authUser.providerData[0].photoURL);
@@ -314,18 +312,26 @@ export class DataProvider {
         }).catch(this.errorObservableHandler);
 
         this.currentUser$.subscribe(contact => {
-            console.log("--- current contact ---");
-            console.log(contact);
+            // console.log("--- current contact ---");
+            // console.log(contact);
             this.myselfContact = contact;
 
             if (!contact.photoURL && this.auth.providerData[0] && this.auth.providerData[0].photoURL) {
                 this.myselfContactDB.update({ photoURL: this.auth.providerData[0].photoURL });
             }
 
-            /* Update email & displayName property of auth using the info from /users (firebase DB) */
-            if (!this.auth.email) {
-                // this.ibcFB.updateAuthUserEmail(this.auth, contact.email);
+            if (!contact.photoURL && this.ibcFB.wechatAuthInfo.headimgurl) {
+              this.myselfContactDB.update({ photoURL: this.ibcFB.wechatAuthInfo.headimgurl });
             }
+
+            if (this.ibcFB.wechatAuthInfo.nickname) {
+              this.myselfContactDB.update({ wechat: this.ibcFB.wechatAuthInfo.nickname });
+            }            
+
+            /* Update email & displayName property of auth using the info from /users (firebase DB) */
+            // if (!this.auth.email) {
+            //     this.ibcFB.updateAuthUserEmail(this.auth, contact.email);
+            // }
 
             if (!this.auth.displayName) {
                 this.ibcFB.updateAuthUserProfile(this.auth, contact.name, '');

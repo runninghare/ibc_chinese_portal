@@ -14,8 +14,9 @@ import { Subject, BehaviorSubject } from 'rxjs';
 import { ToastController } from 'ionic-angular';
 import { AudioProvider } from '../audio/audio';
 import { LoadTrackerProvider } from '../load-tracker/load-tracker';
-import { WechatProvider } from '../wechat/wechat';
+import { WechatProvider, IntWeChatAuth } from '../wechat/wechat';
 import { ENV } from '@app/env';
+import { Base64 } from 'js-base64';
 
 /*
   Generated class for the IbcFirebaseProvider provider.
@@ -48,6 +49,8 @@ export class IbcFirebaseProvider {
 
     public access_level: number;
 
+    public wechatAuthInfo: IntWeChatAuth = {};
+
     constructor(
         public platform: Platform, 
         public afDB: AngularFireDatabase, 
@@ -70,6 +73,19 @@ export class IbcFirebaseProvider {
          */
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
+
+                let val = user.toJSON(), token;
+                if (token = val['stsTokenManager'] && val['stsTokenManager'].accessToken) {
+                    try {
+                        let base64str = token.split('.')[1];
+                        let extraTokenData = JSON.parse(Base64.decode(base64str));
+                        if (extraTokenData.wechat) {
+                            this.wechatAuthInfo = extraTokenData.wechat;
+                        }
+                    } catch (e) {
+                    }
+
+                }
                 // let subscription = this.afDB.object(`/users/${user.uid}`).valueChanges().subscribe((res) => {
                 //     this.myselfContact = res;
                 //     console.log('---- myself contact ---');
@@ -232,6 +248,20 @@ export class IbcFirebaseProvider {
 
     }
 
+    loginWechat(): Promise<any> {
+
+        /* SignIn to GooglePlus */
+        this.loadTrackerSvc.loading = true;
+
+        return this.wechatSvc.weChatLogin().then(res => {
+            let data = res.json();
+            if (data && data.token) {
+                return firebase.auth().signInWithCustomToken(data.token).then(this.authSuccessHandler, this.authFailureHandler);
+            }
+        }, this.authFailureHandler);
+
+    }    
+
     logoutGoogle(): Promise<any> {
 
         this.userProfile = null;
@@ -360,7 +390,11 @@ export class IbcFirebaseProvider {
     }
 
     linkWechat(): void {
-        this.wechatSvc.weChatLink(this.userProfile.uid).then(userInfo => {
+        this.wechatSvc.weChatLink(this.userProfile.uid).then(res => {
+            let userInfo = res.json();
+
+            this.wechatAuthInfo = userInfo;
+
             let toast = this.toastCtrl.create({
                 message: '成功關聯到WeChat帳戶',
                 duration: 3000,

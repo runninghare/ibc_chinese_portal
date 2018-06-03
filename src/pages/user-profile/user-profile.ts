@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { animate, state, trigger, style, transition } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ModalController, ViewController } from 'ionic-angular';
 import { IbcFirebaseProvider, IntProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { ToastController } from 'ionic-angular';
 import { PhotoProvider } from '../../providers/photo/photo';
@@ -96,7 +96,8 @@ export class UserProfilePage implements OnInit {
         public photoSvc: PhotoProvider,
         public http: Http,
         public content: DataProvider,
-        public cacheSvc: FileCacheProvider
+        public cacheSvc: FileCacheProvider,
+        public modalCtrl: ModalController
     ) {
         console.log(JSON.stringify(ibcFB.afAuth.auth.currentUser.providerData));
 
@@ -260,7 +261,102 @@ export class UserProfilePage implements OnInit {
         }
     }
 
-    changeAvatar(): void {
+    selectAvatar() {
+        let selectModal = this.modalCtrl.create(ModalSelectAvatar, {form: this.userForm});
+        selectModal.present();
+    }
+
+    ionViewDidLoad() {
+        console.log('ionViewDidLoad UserProfilePage');
+    }
+
+}
+
+@Component({
+    template: `
+<ion-header>
+
+  <ion-navbar>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">Close</button>
+    </ion-buttons>
+    <ion-title>Modals</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+    <button ion-item (click)="selectAvatar(ibcFB.wechatAuthInfo.headimgurl)">
+        <img class="img-avatar" [src]="ibcFB.wechatAuthInfo.headimgurl" item-left>
+        <ion-note>選擇微信頭像</ion-note>
+    </button>
+
+    <button ion-item (click)="selectAvatar(ibcFB.providerData[0]?.photoURL)">
+        <img class="img-avatar" [src]="ibcFB.providerData[0]?.photoURL" item-left>
+        <ion-note>選擇Gmail頭像</ion-note>
+    </button> 
+
+    <button ion-item (click)="selectFromAlbum()">
+        <img *ngIf="!loadingAvatar" class="img-avatar" [src]="form.controls.photoURL.value" item-left>
+        <ion-spinner *ngIf="loadingAvatar" class="page-spinner"></ion-spinner>
+        <ion-note>從相簿里選擇照片</ion-note>
+    </button>
+
+</ion-content>
+    `
+})
+export class ModalSelectAvatar {
+    form: FormGroup;
+
+    loadingAvatar: boolean;
+
+    constructor(
+        public viewCtrl: ViewController,
+        public ibcFB: IbcFirebaseProvider,
+        public content: DataProvider,
+        public toastCtr: ToastController,
+        public photoSvc: PhotoProvider,
+        params: NavParams
+    ) {
+        this.form = params.get('form');
+    }
+
+    showSuccessToast() {
+        let toast = this.toastCtr.create({
+            message: 'Avatar已成功保存',
+            duration: 3000,
+            position: 'top',
+            cssClass: 'toast-success'
+        });
+
+        toast.present();
+
+        this.dismiss();
+    }
+
+    showFailureToast() {
+        let toast = this.toastCtr.create({
+            message: '資料保存出錯',
+            duration: 3000,
+            position: 'top',
+            cssClass: 'toast-danger'
+        });
+
+        toast.present();
+    } 
+
+    selectAvatar(url: string): void {
+        this.form.controls.photoURL.setValue(url);
+        this.content.myselfContactDB.update({photoURL: url}).then(() => {
+            this.showSuccessToast();
+        }).catch(err => {
+            this.showFailureToast();
+        })
+    }
+
+    selectFromAlbum(): void {
         this.photoSvc.captureAndCrop(
             {
                 cameraDirection: 1,
@@ -276,21 +372,23 @@ export class UserProfilePage implements OnInit {
             (data) => {
             console.log('===> image data ready!');
             this.loadingAvatar = true;
-            this.ibcFB.uploadFile(data, {path: `/avatar/${this.uid}`, encoding: "base64", fileType: "image/png"}, (url) => {
+            this.ibcFB.uploadFile(data, {path: `/avatar/${this.content.myselfContact.id}`, encoding: "base64", fileType: "image/png"}, (url) => {
                 if (url) {
-                    this.userForm.controls.photoURL.setValue(url);
-                    this.userForm.controls.photoURL.markAsDirty();
+                    this.form.controls.photoURL.setValue(url);
+                    this.content.myselfContactDB.update({photoURL: url}).then(() => {
+                        this.showSuccessToast();
+                    }).catch(err => {
+                        this.showFailureToast();
+                    });                    
                 }
                 this.loadingAvatar = false;
-                this.avatarDirty = true;
             }, err => {
                 this.loadingAvatar = false;
             });
         })
-    }
+    }    
 
-    ionViewDidLoad() {
-        console.log('ionViewDidLoad UserProfilePage');
+    dismiss() {
+        this.viewCtrl.dismiss();
     }
-
 }

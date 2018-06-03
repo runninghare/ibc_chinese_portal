@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { ImageCropperComponent, CropperSettings, Bounds } from 'ng2-img-cropper';
 // import { PhotoProvider } from '../../providers/photo/photo';
 
@@ -65,7 +65,7 @@ export class PhotoEditPage implements OnInit  {
 
 
     constructor(public navCtrl: NavController,
-        public navParams: NavParams) {   
+        public navParams: NavParams, public viewCtrl: ViewController) {   
     }
 
     ngOnInit(): void {
@@ -178,7 +178,8 @@ export class PhotoEditPage implements OnInit  {
     saveImage() {
         if (typeof this.successHandler == 'function') {
             this.successHandler(this.data.image.replace(/^data.*;base64,/,''));
-            this.navCtrl.pop();
+            // this.navCtrl.pop();
+            this.viewCtrl.dismiss();
         }
     }
 

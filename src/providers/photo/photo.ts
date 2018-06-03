@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { App, NavController, Platform } from 'ionic-angular';
+import { App, NavController, Platform, ModalController } from 'ionic-angular';
 import { PhotoEditPage, IntCropperSettings } from '../../pages/photo-edit/photo-edit';
 import 'rxjs/add/operator/map';
 import { Camera, CameraOptions } from '@ionic-native/camera';
@@ -50,7 +50,8 @@ export class PhotoProvider {
         private app: App,
         private camera: Camera,
         private crop: Crop,
-        private platform: Platform
+        private platform: Platform,
+        private modalCtrl: ModalController
     ) {
     }
 
@@ -105,7 +106,9 @@ export class PhotoProvider {
                 } else {
                     this.imgData = "data:image/png;base64," + data;
                     // console.log(this.imgData);
-                    this.navCtrl.push(PhotoEditPage, { imgData: this.imgData, croppingOptions, successHandler, failureHandler });
+                    // this.navCtrl.push(PhotoEditPage, { imgData: this.imgData, croppingOptions, successHandler, failureHandler });
+                    let selectCtrl = this.modalCtrl.create(PhotoEditPage, { imgData: this.imgData, croppingOptions, successHandler, failureHandler });
+                    selectCtrl.present();
                 }
             }, failureHandler);
     }

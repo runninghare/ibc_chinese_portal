@@ -56,11 +56,9 @@
    
    <form [formGroup]="userForm" *ngIf="userForm" [@showAnimation]="showPersonalInfo?'visible':'invisible'">
 
-        <button ion-item (click)="changeAvatar()">
-            <img *ngIf="!loadingAvatar" class="img-avatar" [src]="userForm.controls.photoURL.value" item-left>
-            <ion-spinner *ngIf="loadingAvatar" class="page-spinner"></ion-spinner>
+        <button ion-item (click)="selectAvatar()">
+            <img class="img-avatar" [src]="userForm.controls.photoURL.value" item-left>
             <ion-note>編輯頭像</ion-note>
-            <ion-note style="color: red" *ngIf="avatarDirty">頭像更新还未保存</ion-note>
         </button>
 
         <ion-item>
@@ -81,16 +79,16 @@
         <ion-item *ngIf="ibcFB.providerData.length > 0">
             <ion-label floating>Gmail登錄郵件</ion-label>
             <ion-input type="text" disabled [value]="ibcFB.providerData[0]?.email"></ion-input>
-        </ion-item>         
+        </ion-item>    
 
         <ion-item>
             <ion-label floating>電話</ion-label>
             <ion-input type="text" [formControl]="userForm.controls.mobile"></ion-input>
         </ion-item>            
 
-        <ion-item>
+        <ion-item *ngIf="ibcFB.wechatAuthInfo.openid">
             <ion-label floating>微信</ion-label>
-            <ion-input type="text" [formControl]="userForm.controls.wechat"></ion-input>
+            <ion-input type="text" disabled [formControl]="userForm.controls.wechat"></ion-input>
         </ion-item>
 
         <ion-item>
@@ -143,9 +141,9 @@
     關聯到Google帳號 {{ibcFB.providerData.length > 0 ? '(已關聯)' : ''}}
   </button>
 
-  <button ion-button block color="teal-1" (click)="ibcFB.linkWechat()">
+  <button ion-button block color="teal-1" [disabled]="ibcFB.wechatAuthInfo.openid" (click)="ibcFB.linkWechat()">
     <ion-icon name="logo-arrow-forward"></ion-icon>
-    關聯到微信帳號
+    關聯到微信帳號 {{ibcFB.wechatAuthInfo.openid ? '(已關聯)' : ''}}
   </button>
 
 </ion-content>
