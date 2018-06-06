@@ -48,7 +48,7 @@ export class PhotoProvider {
 
     constructor(
         private app: App,
-        private camera: Camera,
+        public  camera: Camera,
         private crop: Crop,
         private platform: Platform,
         private modalCtrl: ModalController

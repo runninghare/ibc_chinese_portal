@@ -84,6 +84,7 @@ export interface IntContact {
     myFriends?: any;
     tasks?: any; 
     notifs?: number;
+    hidden?: boolean;
     createDT?: string;
     updateDT?: string;
 }

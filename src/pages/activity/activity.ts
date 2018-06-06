@@ -7,6 +7,9 @@ import { AudioProvider } from '../../providers/audio/audio';
 import { NotificationProvider } from '../../providers/notification/notification';
 import { Observable, Subscription } from 'rxjs';
 import { ChatPage } from '../../pages/chat/chat';
+import { PhotoProvider } from '../../providers/photo/photo';
+import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
+import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
 import * as moment from 'moment';
 
 /**
@@ -46,7 +49,10 @@ export class ActivityPage implements OnDestroy {
       public commonSvc: CommonProvider,
       public content: DataProvider,
       public audioSvc: AudioProvider,
-      public notificationSvc: NotificationProvider
+      public notificationSvc: NotificationProvider,
+      public photoSvc: PhotoProvider,
+      public ibcFB: IbcFirebaseProvider,
+      public loadTrackerSvc: LoadTrackerProvider
       ) {
 
       this.activityIndex = navParams.get('itemIndex');
@@ -269,6 +275,7 @@ export class ActivityPage implements OnDestroy {
               chinese_name: this.activity.title,
               skills: [],
               class: 'group',
+              hidden: true,
               createDT: moment().format("YYYY-MM-DD HH:mm:ss")
           }),
           this.content.lastCountDB.child('contacts').set(newId)
@@ -287,6 +294,56 @@ export class ActivityPage implements OnDestroy {
 
   openLink(url?: string): void {
       this.browser.openPage(url);
+  }
+
+  removePhoto(photo: string): void {
+    if (!photo || !this.activity.pictures) return;
+
+    let index = this.activity.pictures.indexOf(photo);
+    this.commonSvc.confirmDialog("你確定要刪除這張照片嗎", "刪除後所有人將無法看見", () => {
+      this.activity.pictures.splice(index,1);
+      this.activityDB.child(`pictures`).set(this.activity.pictures).then(() => {
+        this.commonSvc.toastSuccess('相片已成功删除');
+      }).catch(err => {
+        console.log(this.activity.pictures);
+        this.commonSvc.toastFailure('删除失败', err => {console.error(JSON.stringify(err, null, 2))});
+      });
+    });
+  }
+
+  addPhoto(): void {
+    this.loadTrackerSvc.loading = true;
+
+    this.photoSvc.camera.getPicture({
+        cameraDirection: 1,
+        sourceType: this.photoSvc.camera.PictureSourceType.PHOTOLIBRARY,
+        destinationType: this.photoSvc.camera.DestinationType.DATA_URL,
+        quality: 100,
+        targetWidth: 800,
+        // targetHeight: 400,
+        encodingType: this.photoSvc.camera.EncodingType.PNG,
+        correctOrientation: true 
+    })
+    .then((data) => {
+      this.ibcFB.uploadFile(data, { path: `/activity/${this.activityIndex}/${this.commonSvc.makeRandomString(10)}`, encoding: "base64", fileType: "image/png" }, (url) => {
+        if (url) {
+          this.activity.pictures.push(url);
+
+          this.activityDB.child(`pictures`).set(this.activity.pictures).then(() => {
+            this.commonSvc.toastSuccess('圖片上傳成功');
+          }).catch(err => {
+            console.log(this.activity.pictures);
+            this.commonSvc.toastFailure('上傳失敗', err => { console.error(JSON.stringify(err, null, 2)) });
+          });
+        }
+        this.loadTrackerSvc.loading = false;
+      }, err => {
+        this.loadTrackerSvc.loading = false;
+      });
+
+    }, () => {
+      this.loadTrackerSvc.loading = false;
+    });
   }
 
   ionViewDidLoad() {

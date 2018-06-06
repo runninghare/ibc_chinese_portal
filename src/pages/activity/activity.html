@@ -78,9 +78,24 @@
 
     <p></p>
 
-    <div>
+    <ion-list>
+        <ion-item-sliding *ngFor="let photo of activity?.pictures" class="ibc-v-margin-5">
+            <img [src]="photo" ion-item (click)="openLink(photo)"/>
+            <ion-item-options side="right">
+              <a ion-button color="danger" (click)="removePhoto(photo)">
+                删除
+              </a>
+            </ion-item-options>
+        </ion-item-sliding> 
+    </ion-list>
+
+    <ion-buttons class="ibc-top-margin-20" ion-end *ngIf="commonSvc.isMember && content.auth">
+      <button ion-button block ion-end (click)="addPhoto()">上傳圖片</button>
+    </ion-buttons>
+
+<!--     <div>
         <div *ngFor="let photo of activity?.pictures" style="align-items: start">
             <img [src]="photo" (click)="openLink(photo)"/>
         </div>
-    </div>
+    </div> -->
 </ion-content>

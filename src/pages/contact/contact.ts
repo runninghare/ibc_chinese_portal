@@ -101,6 +101,7 @@ export class ContactPage implements OnDestroy {
       let val = `${ev.target.value || ''}`.toLowerCase();
 
       this.mappedItems = this.items.filter(this.prefilter).filter(contact => {
+          if (contact.hidden) return false;
           if (!val) return true;
           if (!contact.skills) {
               contact.skills = [];
@@ -199,6 +200,11 @@ export class ContactPage implements OnDestroy {
         {
           key: 'postcode',
           caption: '郵政編碼',
+        },
+        {
+          key: 'hidden',
+          caption: '隐藏',
+          type: 'boolean'
         }
       ],
       cancel: () => popupModal.dismiss(),
