@@ -61,6 +61,8 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     time_lastMonth: moment.Moment;
     time_lastYear:  moment.Moment;
 
+    private headers: Headers;
+
     constructor( 
         public http: Http, 
         public navCtrl: NavController, 
@@ -84,7 +86,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
         if (this.partner) {
             this.content.ibcFB.userProfile$.filter(auth => auth != null).flatMap(auth => {
-                let headers = new Headers({ Authorization: `Bearer ${auth.uid}`, Accept: 'application/json', 'Content-Type': 'application/json' });
+                this.headers = new Headers({ Authorization: `Bearer ${auth.uid}`, Accept: 'application/json', 'Content-Type': 'application/json' });
 
                 let body = { receiver_id: this.partner.id };
 
@@ -96,11 +98,23 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
                            .child(this.partner.id)
                            .child('chat_notifs').set(0);
 
-                return http.post(`${ENV.apiServer}/firebase/thread_with`, body, new RequestOptions({ headers }))
+                return http.post(`${ENV.apiServer}/firebase/thread_with`, body, new RequestOptions({ headers: this.headers }))
                 .timeout(5000)
             }).flatMap(res => {
                 let data = res.json();
                 this.threadId = data.result;
+                let thread = data.thread;
+
+                if (!thread.messages) {
+                    thread.messages = [];
+                }
+
+                if (thread.messages.length > 0) {
+                    thread.messages.pop();
+                }
+
+                this.thread = thread;
+
                 return this.content.ibcFB.afDB.object<IntThread>(`threads/${this.threadId}`).valueChanges()
             }).catch(error => {
                 console.error(error);
@@ -108,7 +122,13 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
             })
             .subscribe(res => {
                 // console.log(res);
-                this.thread = res;
+                // this.thread = res;
+                let fireDBThread = res;
+
+                if (fireDBThread.messages && fireDBThread.messages.length > 0) {
+                    this.thread.messages.push(fireDBThread.messages[0]);
+                }
+
                 let messageCount = this.thread && this.thread.messages && this.thread.messages.length || 0;
 
                 if (messageCount > this.messageCount 
@@ -132,11 +152,9 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        console.log('=== start chatting ===');
-
         /* Make sure set chat_active to false when the app is no longer in use */
         this.commonSvc.platform.pause.subscribe(e => {
-            console.log('=== quitted! ===');
+            console.log('=== quit chatting! ===');
             this.deactivate();
         });
 
@@ -303,18 +321,34 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
         if (!message) return;
 
-        this.content.threadDB.child(`${this.threadId}/messages/${this.messageCount}`).set({
-            timestamp: moment().format('YYYY-MM-DD HH:mm:ss'),
-            body: message,
-            sender: this.content.myselfContact.id
-        }).then(() => {
-            inputElem.value = '';
-            this.resize(true);
-            this.audioSvc.play('messageSent');
+        this.http.post(`${ENV.apiServer}/firebase/thread_add_msg`, {
+           thread_id: this.threadId,
+           message: {
+               body: message
+           }
+        }, new RequestOptions({ headers: this.headers }))
+            .timeout(5000)
+            .subscribe(() => {
+                inputElem.value = '';
+                this.resize(true);
+                this.audioSvc.play('messageSent');
 
-            /* Add notif to the partner's status container */
-            this.addPartnerNotif();
-        }, console.error);
+                /* Add notif to the partner's status container */
+                this.addPartnerNotif();                
+            }, console.error);
+
+        // this.content.threadDB.child(`${this.threadId}/messages/${this.messageCount}`).set({
+        //     timestamp: moment().format('YYYY-MM-DD HH:mm:ss'),
+        //     body: message,
+        //     sender: this.content.myselfContact.id
+        // }).then(() => {
+        //     inputElem.value = '';
+        //     this.resize(true);
+        //     this.audioSvc.play('messageSent');
+
+        //     /* Add notif to the partner's status container */
+        //     this.addPartnerNotif();
+        // }, console.error);
     }
 
     sendAddNotification(): void {

@@ -41,11 +41,11 @@ export class NotificationProvider {
         this.content.myTasksDB.parent.child(`${contactId}`).child(`${item.key}`).once('value', snapshot => {
             let found = snapshot.val();
 
-            console.log('--- found ---');
-            console.log(found);
+            // console.log('--- found ---');
+            // console.log(found);
 
             if (!found || found.value != item.value || found.answer != item.answer) {
-                console.log(`${found && found.value} <=> ${item.value}`);
+                // console.log(`${found && found.value} <=> ${item.value}`);
                 this.content.myTasksDB.parent.child(`${contactId}`).child(`${item.key}`).set(Object.assign({}, this.parseItemMustache(item), {
                     isNew: true,
                     createdDT: moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -71,8 +71,8 @@ export class NotificationProvider {
     }
 
     processSpecialTask(item: IntListItem): void {
-        console.log('--- process special task ---');
-        console.log(item);
+        // console.log('--- process special task ---');
+        // console.log(item);
         if (item.value && item.key && item.key.match(/\d{4}-\d{2}-\d{2}-confirm-service/)) {
             let date = item.key.replace(/(\d{4}-\d{2}-\d{2})-confirm-service/, '$1');
             if (!date) return;
