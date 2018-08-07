@@ -125,7 +125,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
                 // this.thread = res;
                 let fireDBThread = res;
 
-                if (fireDBThread.messages && fireDBThread.messages.length > 0) {
+                if (fireDBThread && fireDBThread.messages && fireDBThread.messages.length > 0) {
                     this.thread.messages.push(fireDBThread.messages[0]);
                 }
 
