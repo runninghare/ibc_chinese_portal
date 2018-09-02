@@ -5,13 +5,12 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-
   <ion-navbar>
     <ion-title>{{partner?.name}} {{partner?.chinese_name}}</ion-title>
   </ion-navbar>
-
 </ion-header>
 
+<load-tracker></load-tracker>
 
 <ion-content no-bounce>
     <div fxLayout="column" [style.height]="height" style="width: 100%; background-color: #eee;">
@@ -43,9 +42,6 @@
             </div>
           </div>
         </div>
-        <div fxLayout="row" fxLayoutAlign="start center">
-          <ion-textarea #myInput placeholder="Enter a description" maxlength="2000" rows="1" (focus)="focuson()" (focusout)="focusout()" (keyup)="resize()" style="border: solid 1px#ccc; background-color: #FFF"></ion-textarea>
-          <button ion-button (click)="send(myInput)">發送</button>
-        </div>
+        <button ion-button (click)="sendMessage()" full>Send Message</button>
     </div>
 </ion-content>

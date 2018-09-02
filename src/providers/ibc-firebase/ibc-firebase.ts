@@ -49,6 +49,8 @@ export class IbcFirebaseProvider {
 
     public access_level: number;
 
+    public visited: boolean;
+
     public wechatAuthInfo: IntWeChatAuth = {};
 
     constructor(

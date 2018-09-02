@@ -11,6 +11,7 @@ import { HeaderPopoverPage } from '../../pages/Popover/header';
 import { MinistryPage } from '../../pages/ministry/ministry';
 import { ListPage } from '../../pages/list/list';
 import { AboutPage } from '../../pages/about/about';
+import { UserProfilePage } from '../../pages/user-profile/user-profile';
 import { AboutAppPage } from '../../pages/about-app/about-app';
 // import { PhotoEditPage } from '../../pages/photo-edit/photo-edit';
 import { PhotoProvider } from '../../providers/photo/photo';
@@ -217,6 +218,12 @@ export class HomePage implements OnInit, AfterViewInit {
 
     ngOnInit(): void {
         this.bgClass = this.ibcStyle.randomBg;
+
+        this.content.currentUser$.subscribe(contact => {
+            if (!contact.visited) {
+                this.navCtrl.push(UserProfilePage);
+            }
+        })
     }
 
     ngAfterViewInit(): void {

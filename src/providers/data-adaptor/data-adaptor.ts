@@ -8,7 +8,9 @@ import { S2tProvider } from '../s2t/s2t';
 import { VideoProvider } from '../video/video';
 import * as moment from 'moment';
 import { Badge } from '@ionic-native/badge';
+import { ModalController, NavController, NavParams } from 'ionic-angular';
 import { ENV } from '@app/env';
+import { UserProfilePage } from '../../pages/user-profile/user-profile';
 
 export interface IntSummaryData {
     id?: any;
@@ -80,6 +82,7 @@ export interface IntContact {
     wechat?: string;
     skills?: string[];
     visited?: boolean;
+    shareInfo?: boolean;
     class?: string;
     myFriends?: any;
     tasks?: any; 
@@ -313,8 +316,8 @@ export class DataProvider {
         }).catch(this.errorObservableHandler);
 
         this.currentUser$.subscribe(contact => {
-            // console.log("--- current contact ---");
-            // console.log(contact);
+            console.log("--- current contact ---");
+            console.log(contact);
             this.myselfContact = contact;
 
             if (!contact.photoURL && this.auth.providerData[0] && this.auth.providerData[0].photoURL) {
@@ -469,7 +472,7 @@ export class DataProvider {
     }
 
     constructor(public http: HttpClient, public ibcFB: IbcFirebaseProvider, public badge: Badge,
-        public s2t: S2tProvider, public videoSvc: VideoProvider, public cacheSvc: FileCacheProvider) {
+        public s2t: S2tProvider, public videoSvc: VideoProvider, public cacheSvc: FileCacheProvider, public modalCtrl: ModalController) {
 
         window['ENV'] = ENV;
         console.log(`======= RUNNING MODE: ${ENV.mode} ========`);

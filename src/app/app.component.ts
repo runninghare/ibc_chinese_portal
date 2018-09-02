@@ -12,6 +12,7 @@ import { ContactPage } from '../pages/contact/contact';
 import { AboutPage } from '../pages/about/about';
 import { AboutAppPage } from '../pages/about-app/about-app';
 import { MinistryPage } from '../pages/ministry/ministry';
+import { EditorPage } from '../pages/editor/editor';
 
 // import { MonthlyVersesPage } from '../pages/monthly-verses/monthly-verses';
 import { IbcFirebaseProvider } from '../providers/ibc-firebase/ibc-firebase';
@@ -111,6 +112,13 @@ export class MyApp implements AfterViewInit {
   ngAfterViewInit(): void {
     // let page = this.pages[5];
     // this.openPage(page);
+    // this.openPage({component: EditorPage, params: {
+    //   titleHtml: `
+    //   <img class="img-avatar" src='https://firebasestorage.googleapis.com/v0/b/ibc-app-94466.appspot.com/o/avatar%2F001?alt=media&token=60fe0f52-00c4-441a-a083-c8d566d89a47'">
+    //   <img width='40px' src='assets/icon/arrow-icon.png'>
+    //   <img class="img-avatar" src="https://firebasestorage.googleapis.com/v0/b/ibc-app-94466.appspot.com/o/avatar%2F001?alt=media&token=60fe0f52-00c4-441a-a083-c8d566d89a47">
+    //   `
+    // }});
     // this.openPage({component: ChatPage, params: {contact: {
     //   "address1" : "35 King St.",
     //   "address2" : "Waratah West",

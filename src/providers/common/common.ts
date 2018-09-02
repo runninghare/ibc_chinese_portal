@@ -110,18 +110,21 @@ export class CommonProvider {
         return this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
 
-    confirmDialog(title: string, message: string, confirmCallback, cancelCallback?): void {
+    confirmDialog(title: string, message: string, confirmCallback, cancelCallback?, config?: {
+        positiveLabel?: string,
+        negativeLabel?: string
+    }): void {
             let alert = this.alertCtrl.create({
                 title,
                 message,
                 buttons: [
                     {
-                        text: '否',
+                        text: config && config.negativeLabel || '否',
                         role: 'cancel',
                         handler: cancelCallback || (() => {})
                     },
                     {
-                        text: '是',
+                        text: config && config.positiveLabel || '是',
                         handler: confirmCallback || (() => {})
                     }
                 ]

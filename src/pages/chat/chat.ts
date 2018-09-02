@@ -1,5 +1,5 @@
-import { Component, ViewChild, ElementRef, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { NavController, NavParams, ModalController } from 'ionic-angular';
 import { DataProvider, IntContact, IntMessage, IntThread, IntListItem } from '../../providers/data-adaptor/data-adaptor';
 import { CommonProvider } from '../../providers/common/common';
 // import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -8,8 +8,9 @@ import { FileCacheProvider } from '../../providers/file-cache/file-cache';
 import { NotificationProvider } from '../../providers/notification/notification';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { AudioProvider } from '../../providers/audio/audio';
+import { EditorPage } from '../editor/editor';
+import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
 import * as moment from 'moment';
-import * as $ from 'jquery';
 import { ENV } from '@app/env';
 
 /**
@@ -33,10 +34,9 @@ import { ENV } from '@app/env';
         }
     `]
 })
-export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
+export class ChatPage implements OnInit, OnDestroy {
 
     @ViewChild('chatArea') chatArea: ElementRef;
-    @ViewChild('myInput') myInput: ElementRef;
 
     partner: IntContact;
 
@@ -71,6 +71,8 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
         public commonSvc: CommonProvider,
         public audioSvc: AudioProvider,
         public notificationSvc: NotificationProvider,
+        public modalCtrl: ModalController,
+        public loadTrackerSvc: LoadTrackerProvider,
         public content: DataProvider) {
 
         window['moment'] = moment;
@@ -98,6 +100,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
                            .child(this.partner.id)
                            .child('chat_notifs').set(0);
 
+                this.loadTrackerSvc.loading = true;
                 return http.post(`${ENV.apiServer}/firebase/thread_with`, body, new RequestOptions({ headers: this.headers }))
                 .timeout(5000)
             }).flatMap(res => {
@@ -123,6 +126,8 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
             .subscribe(res => {
                 // console.log(res);
                 // this.thread = res;
+                this.loadTrackerSvc.loading = false;
+
                 let fireDBThread = res;
 
                 if (fireDBThread && fireDBThread.messages && fireDBThread.messages.length > 0) {
@@ -139,6 +144,8 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
                 this.messageCount = messageCount;
 
                 this.scrollDown();
+            }, error => {
+                this.loadTrackerSvc.loading = false;
             })
         }
 
@@ -180,19 +187,6 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
     deactivate(): void {
         this.updateActive(false);
-    }
-
-    resize(reset?: boolean) {
-        let element = this.myInput['_elementRef'].nativeElement.getElementsByClassName("text-input")[0];
-        if (reset) {
-            element.style.height = 'auto';
-            this.myInput['_elementRef'].nativeElement.style.height = 'auto';
-        } else {
-            let scrollHeight = element.scrollHeight;
-            element.style.height = scrollHeight + 'px';
-            this.myInput['_elementRef'].nativeElement.style.height = (scrollHeight + 25) + 'px';
-        }
-        this.scrollDown();
     }
 
     timeDivider(time: string): string {
@@ -274,16 +268,6 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
     }
 
-    focuson(): void {
-        this.height = 'calc(100% - 10px)';
-        this.scrollDown();
-    }
-
-    focusout(): void {
-        this.height = '100%'
-        this.scrollDown();
-    }
-
     scrollDown() {
         setTimeout(() => {
             this.chatArea.nativeElement.scrollTop = this.chatArea.nativeElement.scrollHeight;
@@ -293,62 +277,63 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     ionViewDidLoad() {
     }
 
-    ngAfterViewInit(): void {
-        this.resize();
-
-        setTimeout(() => {
-            $('textarea').keyup((event) => {
-                if (event.keyCode == 13) {
-                    if (event.shiftKey) {
-                        event.stopPropagation();
-                    } else {
-                        setTimeout(() => {
-                            this.send(<any>this.myInput);
-                        })
-                    }
-                }
-            });
-        }, 1000);
-    }
-
     formatMessageBody(text: string) {
         if (!text) return;
         return text;
     }
 
-    send(inputElem: HTMLInputElement) {
-        let message = inputElem.value;
+    sendMessage(): void {
 
-        if (!message) return;
+        let callback = data => {
+            let message = data && data.message;
 
-        this.http.post(`${ENV.apiServer}/firebase/thread_add_msg`, {
-           thread_id: this.threadId,
-           message: {
-               body: message
-           }
-        }, new RequestOptions({ headers: this.headers }))
-            .timeout(5000)
-            .subscribe(() => {
-                inputElem.value = '';
-                this.resize(true);
-                this.audioSvc.play('messageSent');
+            if (!message) return;
 
-                /* Add notif to the partner's status container */
-                this.addPartnerNotif();                
-            }, console.error);
+            console.log(`Message: ${message}`);
 
-        // this.content.threadDB.child(`${this.threadId}/messages/${this.messageCount}`).set({
-        //     timestamp: moment().format('YYYY-MM-DD HH:mm:ss'),
-        //     body: message,
-        //     sender: this.content.myselfContact.id
-        // }).then(() => {
-        //     inputElem.value = '';
-        //     this.resize(true);
-        //     this.audioSvc.play('messageSent');
+            return this.http.post(`${ENV.apiServer}/firebase/thread_add_msg`, {
+               thread_id: this.threadId,
+               message: {
+                   body: message
+               }
+            }, new RequestOptions({ headers: this.headers }))
+                .timeout(10000)
+                .flatMap(() => {
+                    setTimeout(() => this.audioSvc.play('messageSent'), 1000);
+                    /* Add notif to the partner's status container */
+                    this.addPartnerNotif();
+                    return Observable.of(null);
+                }, console.error).toPromise();
+        };
 
-        //     /* Add notif to the partner's status container */
-        //     this.addPartnerNotif();
-        // }, console.error);
+        this.navCtrl.push(EditorPage, {
+            titleContent: `To ${this.partner.name}`,
+            useNavController: true,
+            callBack: callback
+        });
+        // let modal = this.modalCtrl.create(EditorPage, {
+        //     titleContent: `To ${this.partner.name}`
+        // });
+        // modal.present();
+        // modal.onDidDismiss(data => {
+        //     let message = data && data.message;
+
+        //     if (!message) return;
+
+        //     this.http.post(`${ENV.apiServer}/firebase/thread_add_msg`, {
+        //        thread_id: this.threadId,
+        //        message: {
+        //            body: message
+        //        }
+        //     }, new RequestOptions({ headers: this.headers }))
+        //         .timeout(5000)
+        //         .subscribe(() => {
+        //             this.audioSvc.play('messageSent');
+
+        //             /* Add notif to the partner's status container */
+        //             this.addPartnerNotif();                
+        //         }, console.error);            
+        // });
     }
 
     sendAddNotification(): void {

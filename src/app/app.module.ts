@@ -25,6 +25,7 @@ import { AboutAppPage } from '../pages/about-app/about-app';
 import { ChatPage } from '../pages/chat/chat';
 import { MapPage } from '../pages/map/map';
 import { SongPage } from '../pages/song/song';
+import { EditorPage } from '../pages/editor/editor';
 
 import { BiblePage } from '../pages/bible/bible';
 import { BibleBookPage } from '../pages/bible/bible-book';
@@ -131,7 +132,8 @@ import { WechatProvider } from '../providers/wechat/wechat';
     IbcMapComponent,
     BiblePage,
     BibleBookPage,
-    BibleChapterPage    
+    BibleChapterPage,
+    EditorPage    
   ],
   imports: [
     BrowserModule,
@@ -172,7 +174,8 @@ import { WechatProvider } from '../providers/wechat/wechat';
     IbcMapComponent,
     BiblePage,
     BibleBookPage,
-    BibleChapterPage    
+    BibleChapterPage,
+    EditorPage    
   ],
   providers: [
     File,

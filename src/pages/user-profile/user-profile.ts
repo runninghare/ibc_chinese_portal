@@ -8,6 +8,7 @@ import { ToastController } from 'ionic-angular';
 import { PhotoProvider } from '../../providers/photo/photo';
 // import { PhotoProvider, IntCropperSettings } from '../../providers/photo/photo';
 import { DataProvider, IntContact } from '../../providers/data-adaptor/data-adaptor';
+import { CommonProvider } from '../../providers/common/common';
 import { FileCacheProvider } from '../../providers/file-cache/file-cache';
 import { ENV } from '@app/env';
 
@@ -65,6 +66,7 @@ export class UserProfilePage implements OnInit {
     loadingAvatar: boolean = false;
     avatarDirty: boolean = false;
 
+    showTaC: boolean = false;
     showAuthInfo: boolean = false;
     showPersonalInfo: boolean = false;
     showMinistrySkills: boolean = false;
@@ -97,7 +99,8 @@ export class UserProfilePage implements OnInit {
         public http: Http,
         public content: DataProvider,
         public cacheSvc: FileCacheProvider,
-        public modalCtrl: ModalController
+        public modalCtrl: ModalController,
+        public commonSvc: CommonProvider
     ) {
         console.log(JSON.stringify(ibcFB.afAuth.auth.currentUser.providerData));
 
@@ -126,7 +129,8 @@ export class UserProfilePage implements OnInit {
             postcode: [null],
             wechat: [null],
             skills: [null],
-            visited: [null]
+            visited: [null],
+            shareInfo: [null]
         });
     }
 
@@ -138,6 +142,7 @@ export class UserProfilePage implements OnInit {
 
             if (!user.visited) {
                 this.showAuthInfo = true;
+                this.showTaC = true;
             }
             if (!user.skills) {
                 user.skills = [];
@@ -147,6 +152,21 @@ export class UserProfilePage implements OnInit {
             });
             this.userForm.patchValue(user);
         }, err => {});
+    }
+
+    confirmShareInfo(val: HTMLInputElement): void {
+        if (val && !val.value) {
+            this.commonSvc.confirmDialog(null, '你真要關閉聯繫方式共享嗎？這樣你也無法看到其他兄弟姊妹的聯繫方式了', () => {
+               this.userForm.controls['shareInfo'].setValue(false);
+               this.content.myselfContactDB.update(this.userForm.value);
+            }, () => {
+               this.userForm.controls['shareInfo'].setValue(true);
+               val.value = <any>true;
+            }, {negativeLabel: '公開', positiveLabel: '關閉'});
+        } else {
+            this.userForm.controls['shareInfo'].setValue(true);
+            this.content.myselfContactDB.update(this.userForm.value);
+        }
     }
 
     save(): void {

@@ -15,6 +15,23 @@
 
 <ion-content>
 
+  <button ion-button block color="teal" (click)="showTaC = !showTaC">
+    <ion-icon name="logo-arrow-forward"></ion-icon>
+    免責聲明
+  </button> 
+
+  <div *ngIf="showTaC" class="ibc-h-padding-5">
+   <div>
+     你是否願意公開個人聯繫資料，以便教會的兄弟姊妹能夠聯繫到你。該信息不會分享至依斯靈頓教會之外。
+     你可以選擇不公開自己的聯繫方式，但是這樣你也無法看到別人的聯繫方式。
+   </div>
+   <div flexLayout="row" fxLayoutAlign="start center" class="ibc-full-width" flexLayoutGap="5px">
+      <div fxFlex></div>
+      <div>{{userForm?.controls?.shareInfo?.value ? '資料已公開': '資料未公開'}}</div>
+      <ion-toggle [ngModel]="userForm?.controls?.shareInfo?.value" (ionChange)="confirmShareInfo($event)"></ion-toggle>
+    </div>
+  </div>  
+
   <button ion-button block color="teal" (click)="showAuthInfo = !showAuthInfo">
     <ion-icon name="logo-arrow-forward"></ion-icon>
     修改個人密碼
