@@ -219,11 +219,12 @@ export class HomePage implements OnInit, AfterViewInit {
     ngOnInit(): void {
         this.bgClass = this.ibcStyle.randomBg;
 
-        this.content.currentUser$.subscribe(contact => {
+        let subscription = this.content.currentUser$.subscribe(contact => {
             if (!contact.visited) {
                 this.navCtrl.push(UserProfilePage);
+                subscription.unsubscribe();
             }
-        })
+        });
     }
 
     ngAfterViewInit(): void {

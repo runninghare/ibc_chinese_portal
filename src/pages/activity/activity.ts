@@ -327,6 +327,11 @@ export class ActivityPage implements OnDestroy {
     .then((data) => {
       this.ibcFB.uploadFile(data, { path: `/activity/${this.activityIndex}/${this.commonSvc.makeRandomString(10)}`, encoding: "base64", fileType: "image/png" }, (url) => {
         if (url) {
+
+          if (!this.activity.pictures) {
+            this.activity.pictures = [];
+          }
+
           this.activity.pictures.push(url);
 
           this.activityDB.child(`pictures`).set(this.activity.pictures).then(() => {
