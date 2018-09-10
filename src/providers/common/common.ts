@@ -52,7 +52,7 @@ export class CommonProvider {
 
     get appStoreLink(): string {
         if (this.isIos) {
-            return "https://itunes.apple.com/us/app/依斯靈頓中文教會/id1338517393?ls=1&mt=8";
+            return "https://itunes.apple.com/us/app/id1338517393?ls=1&mt=8";
         } else {
             return "https://play.google.com/store/apps/details?id=com.rjwebsolution.ibcchinese";
         }

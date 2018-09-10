@@ -13,35 +13,42 @@
 <load-tracker></load-tracker>
 
 <ion-content no-bounce>
-    <div fxLayout="column" [style.height]="height" style="width: 100%; background-color: #eee;">
-        <div fxFlex style="overflow:auto; margin-top: 10px" #chatArea class="ibc-h-padding-5">
-          <div *ngFor="let message of thread?.messages; let i = index">
-            <div text-center class="ics-full-width ics-v-padding-10" 
-               *ngIf="timeDivider(message?.timestamp) != timeDivider(thread?.messages[i-1]?.timestamp)">
-              <div class="small-note timestamp">{{timeDividerMessage(timeDivider(message?.timestamp), message?.timestamp)}}</div>
-            </div>
-            <div *ngIf="message.sender == content?.myselfContact?.id" class="ibc-full-width ibc-v-padding-10" fxLayout="row" fxLayoutAlign="start end">
-              <div fxLayout="column" fxLayoutAlign="start center">
-                <div class="small-note">{{content?.myselfContact?.name}} ({{content?.myselfContact?.chinese_name}})</div>
-                <img class="img-avatar" [src]="cacheSvc.sanitizer.bypassSecurityTrustResourceUrl(cacheSvc.cachingMap[content?.myselfContact?.photoURL]?.target || 'assets/img/default-photo.jpg')">
+    <ng-container [ngSwitch]="content?.myselfContact?.id == partner?.id">
+      <div *ngSwitchCase="true" style="text-align: center; margin-top: 20px">
+        <ion-chip color="danger">
+          <ion-label>你不可以和自己聊天：-）</ion-label>
+        </ion-chip>        
+      </div>
+      <div *ngSwitchDefault fxLayout="column" [style.height]="height" style="width: 100%; background-color: #eee;">
+          <div fxFlex style="overflow:auto; margin-top: 10px" #chatArea class="ibc-h-padding-5">
+            <div *ngFor="let message of thread?.messages; let i = index">
+              <div text-center class="ics-full-width ics-v-padding-10" 
+                 *ngIf="timeDivider(message?.timestamp) != timeDivider(thread?.messages[i-1]?.timestamp)">
+                <div class="small-note timestamp">{{timeDividerMessage(timeDivider(message?.timestamp), message?.timestamp)}}</div>
               </div>
-              <div fxLayout="column" fxLayoutAlign="start start">
-                <div class="sender">{{formatMessageBody(message.body)}}</div>
-                <!-- <div class="small-note" style="margin-left: 10px;">{{message.timestamp}}</div> -->
-              </div>
-            </div>
-            <div *ngIf="message.sender != content?.myselfContact?.id" class="ibc-full-width ibc-v-padding-10" fxLayout="row" fxLayoutAlign="end end">
-                <div fxLayout="column" fxLayoutAlign="start end">
-                  <div class="receiver">{{formatMessageBody(message.body)}}</div>
-                  <!-- <div class="small-note" style="margin-right: 10px;">{{message.timestamp}}</div> -->
-                </div>
+              <div *ngIf="message.sender == content?.myselfContact?.id" class="ibc-full-width ibc-v-padding-10" fxLayout="row" fxLayoutAlign="start end">
                 <div fxLayout="column" fxLayoutAlign="start center">
-                  <div class="small-note">{{contacts[message.sender]?.name}} ({{contacts[message.sender]?.chinese_name}})</div>
-                  <img class="img-avatar" [src]="cacheSvc.sanitizer.bypassSecurityTrustResourceUrl(cacheSvc.cachingMap[contacts[message.sender]?.photoURL]?.target || 'assets/img/default-photo.jpg')">
+                  <div class="small-note">{{content?.myselfContact?.name}} ({{content?.myselfContact?.chinese_name}})</div>
+                  <img class="img-avatar" [src]="cacheSvc.sanitizer.bypassSecurityTrustResourceUrl(cacheSvc.cachingMap[content?.myselfContact?.photoURL]?.target || 'assets/img/default-photo.jpg')">
                 </div>
+                <div fxLayout="column" fxLayoutAlign="start start">
+                  <div class="sender">{{formatMessageBody(message.body)}}</div>
+                  <!-- <div class="small-note" style="margin-left: 10px;">{{message.timestamp}}</div> -->
+                </div>
+              </div>
+              <div *ngIf="message.sender != content?.myselfContact?.id" class="ibc-full-width ibc-v-padding-10" fxLayout="row" fxLayoutAlign="end end">
+                  <div fxLayout="column" fxLayoutAlign="start end">
+                    <div class="receiver">{{formatMessageBody(message.body)}}</div>
+                    <!-- <div class="small-note" style="margin-right: 10px;">{{message.timestamp}}</div> -->
+                  </div>
+                  <div fxLayout="column" fxLayoutAlign="start center">
+                    <div class="small-note">{{contacts[message.sender]?.name}} ({{contacts[message.sender]?.chinese_name}})</div>
+                    <img class="img-avatar" [src]="cacheSvc.sanitizer.bypassSecurityTrustResourceUrl(cacheSvc.cachingMap[contacts[message.sender]?.photoURL]?.target || 'assets/img/default-photo.jpg')">
+                  </div>
+              </div>
             </div>
           </div>
-        </div>
-        <button ion-button (click)="sendMessage()" full>Send Message</button>
-    </div>
+          <button ion-button (click)="sendMessage()" full>Send Message</button>
+      </div>      
+    </ng-container>
 </ion-content>

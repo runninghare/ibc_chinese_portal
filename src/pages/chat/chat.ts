@@ -270,7 +270,9 @@ export class ChatPage implements OnInit, OnDestroy {
 
     scrollDown() {
         setTimeout(() => {
-            this.chatArea.nativeElement.scrollTop = this.chatArea.nativeElement.scrollHeight;
+            if (this.chatArea) {
+                this.chatArea.nativeElement.scrollTop = this.chatArea.nativeElement.scrollHeight;
+            }
         }, 500);
     }
 

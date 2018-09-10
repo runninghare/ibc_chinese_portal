@@ -62,7 +62,13 @@ export class VideoProvider {
         if (this.platform.is('core') || this.platform.is('mobileweb')) {
             window.open(`https://www.youtube.com/watch?v=${id}`, '_blank');
         } else {
-            this.youtube.openVideo(id);
+            (<any>this.youtube.openVideo)(id, (result) => {
+                if (result == 'error') {
+                    window['InAppYouTube'].openVideo(id, {
+                        fullscreen: true
+                    });
+                }
+            });
         }
     }
 
