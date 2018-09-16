@@ -1,6 +1,6 @@
 export const ENV = {
   mode: 'Development',
-  version: '0.0.3',
+  version: '0.0.5',
   // apiServer: 'http://192.168.0.160:3000',
   apiServer: 'http://192.168.0.21:3000',
   firebaseConfig: {   // DEV FireDB
