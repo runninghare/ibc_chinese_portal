@@ -10,7 +10,9 @@ import * as moment from 'moment';
 import { Badge } from '@ionic-native/badge';
 import { ModalController, NavController, NavParams } from 'ionic-angular';
 import { ENV } from '@app/env';
+import { Platform } from 'ionic-angular';
 import { UserProfilePage } from '../../pages/user-profile/user-profile';
+import { WechatProvider } from '../../providers/wechat/wechat';
 
 export interface IntSummaryData {
     id?: any;
@@ -471,11 +473,31 @@ export class DataProvider {
       this.ibcFB.access_level = 0;
     }
 
-    constructor(public http: HttpClient, public ibcFB: IbcFirebaseProvider, public badge: Badge,
+    allowWechat: boolean = false;
+
+    constructor(public http: HttpClient, public ibcFB: IbcFirebaseProvider, public badge: Badge, public wechat: WechatProvider, public platform: Platform,
         public s2t: S2tProvider, public videoSvc: VideoProvider, public cacheSvc: FileCacheProvider, public modalCtrl: ModalController) {
 
         window['ENV'] = ENV;
         console.log(`======= RUNNING MODE: ${ENV.mode} ========`);
+
+        if (this.platform.is('ios')) {
+            setTimeout(() => {
+                this.wechat.wechatInstalled().then(() => {
+                    this.ibcFB.afDB.database.ref('allowWechat').on('value', snapshot => {
+                        let val = snapshot.val();
+                        this.allowWechat = val;
+                        // alert(this.allowWechat);
+                    });
+                }, () => {
+                  this.allowWechat = false;
+                });
+            }, 1000);
+        } else if (this.platform.is('android')) {
+            this.allowWechat = true;
+        } else {
+          this.allowWechat = false;
+        }
 
         // setTimeout(() => {
         //   this.badge.clear();
