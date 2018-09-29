@@ -120,8 +120,8 @@
     "cordova": {
         "platforms": [
             "browser",
-            "ios",
-            "android"
+            "android",
+            "ios"
         ],
         "plugins": {
             "cordova-android-support-gradle-release": {

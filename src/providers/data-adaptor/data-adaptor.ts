@@ -180,6 +180,7 @@ export interface IntActivity extends IntSummaryData {
     description?: string;
     participants?: IntActParticipant[];
     pictures?: string[];
+    videos?: {title?: string, youtubeId?: string}[];
     question?: string;
     questionKey?: string;
     questionType?: TypeInputUI;
@@ -647,13 +648,18 @@ export class DataProvider {
         });
 
         this.activitiesDB = this.ibcFB.afDB.database.ref('activities');
-        this.activities$ = this.ibcFB.afDB.list<IntListItem>('activities').valueChanges();
+        this.activities$ = this.ibcFB.afDB.list<IntListItem>('activities').valueChanges().map(items => {
+          items.forEach(item => {
+            item.isNew = moment().isBefore(item.datetime);
+          })
+          return items;
+        });
         this.activitiesParams = {
           title: '教會活動',
           items$: this.activities$,
           itemsDB: this.activitiesDB,
           checkNew: true,
-          groupBy: 'past',
+          // groupBy: 'past',
           groupOrderByFunc: (a,b) => (a?1:0) < (b?1:0) ? -1 : 1,
           orderByFunc: (a,b) => a.datetime > b.datetime ? -1 : 1, 
           templateForAdd: [
@@ -681,15 +687,15 @@ export class DataProvider {
                   default: 'ActivityPage',
                   hidden: true
               },
-              {
-                  key: 'past',
-                  groupByFunc: (val) => {
-                      return val ? '過去的活動' : '新活動';
-                  },
-                  caption: '這是舊的活動',
-                  type: TypeInputUI.Boolean,
-                  default: false,
-              },
+              // {
+              //     key: 'past',
+              //     groupByFunc: (val) => {
+              //         return val ? '過去的活動' : '新活動';
+              //     },
+              //     caption: '這是舊的活動',
+              //     type: TypeInputUI.Boolean,
+              //     default: false,
+              // },
               {
                   key: 'question',
                   caption: '需要参加者填写的问题'

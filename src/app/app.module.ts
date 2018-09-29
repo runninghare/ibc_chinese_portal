@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { PopupComponent } from '../components/popup/popup';
 import { LoadTrackerComponent } from '../components/load-tracker/load-tracker';
 import { IbcMapComponent } from '../components/ibc-map/ibc-map';
+import { YoutubeVideoComponent } from '../components/youtube-video/youtube-video';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -94,6 +95,7 @@ import { OneTimeDirective } from '../directives/one-time/one-time';
 import {ENV} from '@app/env';
 import { BibleProvider } from '../providers/bible/bible';
 import { WechatProvider } from '../providers/wechat/wechat';
+import { IbcHttpProvider } from '../providers/ibc-http/ibc-http';
 
 // const firebaseConfig = {
 //     apiKey: "AIzaSyDFkwr578ZYuu0PPQxd5MN2-OCh4O7oKtc",
@@ -130,6 +132,7 @@ import { WechatProvider } from '../providers/wechat/wechat';
     MapLinkDirective,
     OneTimeDirective,
     IbcMapComponent,
+    YoutubeVideoComponent,
     BiblePage,
     BibleBookPage,
     BibleChapterPage,
@@ -172,6 +175,7 @@ import { WechatProvider } from '../providers/wechat/wechat';
     PopupComponent,
     LoadTrackerComponent,
     IbcMapComponent,
+    YoutubeVideoComponent,
     BiblePage,
     BibleBookPage,
     BibleChapterPage,
@@ -211,7 +215,8 @@ import { WechatProvider } from '../providers/wechat/wechat';
     Badge,
     NotificationProvider,
     BibleProvider,
-    WechatProvider
+    WechatProvider,
+    IbcHttpProvider
   ]
 })
 export class AppModule {}

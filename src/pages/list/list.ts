@@ -37,6 +37,7 @@ export class ListPage implements OnDestroy {
   showReadOrUnread: boolean;
   listHasKeys: boolean;
   questionParams: IntPopupTemplateItem = {};
+  checkIsNewFunc: (item: any) => boolean;
 
   subscription: Subscription;
 

@@ -78,7 +78,24 @@
 
     <p></p>
 
+    <!-- <youtube-video [title]='"云上太阳"' [youtubeId]="'1pja2IszGOU'"></youtube-video> -->
+
     <ion-list>
+        <ng-container *ngIf="activity?.videos?.length > 0">
+            <h3 text-center >影像</h3>
+            <ion-item-sliding *ngFor="let video of activity?.videos" class="ibc-v-margin-5">
+                <div ion-item>
+                    <youtube-video [title]='video.title' [youtubeId]="video.youtubeId"></youtube-video>
+                </div>
+                <ion-item-options side="right">
+                  <a ion-button color="danger" (click)="removeVideo(video)">
+                    删除
+                  </a>
+                </ion-item-options>
+            </ion-item-sliding>
+            <ion-item-divider></ion-item-divider>            
+        </ng-container>
+        <h3 text-center >相片</h3>
         <ion-item-sliding *ngFor="let photo of activity?.pictures" class="ibc-v-margin-5">
             <img [src]="photo" ion-item (click)="openLink(photo)"/>
             <ion-item-options side="right">
@@ -90,9 +107,9 @@
     </ion-list>
 
     <ion-buttons class="ibc-top-margin-20" ion-end *ngIf="commonSvc.isMember && content.auth">
-      <button ion-button block ion-end color="teal-1" (click)="addPhoto()">上傳圖片</button>
+      <button ion-button block ion-end color="teal-1" (click)="uploadPhoto()">上傳圖片</button>
+      <button *ngIf="commonSvc.isWeb" ion-button block ion-end color="teal-1" (click)="addVideo()">添加Youtube</button>
     </ion-buttons>
-
 <!--     <div>
         <div *ngFor="let photo of activity?.pictures" style="align-items: start">
             <img [src]="photo" (click)="openLink(photo)"/>

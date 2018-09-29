@@ -1,8 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ModalController } from 'ionic-angular';
 import { BrowserProvider } from '../../providers/browser/browser';
 import { CommonProvider } from '../../providers/common/common';
-import { database, DataProvider, IntListItem, IntContact, IntActivity, IntPopupTemplateItem } from '../../providers/data-adaptor/data-adaptor';
+import { database, DataProvider, IntListItem, IntContact, IntActivity, IntPopupTemplateItem, TypeInputUI} from '../../providers/data-adaptor/data-adaptor';
 import { AudioProvider } from '../../providers/audio/audio';
 import { NotificationProvider } from '../../providers/notification/notification';
 import { Observable, Subscription } from 'rxjs';
@@ -10,6 +10,9 @@ import { ChatPage } from '../../pages/chat/chat';
 import { PhotoProvider } from '../../providers/photo/photo';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
+import { IbcHttpProvider } from '../../providers/ibc-http/ibc-http';
+import { PopupComponent } from '../../components/popup/popup';
+import { VideoProvider } from '../../providers/video/video';
 import * as moment from 'moment';
 
 /**
@@ -21,7 +24,7 @@ import * as moment from 'moment';
 
 @Component({
   selector: 'page-activity',
-  templateUrl: 'activity.html',
+  templateUrl: 'activity.html'
 })
 export class ActivityPage implements OnDestroy {
 
@@ -43,7 +46,9 @@ export class ActivityPage implements OnDestroy {
   lastContactCounts: number;
 
   constructor(
+      public ibcHttp: IbcHttpProvider,
       public navCtrl: NavController, 
+      public modalCtrl: ModalController,
       public navParams: NavParams, 
       public browser: BrowserProvider, 
       public commonSvc: CommonProvider,
@@ -52,7 +57,8 @@ export class ActivityPage implements OnDestroy {
       public notificationSvc: NotificationProvider,
       public photoSvc: PhotoProvider,
       public ibcFB: IbcFirebaseProvider,
-      public loadTrackerSvc: LoadTrackerProvider
+      public loadTrackerSvc: LoadTrackerProvider,
+      public videoSvc: VideoProvider
       ) {
 
       this.activityIndex = navParams.get('itemIndex');
@@ -112,7 +118,7 @@ export class ActivityPage implements OnDestroy {
       let datetimeCaption = moment(this.activity.datetime).format("M月D日");
       let item: IntListItem = {
           datetime: this.activity.datetime,
-          isNew: true,
+          // isNew: true,
           key: `${this.activity.key || this.activity.title}-${this.activity.datetime}`,
           value: this.activity.key || this.activity.title,
           params: {
@@ -311,7 +317,141 @@ export class ActivityPage implements OnDestroy {
     });
   }
 
-  addPhoto(): void {
+  addPhoto(url: string|string[]): void {
+    if (url) {
+
+      if (!this.activity.pictures) {
+        this.activity.pictures = [];
+      }
+
+      if (typeof url == 'string') {
+        this.activity.pictures.push(url);
+      } else if (Array.isArray(url)) {
+        url.forEach(u => {
+          this.activity.pictures.push(u);
+        })
+      }
+
+      this.activityDB.child(`pictures`).set(this.activity.pictures).then(() => {
+        this.commonSvc.toastSuccess('圖片上傳成功');
+      }).catch(err => {
+        console.log(this.activity.pictures);
+        this.commonSvc.toastFailure('上傳失敗', err => { console.error(JSON.stringify(err, null, 2)) });
+      });
+    }
+  }
+
+  addVideo(): void {
+    if (this.commonSvc.isWeb) {
+      let itemToEdit = {};
+
+      let popupModal = this.modalCtrl.create(PopupComponent, {
+        title: 'Youtube',
+        definitions: [
+              {
+                  key: 'title',
+                  caption: '標題'
+              },
+              {
+                  key: 'youtubeId',
+                  caption: 'Youtube ID'
+              }              
+            ],
+        item: itemToEdit,
+        cancel: () => popupModal.dismiss(),
+        save: (item) => {
+          if (item.youtubeId) {
+            if (!this.activity.videos) {
+              this.activity.videos = [];
+            }
+
+            this.activity.videos.push(item);
+
+            this.activityDB.child(`videos`).set(this.activity.videos).then(() => {
+              this.commonSvc.toastSuccess('影像上傳成功');
+            }).catch(err => {
+              console.log(this.activity.videos);
+              this.commonSvc.toastFailure('上傳失敗', err => { console.error(JSON.stringify(err, null, 2)) });
+            }); 
+
+            popupModal.dismiss();
+          }
+        }
+      });
+      popupModal.present();
+    }
+  }
+
+  uploadPhoto(): void {
+    if (this.commonSvc.isWeb) {
+      let itemToEdit = {
+        type: 'single',
+        pattern: "20180922/.*\\.JPG",
+        baseUrl: "http://ibc.medocs.com.au/photos/"
+      };
+
+      let popupModal = this.modalCtrl.create(PopupComponent, {
+        title: '圖片',
+        definitions: [
+              {
+                  key: 'url',
+                  caption: 'URL'
+              },
+              {
+                  key: 'type',
+                  caption: '上傳類型',
+                  type: TypeInputUI.Dropdown,
+                  lookupSource: Observable.of([
+                      {
+                          val: 'single',
+                          cap: '單張圖片'
+                      },
+                      {
+                          val: 'multiple',
+                          cap: '提取所有圖片'
+                      },                     
+                  ]),
+                  lookupCaption: 'cap',
+                  lookupValue: 'val'  
+              },     
+              {
+                  key: 'pattern',
+                  caption: '匹配表達式',
+                  hidden: (item) => item.type != 'multiple'
+              },
+              {
+                  key: 'baseUrl',
+                  caption: 'Base URL',
+                  hidden: (item) => item.type != 'multiple'
+              }
+            ],
+        item: itemToEdit,
+        cancel: () => popupModal.dismiss(),
+        save: (item) => {
+          if (item.url) {
+            if (item.type == 'multiple') {
+                  this.ibcHttp.post('jsdom/images', item).then(result => {
+                    if (result && result.images) {
+                      this.addPhoto(result.images);
+                    }
+                    popupModal.dismiss();
+                  }).catch(err => {
+                    popupModal.dismiss();
+                  });
+              // this.http.post(, {
+              //   url: item.url
+              // })
+            } else if (item.type == 'single') {
+              this.addPhoto(item.url);
+              popupModal.dismiss();
+            }
+          }
+        }
+      });
+      popupModal.present();
+      return;
+    }
+
     this.loadTrackerSvc.loading = true;
 
     this.photoSvc.camera.getPicture({
@@ -326,21 +466,7 @@ export class ActivityPage implements OnDestroy {
     })
     .then((data) => {
       this.ibcFB.uploadFile(data, { path: `/activity/${this.activityIndex}/${this.commonSvc.makeRandomString(10)}`, encoding: "base64", fileType: "image/png" }, (url) => {
-        if (url) {
-
-          if (!this.activity.pictures) {
-            this.activity.pictures = [];
-          }
-
-          this.activity.pictures.push(url);
-
-          this.activityDB.child(`pictures`).set(this.activity.pictures).then(() => {
-            this.commonSvc.toastSuccess('圖片上傳成功');
-          }).catch(err => {
-            console.log(this.activity.pictures);
-            this.commonSvc.toastFailure('上傳失敗', err => { console.error(JSON.stringify(err, null, 2)) });
-          });
-        }
+        this.addPhoto(url);
         this.loadTrackerSvc.loading = false;
       }, err => {
         this.loadTrackerSvc.loading = false;
@@ -349,6 +475,25 @@ export class ActivityPage implements OnDestroy {
     }, () => {
       this.loadTrackerSvc.loading = false;
     });
+  }
+
+  removeVideo(video: any) {
+    if (!video || !this.activity.videos) return;
+
+    let index = this.activity.videos.indexOf(video);
+    this.commonSvc.confirmDialog("你確定要刪除這段視頻嗎", "刪除後所有人將無法看見", () => {
+      this.activity.videos.splice(index,1);
+      this.activityDB.child(`videos`).set(this.activity.videos).then(() => {
+        this.commonSvc.toastSuccess('視頻已成功删除');
+      }).catch(err => {
+        console.log(this.activity.videos);
+        this.commonSvc.toastFailure('删除失败', err => {console.error(JSON.stringify(err, null, 2))});
+      });
+    });
+  }
+
+  playVideo(id: string) {
+    this.videoSvc.play(id);
   }
 
   ionViewDidLoad() {

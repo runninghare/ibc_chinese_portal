@@ -163,6 +163,6 @@
     <plugin name="cordova-plugin-in-app-youtube" spec="https://github.com/davidefavia/cordova-plugin-in-app-youtube" />
     <allow-navigation href="http://192.168.0.40:8100" />
     <engine name="browser" spec="5.0.3" />
-    <engine name="ios" spec="4.5.4" />
-    <engine name="android" spec="~6.4.0" />
+    <engine name="android" spec="6.4.0" />
+    <engine name="ios" spec="~4.5.4" />
 </widget>

@@ -278,6 +278,36 @@ ion-content {
   animation: anime-fade-in 5s cubic-bezier(.89,-0.93,.2,1.58) forwards;
 }
 
+.video-container {
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.video-overlay {
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: 0.5;
+  font-size: 2rem;
+  color: #FFF
+}
+
+.video-font {
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  font-size: 2rem;
+  color: #FFF
+}
+
 
 body {
   // user-select: text;
