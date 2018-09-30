@@ -6,6 +6,8 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ImageCropperModule } from "ng2-img-cropper/index";
 import { HttpClientModule } from '@angular/common/http';
+import { IonicSelectableModule } from 'ionic-selectable';
+
 import { PopupComponent } from '../components/popup/popup';
 import { LoadTrackerComponent } from '../components/load-tracker/load-tracker';
 import { IbcMapComponent } from '../components/ibc-map/ibc-map';
@@ -144,6 +146,7 @@ import { IbcHttpProvider } from '../providers/ibc-http/ibc-http';
     FormsModule,
     HttpClientModule,
     FlexLayoutModule,
+    IonicSelectableModule,
     MonthlyVersesPageModule,
     HttpModule,
     IonicImageLoader.forRoot(),

@@ -33,12 +33,15 @@
           <ion-icon *ngIf="!item.thumbnail && !item.avatar" name="share-alt" item-left></ion-icon>
           <div class="ibc-full-height ibc-full-width">
             <div class="ibc-bottom-margin-5">{{item.title}}</div>
-            <ion-note wrap small *ngIf="item.subtitle || subtitleAs">{{item.subtitle || subtitleAs(item)}}</ion-note>
+            <ion-note wrap small *ngIf="item.subtitle || subtitleAs">{{item.subtitle || subtitleAs(item, auxiliaryItems)}}</ion-note>
           </div>
         </button>
         <ion-item-options side="right">
           <a ion-button color="teal-1" *ngIf="showReadOrUnread" (click)="markAsRead(getItemIndex(item), !item.read)">
             {{item.read ? '未讀' : '已讀'}}
+          </a>
+          <a ion-button [color]="additionalSlideButton.getColor(item, auxiliaryItems)" *ngIf="additionalSlideButton" (click)="additionalSlideButton.click(item, auxiliaryItems)">
+            {{additionalSlideButton.getTitle(item, auxiliaryItems)}}
           </a>
           <a ion-button [hidden]="hideEdit" *ngIf="fullPermission || !commonSvc.readonly" (click)="editItemPopup(getItemIndex(item))">
             編輯

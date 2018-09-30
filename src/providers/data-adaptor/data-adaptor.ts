@@ -13,6 +13,7 @@ import { ENV } from '@app/env';
 import { Platform } from 'ionic-angular';
 import { UserProfilePage } from '../../pages/user-profile/user-profile';
 import { WechatProvider } from '../../providers/wechat/wechat';
+import { CommonProvider } from '../../providers/common/common';
 
 export interface IntSummaryData {
     id?: any;
@@ -147,6 +148,14 @@ export interface IntPopupTemplateItem {
     handlerFunc?(any): void;
 }
 
+export interface IntAuxiliaryButton {
+  getTitle?(item: any, auxiliaryItems: any[]): string;
+  click?(item: any, auxiliaryItems: any[]): void;
+  getColor?(item: any, auxiliaryItems: any[]): string;
+  getAuxiliaryDB?(): firebase.database.Reference;
+  exists?(item: any, auxiliaryItems: any[]): boolean;
+};
+
 export interface IntListPageParams {
     title?: string;
     itemsDB?: firebase.database.Reference;
@@ -159,13 +168,14 @@ export interface IntListPageParams {
     hideEdit?: boolean;
     hideDelete?: boolean;
     listHasKeys?: boolean;
-    subtitleAs?: string | ((any) => string);
+    subtitleAs?: string | ((item?: any, auxiliaryItems?: any[]) => string);
     filterFunc?(text:string, item:any): boolean; 
     mapFunc?(item:any): any; 
     reverseMapFunc?(item:any): any;
     callFunc?(item:any): void; 
     orderByFunc?(a: any, b: any): number;
     groupOrderByFunc?(a: any, b: any): number;
+    additionalSlideButton?: IntAuxiliaryButton;
 }
 
 export interface IntActParticipant {
@@ -477,7 +487,7 @@ export class DataProvider {
     allowWechat: boolean = false;
 
     constructor(public http: HttpClient, public ibcFB: IbcFirebaseProvider, public badge: Badge, public wechat: WechatProvider, public platform: Platform,
-        public s2t: S2tProvider, public videoSvc: VideoProvider, public cacheSvc: FileCacheProvider, public modalCtrl: ModalController) {
+        public s2t: S2tProvider, public videoSvc: VideoProvider, public cacheSvc: FileCacheProvider, public modalCtrl: ModalController, public commonSvc: CommonProvider) {
 
         window['ENV'] = ENV;
         console.log(`======= RUNNING MODE: ${ENV.mode} ========`);
@@ -548,7 +558,14 @@ export class DataProvider {
               },
               {
                   key: 'set',
-                  caption: 'Set'
+                  caption: 'Set',
+                  groupByFunc: (val, key) => {
+                    if (val == 0) {
+                      return '保留詩歌';
+                    } else {
+                      return `${key} ${val}`;
+                    }
+                  }
               },
               {
                   key: 'album',
@@ -588,6 +605,14 @@ export class DataProvider {
                     return `${item.name}`.toLowerCase().indexOf(this.s2t.tranStr(val, true)) > -1;
                 }
             },
+            subtitleAs: (item, auxiliaryItems) => {
+              let index = auxiliaryItems.indexOf(item.id);
+              if (index > -1) {
+                return '本週贊美詩歌'
+              } else {
+                return null;
+              }
+            },
             mapFunc: (item) => {
                 return {
                     id: item.id,
@@ -609,6 +634,46 @@ export class DataProvider {
             groupOrderByFunc: (a,b) => {
               return parseInt(a) < parseInt(b) ? -1 : 1;
             },
+            additionalSlideButton: {
+              getAuxiliaryDB: () => this.nextServiceSongsDB,
+              exists: (item, auxiliaryItems) => {
+                let index = auxiliaryItems.indexOf(item.id);
+                if (index > -1) {
+                  return true
+                } else {
+                  return false;
+                }                
+              },
+              getColor: (item, auxiliaryItems) => {
+                let index = auxiliaryItems.indexOf(item.id);
+                if (index > -1) {
+                  return 'danger'
+                } else {
+                  return 'teal-1'
+                }
+              },
+              getTitle: (item, auxiliaryItems) => {
+                let index = auxiliaryItems.indexOf(item.id);
+                if (index > -1) {
+                  return '删除本周赞美'
+                } else {
+                  return '添加为本周赞美'
+                }
+              },
+              click: (item, auxiliaryItems) => {
+                let index = auxiliaryItems.indexOf(item.id);
+                if (index > -1) {
+                  auxiliaryItems.splice(index,1);
+                } else {
+                  auxiliaryItems.push(item.id);
+                }
+                this.nextServiceSongsDB.set(auxiliaryItems).then(() => {
+                  this.commonSvc.toastSuccess('本週贊美詩已更新');
+                }, err => {
+                  this.commonSvc.toastFailure('本週贊美詩更新失敗', err);
+                })
+              }
+            }
             // callFunc: (item) => {
             //     this.videoSvc.play(item.id);
             // }

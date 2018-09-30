@@ -14,7 +14,7 @@ import { ChatPage } from '../chat/chat';
 /// Providers and Services
 import { S2tProvider } from '../../providers/s2t/s2t';
 import { Observable, Subscription } from 'rxjs';
-import { DataProvider, IntPopupTemplateItem, IntListItem } from '../../providers/data-adaptor/data-adaptor';
+import { DataProvider, IntPopupTemplateItem, IntListItem, IntAuxiliaryButton } from '../../providers/data-adaptor/data-adaptor';
 
 export { IntListItem } from '../../providers/data-adaptor/data-adaptor';
 
@@ -37,7 +37,8 @@ export class ListPage implements OnDestroy {
   showReadOrUnread: boolean;
   listHasKeys: boolean;
   questionParams: IntPopupTemplateItem = {};
-  checkIsNewFunc: (item: any) => boolean;
+  additionalSlideButton: IntAuxiliaryButton;
+  auxiliaryItems: any[] = [];
 
   subscription: Subscription;
 
@@ -61,6 +62,13 @@ export class ListPage implements OnDestroy {
     this.showReadOrUnread = navParams.get('showReadOrUnread');
     this.listHasKeys = navParams.get('listHasKeys');
     this.fullPermission = navParams.get('fullPermission');
+    this.additionalSlideButton = navParams.get('additionalSlideButton');
+
+    if (this.additionalSlideButton && this.additionalSlideButton.getAuxiliaryDB) {
+      this.additionalSlideButton.getAuxiliaryDB().on('value', snapshot => {
+        this.auxiliaryItems = snapshot.val();
+      });
+    }
 
     let subtitleAs = navParams.get('subtitleAs');
     if (typeof subtitleAs == 'string') {

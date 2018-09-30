@@ -64,6 +64,13 @@ export class PopupComponent {
       }
   }
 
+  fillterLookupSource(ev): void {
+    let filterText = `${ev.target.value || ''}`.toLowerCase();
+    // this.groupValues.forEach(gv => {
+    //   this.mappedItemsFunc(gv);
+    // });
+  }
+
   constructor(public modalCtrl: ModalController, public navParams: NavParams) {
     this.pageTitle = navParams.get('title');
 
