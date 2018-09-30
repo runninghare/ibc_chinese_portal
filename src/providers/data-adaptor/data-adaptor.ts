@@ -176,6 +176,8 @@ export interface IntListPageParams {
     orderByFunc?(a: any, b: any): number;
     groupOrderByFunc?(a: any, b: any): number;
     additionalSlideButton?: IntAuxiliaryButton;
+    postAddCallback?(item: any, keyOrIndex: any): Promise<any>;
+    postDeleteCallback?(item: any, keyOrIndex: any): Promise<any>;
 }
 
 export interface IntActParticipant {
@@ -725,7 +727,7 @@ export class DataProvider {
           itemsDB: this.activitiesDB,
           checkNew: true,
           // groupBy: 'past',
-          groupOrderByFunc: (a,b) => (a?1:0) < (b?1:0) ? -1 : 1,
+          // groupOrderByFunc: (a,b) => (a?1:0) < (b?1:0) ? -1 : 1,
           orderByFunc: (a,b) => a.datetime > b.datetime ? -1 : 1, 
           templateForAdd: [
               {
@@ -807,7 +809,33 @@ export class DataProvider {
                     redirect: item.redirect,
                     isNew: item.isNew
                 }
-            },
+          },
+          postAddCallback: (item, key) => {
+            return this.lastCountDB.once('value').then(snapshot => {
+              let lastCount = snapshot.val();
+
+              let newId = lastCount.contacts + 1;
+
+              return Promise.all([
+                this.allContactsDB.child(`${newId}`).set({
+                  id: newId,
+                  name: 'Activity',
+                  chinese_name: item.title,
+                  skills: [],
+                  class: 'group',
+                  hidden: true,
+                  createDT: moment().format("YYYY-MM-DD HH:mm:ss")
+                }),
+                this.lastCountDB.child('contacts').set(newId).then(() => item)
+              ]).then(() => {
+                return this.activitiesDB.child(`${key}`).child('chatId').set(newId);
+              });
+            })
+          },
+          postDeleteCallback: (item) => {
+            let chatId = item.chatId;
+            return this.allContactsDB.child(`${chatId}`).remove();
+          }
         };
 
         /* public URLs */

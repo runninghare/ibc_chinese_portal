@@ -39,6 +39,8 @@ export class ListPage implements OnDestroy {
   questionParams: IntPopupTemplateItem = {};
   additionalSlideButton: IntAuxiliaryButton;
   auxiliaryItems: any[] = [];
+  postAddCallback: (item: any, keyOrIndex: any) => Promise<any>;
+  postDeleteCallback: (item: any, keyOrIndex: any) => Promise<any>;
 
   subscription: Subscription;
 
@@ -62,7 +64,8 @@ export class ListPage implements OnDestroy {
     this.showReadOrUnread = navParams.get('showReadOrUnread');
     this.listHasKeys = navParams.get('listHasKeys');
     this.fullPermission = navParams.get('fullPermission');
-    this.additionalSlideButton = navParams.get('additionalSlideButton');
+    this.postAddCallback = navParams.get('postAddCallback');
+    this.postDeleteCallback = navParams.get('postDeleteCallback');
 
     if (this.additionalSlideButton && this.additionalSlideButton.getAuxiliaryDB) {
       this.additionalSlideButton.getAuxiliaryDB().on('value', snapshot => {
@@ -98,7 +101,7 @@ export class ListPage implements OnDestroy {
 
         this.groupValues.forEach(gv => {
           this.visibility[gv] = [];
-          this.mappedItems[gv] = this.mappedItemsFunc(gv).sort(this.orderByFunc);
+          this.mappedItems[gv] = this.mappedItemsFunc(gv);
         })
 
         let value = this.searchBar.value;
@@ -172,7 +175,7 @@ export class ListPage implements OnDestroy {
   }
 
   mappedItemsFunc(groupVal: any): IntListItem[] {
-      return this.items.filter(item => item[this.groupBy] == groupVal).map((item, i) => {
+      return this.items.filter(item => item[this.groupBy] == groupVal).sort(this.orderByFunc).map((item, i) => {
           this.visibility[groupVal][i] = (!this.filterText || this.filterFunc(this.filterText, item)) ? true : false;
           return item;
       }).map(this.mapFunc);
@@ -195,12 +198,18 @@ export class ListPage implements OnDestroy {
             if (this.listHasKeys) {
               let key = this.items[i].key || i;
 
-              console.log(`key = ${key}`);
+              // console.log(`key = ${key}`);
 
               if (key) {
                 this.itemsDB.child(`${key}`).remove().then(() => {
+                  if (this.postDeleteCallback) {
+                    this.postDeleteCallback(this.items[i], key).then(() => {
+                      this.commonSvc.toastSuccess('删除成功');
+                    }) 
+                  } else {
                     this.commonSvc.toastSuccess('删除成功');
-                }, err => {
+                  }
+                }).catch(err => {
                     this.commonSvc.toastFailure('删除失败', err);
                 });
               }
@@ -208,8 +217,14 @@ export class ListPage implements OnDestroy {
                 let item = this.items.splice(i, 1)[0];
                 let itemsToSave = this.items.map(item => this.reverseMapFunc(item));
                 this.itemsDB.set(itemsToSave).then(() => {
+                  if (this.postDeleteCallback) {
+                    this.postDeleteCallback(item, i).then(() => {
+                      this.commonSvc.toastSuccess('删除成功');
+                    }) 
+                  } else {
                     this.commonSvc.toastSuccess('删除成功');
-                }, err => {
+                  }
+                }).catch(err => {
                     this.commonSvc.toastFailure('删除失败', err);
                     this.items.splice(i, 0, item);
                 });              
@@ -230,13 +245,19 @@ export class ListPage implements OnDestroy {
             data.isNew = true;
 
             this.itemsDB.child(data.key).set(data).then(() => {
-                this.commonSvc.toastSuccess('添加成功');
+                if (this.postAddCallback) {
+                  this.postAddCallback(data, data.key).then(() => {
+                    this.commonSvc.toastSuccess('添加成功');
+                  })
+                } else {
+                  this.commonSvc.toastSuccess('添加成功');
+                }
                 popupModal.dismiss();
-            }, err => {
+            }).catch(err => {
                 this.commonSvc.toastFailure('添加失败', err);
                 this.items.pop();
                 popupModal.dismiss();
-            })
+            });
         } else {
             data.id = data.id || this.commonSvc.makeRandomString(8);
             data.isNew = true;
@@ -246,9 +267,15 @@ export class ListPage implements OnDestroy {
             let itemsToSave = this.items.map(item => this.reverseMapFunc(item));
 
             this.itemsDB.set(itemsToSave).then(() => {
-                this.commonSvc.toastSuccess('添加成功');
+                if (this.postAddCallback) {
+                  this.postAddCallback(data, this.items.length-1).then(result => {
+                    this.commonSvc.toastSuccess('添加成功');
+                  })
+                } else {
+                  this.commonSvc.toastSuccess('添加成功');
+                }              
                 popupModal.dismiss();
-            }, err => {
+            }).catch(err => {
                 this.commonSvc.toastFailure('添加失败', err);
                 this.items.pop();
                 popupModal.dismiss();

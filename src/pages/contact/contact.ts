@@ -2,7 +2,7 @@ import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { ModalController, NavController, NavParams, Searchbar } from 'ionic-angular';
 import { AudioProvider } from '../../providers/audio/audio';
 import { S2tProvider } from '../../providers/s2t/s2t';
-import { DataProvider, IntContact} from '../../providers/data-adaptor/data-adaptor';
+import { DataProvider, IntContact, IntPopupTemplateItem, TypeInputUI} from '../../providers/data-adaptor/data-adaptor';
 import { ChatPage } from '../../pages/chat/chat';
 import { MapPage } from '../../pages/map/map';
 import { SocialSharing } from '@ionic-native/social-sharing';
@@ -40,6 +40,75 @@ export class ContactPage implements OnDestroy {
   prefilter: (contact: IntContact) => boolean;
 
   notifTracker: any;
+
+  templateForAdd: IntPopupTemplateItem[] = [
+        {
+          key: 'name',
+          caption: '英文名'
+        },
+        {
+          key: 'chinese_name',
+          caption: '中文名'
+        },
+        {
+          key: 'class',
+          caption: '联系人类型',
+          type: TypeInputUI.Dropdown,
+          lookupSource: Observable.of([
+              {
+                  val: null,
+                  cap: '个人'
+              },
+              {
+                  val: 'group',
+                  cap: '群'
+              },
+          ]),
+          lookupCaption: 'cap',
+          lookupValue: 'val',
+        },
+        {
+          key: 'skills',
+          caption: '事奉',
+          type: TypeInputUI.MultiDropdown,
+          lookupSource: Observable.of([
+            {name: "傳道"},
+            {name: "主席"},
+            {name: "敬拜"},
+            {name: "司事"},
+            {name: "司琴"},
+            {name: "翻譯"},
+            {name: "影音"}
+          ]),
+          lookupCaption: 'name',
+          lookupValue: 'name'
+        },
+        {
+          key: 'email',
+          caption: '電子郵件'
+        },
+        {
+          key: 'mobile',
+          caption: '電話'
+        },
+        {
+          key: 'address1',
+          caption: '地址'
+        },
+        {
+          key: 'state',
+          caption: '省份',
+        },
+        {
+          key: 'postcode',
+          caption: '郵政編碼',
+        },
+        {
+          key: 'hidden',
+          caption: '隐藏',
+          type: TypeInputUI.Boolean
+        }
+      ];
 
   constructor(
     public navCtrl: NavController, public navParams: NavParams, public s2t: S2tProvider, 
@@ -101,7 +170,7 @@ export class ContactPage implements OnDestroy {
       let val = `${ev.target.value || ''}`.toLowerCase();
 
       this.mappedItems = this.items.filter(this.prefilter).filter(contact => {
-          if (contact.hidden) return false;
+          if (contact.hidden && this.content.ibcFB.access_level < 3) return false;
           if (!val) return true;
           if (!contact.skills) {
               contact.skills = [];
@@ -117,8 +186,8 @@ export class ContactPage implements OnDestroy {
         {
           key: 'id',
           caption: '选择联系人',
-          type: 'dropdown',
-          lookupSource: this.content.allContacts$,
+          type: TypeInputUI.Dropdown,
+          lookupSource: this.content.allContacts$.map(contacts => contacts.filter(contact => contact.class != 'group' && !contact.hidden)),
           lookupCaption: option => `${option.name} (${option.chinese_name})`,
           lookupValue: 'id'
         }
@@ -156,57 +225,7 @@ export class ContactPage implements OnDestroy {
   addContact(): void {
     let popupModal = this.modalCtrl.create(PopupComponent, { 
       title: '聯繫人',
-      definitions: [
-        {
-          key: 'name',
-          caption: '英文名'
-        },
-        {
-          key: 'chinese_name',
-          caption: '中文名'
-        },
-        {
-          key: 'skills',
-          caption: '事奉',
-          type: 'multi-dropdown',
-          lookupSource: Observable.of([
-            {name: "傳道"},
-            {name: "主席"},
-            {name: "敬拜"},
-            {name: "司事"},
-            {name: "司琴"},
-            {name: "翻譯"},
-            {name: "影音"}
-          ]),
-          lookupCaption: 'name',
-          lookupValue: 'name'
-        },
-        {
-          key: 'email',
-          caption: '電子郵件'
-        },
-        {
-          key: 'mobile',
-          caption: '電話'
-        },
-        {
-          key: 'address1',
-          caption: '地址'
-        },
-        {
-          key: 'state',
-          caption: '省份',
-        },
-        {
-          key: 'postcode',
-          caption: '郵政編碼',
-        },
-        {
-          key: 'hidden',
-          caption: '隐藏',
-          type: 'boolean'
-        }
-      ],
+      definitions: this.templateForAdd,
       cancel: () => popupModal.dismiss(),
       save: (data: any) => {
         console.log(JSON.stringify(data,null,2));
@@ -228,6 +247,8 @@ export class ContactPage implements OnDestroy {
               address1: data.address1,
               state: data.state,
               postcode: data.postcode,
+              class: data.class,
+              hidden: data.hidden,
               createDT: moment().format("YYYY-MM-DD HH:mm:ss")
             }),
             this.content.lastCountDB.child('contacts').set(newId)
@@ -256,6 +277,27 @@ export class ContactPage implements OnDestroy {
       });
     });
   }
+
+  editContact(contact: IntContact): void {
+    let popupModal = this.modalCtrl.create(PopupComponent, { 
+      title: this.title,
+      definitions: this.templateForAdd || [],
+      item: contact,
+      cancel: () => popupModal.dismiss(),
+      save: (item) => {
+          this.content.allContactsDB.child(`${contact.id}`).set(contact).then(() => {
+              this.commonSvc.toastSuccess('编辑成功');
+              popupModal.dismiss();
+          }, err => {
+              this.commonSvc.toastFailure('编辑失败', err);
+              this.items.pop();
+              popupModal.dismiss();
+          });
+
+      }
+    });
+    popupModal.present();
+  }   
 
   hasEmail(contact: IntContact) {
     return contact && contact.email && !/@unknown/.test(contact.email);

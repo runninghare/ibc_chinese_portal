@@ -69,6 +69,7 @@ export class ActivityPage implements OnDestroy {
 
       this.subscriptions.push(this.activity$.subscribe((act: IntActivity) => {
           this.activity = act;
+          this.activity.past = moment().isAfter(act.datetime);
           this.currentParticipantsCount = act.participants ? act.participants.length : 0;
 
           if (act && act.participants) {
@@ -295,7 +296,7 @@ export class ActivityPage implements OnDestroy {
   }
 
   goToChat(): void {
-    this.navCtrl.push(ChatPage, {contact: {id: this.activity.chatId}});
+    this.navCtrl.push(ChatPage, {contact: {id: this.activity.chatId, name: '留言', chinese_name: this.activity.title}});
   }
 
   openLink(url?: string): void {

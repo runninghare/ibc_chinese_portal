@@ -65,7 +65,7 @@
         </tbody>
     </table>
 
-    <ion-buttons class="ibc-top-margin-20" ion-end *ngIf="!activity.past && content.ibcFB.access_level > 0">
+    <ion-buttons class="ibc-top-margin-20" ion-end *ngIf="!activity.past && commonSvc.isMember">
       <button ion-button block color="teal" ion-end *ngIf="myIndex < 0" [question]="question" (answer)="register($event)">我要報名</button>
       <button ion-button block color="danger" ion-end *ngIf="myIndex >= 0" (click)="cancel()">取消報名</button>
     </ion-buttons>
@@ -98,7 +98,7 @@
         <h3 text-center >相片</h3>
         <ion-item-sliding *ngFor="let photo of activity?.pictures" class="ibc-v-margin-5">
             <img [src]="photo" ion-item (click)="openLink(photo)"/>
-            <ion-item-options side="right">
+            <ion-item-options side="right" *ngIf="commonSvc.isMember">
               <a ion-button color="danger" (click)="removePhoto(photo)">
                 删除
               </a>

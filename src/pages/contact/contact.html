@@ -31,13 +31,13 @@
   <ion-searchbar #searchBar (ionInput)="getItems($event)"></ion-searchbar>
   <ion-list>
     <ion-item-sliding *ngFor="let contact of mappedItems">
-      <ion-item (click)="contactClick(contact)" [style.background-color]="contact.class == 'group' ? '#F0F4C3' : '#FFF'">
+      <ion-item (click)="contactClick(contact)" [style.background-color]="contact.hidden ? '#EEE' : contact.class == 'group' ? '#F0F4C3' : '#FFF'">
         <ion-avatar item-start>
           <img [src]="sanitizer.bypassSecurityTrustResourceUrl(cacheSvc.cachingMap[contact.photoURL]?.target || 'assets/img/default-photo.jpg')">
         </ion-avatar>
         <ion-badge *ngIf="isNew(contact)" color="danger" class="ibc-badge">New!</ion-badge>
         <ion-badge *ngIf="contact.notifs" color="danger" class="ibc-badge">{{contact.notifs}}</ion-badge>
-        <h2>{{contact.name}} {{contact.chinese_name}} {{contact.class == 'group' ? '（群）' : ''}}</h2>
+        <h2>{{contact.name}} {{contact.chinese_name}} {{contact.class == 'group' ? '（群）' : ''}} {{contact.hidden ? '[隐藏]' : ''}}</h2>
         <p ion-note *ngIf="contact.skills?.length > 0">事奉 <ion-badge *ngFor="let skill of contact.skills" style="margin-right: 5px">{{skill}}</ion-badge></p>
         <ng-container *ngIf="contact?.shareInfo">
           <p ion-note *ngIf="hasEmail(content?.myselfContact) && hasEmail(contact)">電郵 {{contact.email}}</p>
@@ -48,7 +48,7 @@
           <p ion-note *ngIf="content?.myselfContact?.dob && contact.dob">生日 {{contact.dob | date:'M月d日'}}</p>          
         </ng-container>
       </ion-item>
-      <ion-item-options *ngIf="contact?.shareInfo" side="right">
+      <ion-item-options *ngIf="contact?.shareInfo || content.ibcFB.access_level >= 3" side="right">
         <a ion-button color="primary" *ngIf="content?.myselfContact?.mobile && contact.mobile" (click)="socialSharing.shareViaSMS('', contact.mobile)">
           <ion-icon name="text"></ion-icon>
           短信
@@ -65,8 +65,10 @@
           <ion-icon name="globe"></ion-icon>
           導航
         </a> 
+        <a ion-button *ngIf="!onlyForFriends && !commonSvc.readonly" (click)="editContact(contact)">
+          编辑
+        </a>         
         <a ion-button color="danger" *ngIf="!onlyForFriends && !commonSvc.readonly" (click)="deleteContact(contact.id)">
-          <ion-icon name="remove"></ion-icon>
           删除
         </a>                 
         <a ion-button color="danger" *ngIf="onlyForFriends" (click)="deleteFriend(contact.id)">
