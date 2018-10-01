@@ -66,6 +66,7 @@ export class ListPage implements OnDestroy {
     this.fullPermission = navParams.get('fullPermission');
     this.postAddCallback = navParams.get('postAddCallback');
     this.postDeleteCallback = navParams.get('postDeleteCallback');
+    this.additionalSlideButton = navParams.get('additionalSlideButton');
 
     if (this.additionalSlideButton && this.additionalSlideButton.getAuxiliaryDB) {
       this.additionalSlideButton.getAuxiliaryDB().on('value', snapshot => {

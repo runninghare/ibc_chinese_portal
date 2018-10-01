@@ -41,9 +41,28 @@ export class CommonProvider {
             let newPatternMatches = this.newVersion.match(pattern);
 
             if (oldPatternMatches.length == 4 && newPatternMatches.length == 4) {
-                return parseInt(oldPatternMatches[1]) < parseInt(newPatternMatches[1]) ||
-                    parseInt(oldPatternMatches[2]) < parseInt(newPatternMatches[2]) ||
-                    parseInt(oldPatternMatches[3]) < parseInt(newPatternMatches[3])
+                let oldMajor = parseInt(oldPatternMatches[1]);
+                let newMajor = parseInt(newPatternMatches[1]);
+
+                let oldMinor = parseInt(oldPatternMatches[2]);
+                let newMinor = parseInt(newPatternMatches[2]);
+
+                let oldPatch = parseInt(oldPatternMatches[3]);
+                let newPatch = parseInt(newPatternMatches[3]);
+
+                if (oldMajor < newMajor) 
+                    return true;
+                else if (oldMajor > newMajor) {
+                    return false;
+                } else if (oldMinor < newMinor) {
+                    return true;
+                } else if (oldMinor > newMinor) {
+                    return false
+                } else if (oldPatch < newPatch ) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
@@ -85,7 +104,7 @@ export class CommonProvider {
     }
 
     get readonly(): boolean {
-        return this.ibcFB.access_level < 2;
+        return this.ibcFB.access_level == null || this.ibcFB.access_level < 2;
     }
 
     /// Note: It's possible that both isMember and isNotMember being false

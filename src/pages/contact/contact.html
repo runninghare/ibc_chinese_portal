@@ -37,8 +37,11 @@
         </ion-avatar>
         <ion-badge *ngIf="isNew(contact)" color="danger" class="ibc-badge">New!</ion-badge>
         <ion-badge *ngIf="contact.notifs" color="danger" class="ibc-badge">{{contact.notifs}}</ion-badge>
-        <h2>{{contact.name}} {{contact.chinese_name}} {{contact.class == 'group' ? '（群）' : ''}} {{contact.hidden ? '[隐藏]' : ''}}</h2>
+        <h2>{{contact.name}} {{contact.chinese_name}} {{contact.class == 'group' ? '（群）' : ''}}</h2>
         <p ion-note *ngIf="contact.skills?.length > 0">事奉 <ion-badge *ngFor="let skill of contact.skills" style="margin-right: 5px">{{skill}}</ion-badge></p>
+        <ng-container *ngIf="contact?.hidden">
+          <p ion-note>本條目被隱藏，僅管理員可見</p>         
+        </ng-container>
         <ng-container *ngIf="contact?.shareInfo">
           <p ion-note *ngIf="hasEmail(content?.myselfContact) && hasEmail(contact)">電郵 {{contact.email}}</p>
           <p ion-note *ngIf="content?.myselfContact?.mobile && contact.mobile">電話 {{contact.mobile}}</p>
