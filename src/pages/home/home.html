@@ -47,7 +47,7 @@
     </p>    
   </div> -->
 
-  <div class="ibc-full-height">
+  <div class="ibc-full-height" [hidden]="loadTrackerSvc.loading">
       
     <ng-container *ngIf="!common.isLoggedIn">
 

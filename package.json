@@ -37,6 +37,7 @@
         "@ionic-native/camera": "^4.5.2",
         "@ionic-native/core": "4.4.0",
         "@ionic-native/crop": "^4.5.2",
+        "@ionic-native/deeplinks": "^4.15.0",
         "@ionic-native/file": "^4.5.3",
         "@ionic-native/file-opener": "^4.5.3",
         "@ionic-native/file-transfer": "^4.5.3",
@@ -69,6 +70,7 @@
         "cordova-plugin-camera": "~2.4.1",
         "cordova-plugin-code-push": "^1.11.10",
         "cordova-plugin-crop": "~0.3.1",
+        "cordova-plugin-customurlscheme": "^4.3.0",
         "cordova-plugin-dbcopy": "https://github.com/an-rahulpandey/cordova-plugin-dbcopy",
         "cordova-plugin-device": "~1.1.4",
         "cordova-plugin-file": "^4.3.3",
@@ -88,11 +90,12 @@
         "cordova-plugin-x-socialsharing": "~5.3.1",
         "cordova-plugin-youtube-video-player": "git+https://github.com/Remco75/CordovaYoutubeVideoPlayer.git",
         "cordova-plugin-zip": "^3.1.0",
-        "cordova-sqlite-ext": "https://github.com/litehelpers/cordova-sqlite-ext",
+        "cordova-sqlite-ext": "^2.2.0",
         "firebase": "^4.9.0",
         "ionic-angular": "3.9.2",
         "ionic-image-loader": "^5.0.0",
         "ionic-native": "^2.9.0",
+        "ionic-plugin-deeplinks": "^1.0.17",
         "ionic-plugin-keyboard": "~2.2.1",
         "ionic-selectable": "^3.0.3",
         "ionicons": "^3.0.0",
@@ -165,7 +168,6 @@
             "cordova-plugin-whitelist": {},
             "cordova-plugin-x-socialsharing": {},
             "cordova-plugin-youtube-video-player": {},
-            "cordova-sqlite-ext": {},
             "ionic-plugin-keyboard": {},
             "uk.co.workingedge.cordova.plugin.sqliteporter": {},
             "uk.co.workingedge.phonegap.plugin.launchnavigator": {
@@ -181,7 +183,31 @@
             "cordova-android-play-services-gradle-release": {
                 "PLAY_SERVICES_VERSION": "12.0.0"
             },
-            "cordova-plugin-in-app-youtube": {}
+            "cordova-plugin-in-app-youtube": {},
+            "cordova-plugin-customurlscheme": {
+                "URL_SCHEME": "ibcchinese",
+                "ANDROID_SCHEME": " ",
+                "ANDROID_HOST": " ",
+                "ANDROID_PATHPREFIX": "/"
+            },
+            "ionic-plugin-deeplinks": {
+                "URL_SCHEME": "ibcchinese",
+                "DEEPLINK_SCHEME": "http",
+                "DEEPLINK_HOST": "redirect",
+                "ANDROID_PATH_PREFIX": "/",
+                "ANDROID_2_PATH_PREFIX": "/",
+                "ANDROID_3_PATH_PREFIX": "/",
+                "ANDROID_4_PATH_PREFIX": "/",
+                "ANDROID_5_PATH_PREFIX": "/",
+                "DEEPLINK_2_SCHEME": " ",
+                "DEEPLINK_2_HOST": " ",
+                "DEEPLINK_3_SCHEME": " ",
+                "DEEPLINK_3_HOST": " ",
+                "DEEPLINK_4_SCHEME": " ",
+                "DEEPLINK_4_HOST": " ",
+                "DEEPLINK_5_SCHEME": " ",
+                "DEEPLINK_5_HOST": " "
+            }
         }
     }
 }

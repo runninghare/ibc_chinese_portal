@@ -24,6 +24,9 @@ import { FileOpener } from '@ionic-native/file-opener';
 import { File } from '@ionic-native/file';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { AudioProvider } from '../../providers/audio/audio';
+import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
+import { Deeplinks } from '@ionic-native/deeplinks';
+import { Observable } from 'rxjs';
 
 // declare var cordova;
 
@@ -80,7 +83,9 @@ export class HomePage implements OnInit, AfterViewInit {
         public fileCacheSvc: FileCacheProvider,
         public audioSvc: AudioProvider,
         public socialSharing: SocialSharing,
-        public wechat: WechatProvider
+        public wechat: WechatProvider,
+        public deepLinks: Deeplinks,
+        public loadTrackerSvc: LoadTrackerProvider
     ) {
 
         window['rxjs'] = rxjs;
@@ -107,6 +112,32 @@ export class HomePage implements OnInit, AfterViewInit {
                 }
             }, 5000);
         }
+
+        if (!this.common.isWeb) {
+            this.platform.ready().then(() => {
+                this.loadTrackerSvc.loading = true;
+                this.deepLinks.routeWithNavController(this.navCtrl, {
+                    '/about-us': AboutPage,
+                    '/about-app/:app': AboutAppPage
+                })
+                .subscribe(match => {
+                    // match.$route - the route we matched, which is the matched entry from the arguments to route()
+                    // match.$args - the args passed in the link
+                    // match.$link - the full link data
+                    console.log('Successfully matched route', JSON.stringify(match));
+                    this.loadTrackerSvc.loading = false;
+                }, nomatch => {
+                    // nomatch.$link - the full link data
+                    console.error('Got a deeplink that didn\'t match', nomatch);
+                    this.loadTrackerSvc.loading = false;
+                });
+
+                setTimeout(() => {
+                    this.loadTrackerSvc.loading = false;
+                }, 2000);
+            });
+        }
+
     }
 
     aboutUs(): void {

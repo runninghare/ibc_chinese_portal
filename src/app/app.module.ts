@@ -99,6 +99,8 @@ import { BibleProvider } from '../providers/bible/bible';
 import { WechatProvider } from '../providers/wechat/wechat';
 import { IbcHttpProvider } from '../providers/ibc-http/ibc-http';
 
+import { Deeplinks } from '@ionic-native/deeplinks';
+
 // const firebaseConfig = {
 //     apiKey: "AIzaSyDFkwr578ZYuu0PPQxd5MN2-OCh4O7oKtc",
 //     authDomain: "resplendent-heat-6828.firebaseapp.com",
@@ -219,7 +221,8 @@ import { IbcHttpProvider } from '../providers/ibc-http/ibc-http';
     NotificationProvider,
     BibleProvider,
     WechatProvider,
-    IbcHttpProvider
+    IbcHttpProvider,
+    Deeplinks
   ]
 })
 export class AppModule {}

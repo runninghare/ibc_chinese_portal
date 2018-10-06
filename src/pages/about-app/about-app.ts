@@ -26,6 +26,8 @@ export class AboutAppPage {
 
     constructor(public app: App, public navCtrl: NavController, public navParams: NavParams,
         public common: CommonProvider, public content: DataProvider) {
+        // console.log('--- about app constructed! ---');
+        // console.log(JSON.stringify(navParams));
     }
 
     goBack(): void {
