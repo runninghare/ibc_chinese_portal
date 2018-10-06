@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { IbcStyleProvider } from '../../providers/ibc-style/ibc-style';
 
 /**
@@ -9,6 +9,7 @@ import { IbcStyleProvider } from '../../providers/ibc-style/ibc-style';
  * Ionic pages and navigation.
  */
 
+@IonicPage()
 @Component({
   selector: 'page-about',
   templateUrl: 'about.html',

@@ -1,5 +1,5 @@
 import { Directive, ElementRef, OnInit, Input, HostListener  } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, ModalController } from 'ionic-angular';
 import { MapPage } from '../../pages/map/map';
 import * as $ from 'jquery';
 
@@ -20,11 +20,13 @@ export class MapLinkDirective implements OnInit {
   @HostListener('click') click(): void {
       if (this.address) {
         console.log(this.address);
-        this.navControler.push(MapPage, {address: this.address, title: this.title});
+        let modal = this.modalCtrl.create(MapPage, {address: this.address, title: this.title});
+        modal.present();        
+        // this.navControler.push(MapPage, {address: this.address, title: this.title});
       }
   }
 
-  constructor(public el: ElementRef, public navControler: NavController) {
+  constructor(public el: ElementRef, public navControler: NavController, public modalCtrl: ModalController) {
       console.log('Hello MapDirective Directive');
   }
 

@@ -23,7 +23,10 @@ import { ContactPage } from '../pages/contact/contact';
 import { HeaderPopoverPage } from '../pages/Popover/header';
 import { BrowserPage } from '../pages/browser/browser';
 import { ActivityPage } from '../pages/activity/activity';
-import { AboutPage } from '../pages/about/about';
+
+import { AboutPageModule } from '../pages/about/about.module';
+import { CommonDirectivesModule } from '../directives/directives.module';
+
 import { AboutAppPage } from '../pages/about-app/about-app';
 import { ChatPage } from '../pages/chat/chat';
 import { MapPage } from '../pages/map/map';
@@ -88,18 +91,14 @@ import { FileCacheProvider } from '../providers/file-cache/file-cache';
 import { LoadTrackerProvider } from '../providers/load-tracker/load-tracker';
 import { NotificationProvider } from '../providers/notification/notification';
 
-import { ParseHtmlDirective } from '../directives/parse-html/parse-html';
-import { QuestionDirective } from '../directives/question/question';
-import { ContactLinkDirective } from '../directives/contact-link/contact-link';
-import { MapLinkDirective } from '../directives/map-link/map-link';
-import { OneTimeDirective } from '../directives/one-time/one-time';
-
 import {ENV} from '@app/env';
 import { BibleProvider } from '../providers/bible/bible';
 import { WechatProvider } from '../providers/wechat/wechat';
 import { IbcHttpProvider } from '../providers/ibc-http/ibc-http';
 
 import { Deeplinks } from '@ionic-native/deeplinks';
+
+import { SharedModule } from './shared.module';
 
 // const firebaseConfig = {
 //     apiKey: "AIzaSyDFkwr578ZYuu0PPQxd5MN2-OCh4O7oKtc",
@@ -119,24 +118,18 @@ import { Deeplinks } from '@ionic-native/deeplinks';
     HeaderPopoverPage,
     PhotoEditPage,
     UserProfilePage,
-    ModalSelectAvatar,
+    // ModalSelectAvatar,
     MinistryPage,
     BrowserPage,
     ActivityPage,
     ChatPage,
     MapPage,
     SongPage,
-    AboutPage,
     AboutAppPage,
-    PopupComponent,
-    LoadTrackerComponent,
-    ParseHtmlDirective,
-    QuestionDirective,
-    ContactLinkDirective,
-    MapLinkDirective,
-    OneTimeDirective,
-    IbcMapComponent,
-    YoutubeVideoComponent,
+    // PopupComponent,
+    // LoadTrackerComponent,
+    // IbcMapComponent,
+    // YoutubeVideoComponent,
     BiblePage,
     BibleBookPage,
     BibleChapterPage,
@@ -154,10 +147,13 @@ import { Deeplinks } from '@ionic-native/deeplinks';
     IonicImageLoader.forRoot(),
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(ENV.firebaseConfig),
+    CommonDirectivesModule,
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     AngularFirestoreModule,
-    ImageCropperModule
+    ImageCropperModule,
+    AboutPageModule,
+    SharedModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -165,22 +161,21 @@ import { Deeplinks } from '@ionic-native/deeplinks';
     HomePage,
     ListPage,
     ContactPage,
-    AboutPage,
     AboutAppPage,
     HeaderPopoverPage,
     PhotoEditPage,
     UserProfilePage,
-    ModalSelectAvatar,
+    // ModalSelectAvatar,
     MinistryPage,
     BrowserPage,
     ActivityPage,
     ChatPage,
     MapPage,
     SongPage,
-    PopupComponent,
-    LoadTrackerComponent,
-    IbcMapComponent,
-    YoutubeVideoComponent,
+    // PopupComponent,
+    // LoadTrackerComponent,
+    // IbcMapComponent,
+    // YoutubeVideoComponent,
     BiblePage,
     BibleBookPage,
     BibleChapterPage,

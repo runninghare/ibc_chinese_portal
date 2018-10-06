@@ -68,9 +68,12 @@ export class ActivityPage implements OnDestroy {
       this.activityDB = this.content.activitiesDB.child(`${this.activityIndex}`);
 
       this.subscriptions.push(this.activity$.subscribe((act: IntActivity) => {
-          this.activity = act;
-          this.activity.past = moment().isAfter(act.datetime);
-          this.currentParticipantsCount = act.participants ? act.participants.length : 0;
+
+          if (act) {
+            this.activity = act;
+            this.activity.past = moment().isAfter(act.datetime);
+            this.currentParticipantsCount = act.participants ? act.participants.length : 0;
+          }
 
           if (act && act.participants) {
             if (!this.content.myselfContact) {
