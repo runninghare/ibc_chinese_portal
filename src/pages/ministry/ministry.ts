@@ -4,6 +4,7 @@ import { MinistryProvider, IntMinistrySheet } from '../../providers/ministry/min
 import { NotificationProvider } from '../../providers/notification/notification';
 import { TypeInputUI, IntListItem } from '../../providers/data-adaptor/data-adaptor';
 import { IntArrayChanges, CommonProvider } from '../../providers/common/common';
+import { WechatProvider } from '../../providers/wechat/wechat';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 
@@ -31,13 +32,18 @@ export class MinistryPage implements OnInit {
         public navParams: NavParams,
         public ministrySvc: MinistryProvider,
         public notificationSvc: NotificationProvider,
-        public common: CommonProvider
+        public common: CommonProvider,
+        public wechat: WechatProvider
     ) {
         this.preloadedDate = this.navParams.get("forDate");
         this.roleChanges = [];
     }
 
     ionViewDidLoad() {
+    }
+
+    share(): void {
+      this.wechat.weChatShareLink('https://www.google.com.au','分享谷歌2','Ross测试用','https://cordova.apache.org/images/cordova_256.png');
     }
 
     pushSheet(): void {

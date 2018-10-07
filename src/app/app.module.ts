@@ -15,14 +15,14 @@ import { YoutubeVideoComponent } from '../components/youtube-video/youtube-video
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
+import { ListPageModule } from '../pages/list/list.module';
 import { PhotoEditPage } from '../pages/photo-edit/photo-edit';
 import { UserProfilePage, ModalSelectAvatar } from '../pages/user-profile/user-profile';
 import { MinistryPage } from '../pages/ministry/ministry';
 import { ContactPage } from '../pages/contact/contact';
 import { HeaderPopoverPage } from '../pages/Popover/header';
 import { BrowserPage } from '../pages/browser/browser';
-import { ActivityPage } from '../pages/activity/activity';
+import { ActivityPageModule } from '../pages/activity/activity.module';
 
 import { AboutPageModule } from '../pages/about/about.module';
 import { CommonDirectivesModule } from '../directives/directives.module';
@@ -113,23 +113,16 @@ import { SharedModule } from './shared.module';
   declarations: [
     MyApp,
     HomePage,
-    ListPage,
     ContactPage,
     HeaderPopoverPage,
     PhotoEditPage,
     UserProfilePage,
-    // ModalSelectAvatar,
     MinistryPage,
     BrowserPage,
-    ActivityPage,
     ChatPage,
     MapPage,
     SongPage,
     AboutAppPage,
-    // PopupComponent,
-    // LoadTrackerComponent,
-    // IbcMapComponent,
-    // YoutubeVideoComponent,
     BiblePage,
     BibleBookPage,
     BibleChapterPage,
@@ -138,44 +131,30 @@ import { SharedModule } from './shared.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    FormsModule,
-    HttpClientModule,
-    FlexLayoutModule,
-    IonicSelectableModule,
-    MonthlyVersesPageModule,
-    HttpModule,
-    IonicImageLoader.forRoot(),
     IonicModule.forRoot(MyApp),
-    AngularFireModule.initializeApp(ENV.firebaseConfig),
-    CommonDirectivesModule,
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     AngularFirestoreModule,
     ImageCropperModule,
+    SharedModule,
     AboutPageModule,
-    SharedModule
+    ActivityPageModule,
+    ListPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     HomePage,
-    ListPage,
     ContactPage,
     AboutAppPage,
     HeaderPopoverPage,
     PhotoEditPage,
     UserProfilePage,
-    // ModalSelectAvatar,
     MinistryPage,
     BrowserPage,
-    ActivityPage,
     ChatPage,
     MapPage,
     SongPage,
-    // PopupComponent,
-    // LoadTrackerComponent,
-    // IbcMapComponent,
-    // YoutubeVideoComponent,
     BiblePage,
     BibleBookPage,
     BibleChapterPage,
@@ -215,8 +194,8 @@ import { SharedModule } from './shared.module';
     Badge,
     NotificationProvider,
     BibleProvider,
-    WechatProvider,
     IbcHttpProvider,
+    WechatProvider,
     Deeplinks
   ]
 })

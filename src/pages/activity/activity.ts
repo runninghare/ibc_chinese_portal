@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { NavController, NavParams, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
 import { BrowserProvider } from '../../providers/browser/browser';
 import { CommonProvider } from '../../providers/common/common';
 import { database, DataProvider, IntListItem, IntContact, IntActivity, IntPopupTemplateItem, TypeInputUI} from '../../providers/data-adaptor/data-adaptor';
@@ -22,6 +22,9 @@ import * as moment from 'moment';
  * Ionic pages and navigation.
  */
 
+@IonicPage({
+  segment: 'activity/:itemIndex/:itemId'
+})
 @Component({
   selector: 'page-activity',
   templateUrl: 'activity.html'

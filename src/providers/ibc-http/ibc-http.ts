@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, forwardRef } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
@@ -16,7 +16,7 @@ export class IbcHttpProvider {
 
   headers: any;
 
-  constructor(public http: HttpClient, public ibcFB: IbcFirebaseProvider, public loadTrackerSvc: LoadTrackerProvider) {
+  constructor(public http: HttpClient,  public ibcFB: IbcFirebaseProvider, public loadTrackerSvc: LoadTrackerProvider) {
     console.log('Hello IbcHttpProvider Provider');
 
     this.ibcFB.userProfile$.filter(auth => auth != null).subscribe(auth => {

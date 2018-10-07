@@ -1,6 +1,7 @@
 import { Http, Headers, RequestOptions } from '@angular/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, forwardRef } from '@angular/core';
 import { ENV } from '@app/env';
+import { Observable } from 'rxjs';
 
 export interface IntWeChatAuth {
     openid?: string;
@@ -25,6 +26,8 @@ declare var Wechat;
 */
 @Injectable()
 export class WechatProvider {
+
+    linkingInProgress: boolean;
 
     constructor(public http: Http) {
     }
@@ -61,21 +64,50 @@ export class WechatProvider {
             Accept: 'application/json', 
             'Content-Type': 'application/json' });            
 
+        this.linkingInProgress = true;
         return new Promise<any>((resolve, reject) => {
             Wechat.auth(scope, state, (response) => {
-                this.http.post(`${ENV.apiServer}/wechat/associate`, {code: response.code}, new RequestOptions({ headers })).subscribe(res => {
+                this.linkingInProgress = false;
+                this.http.post(`${ENV.apiServer}/wechat/associate`, { code: response.code }, new RequestOptions({ headers })).subscribe(res => {
+                    this.linkingInProgress = false;
                     resolve(res);
-                }, reject);
+                }, err => {
+                    this.linkingInProgress = false;
+                    reject(err);
+                });
                 // this.weChatShare();
-            }, reject);
+            }, err => {
+                this.linkingInProgress = false;
+                reject(err);
+            });
         });
-    }    
+    }
 
-    weChatShare(): void {
-        Wechat.share({
-            text: "This is just a plain string",
-            scene: Wechat.Scene.TIMELINE   // share to Timeline
-        }, function () {
+    weChatLinkSendApiRequest(fbAuthUid: string, code: string): Observable<any> {
+        let headers = new Headers({
+            Authorization: `Bearer ${fbAuthUid}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        });  
+
+        return this.http.post(`${ENV.apiServer}/wechat/associate`, { code: code }, new RequestOptions({ headers }))
+    }
+
+    weChatShareLink(webpageUrl: string, title?: string, description?: string, thumb?: string): void {
+        let params = {
+            scene: 0,   // share to Timeline
+            message: {
+                title,
+                description,
+                thumb,
+                media: {
+                    type: Wechat.Type.LINK,
+                    webpageUrl
+                }
+            }
+        };
+
+        Wechat.share(params, function () {
             alert("Success");
         }, function (reason) {
             alert("Failed: " + reason);

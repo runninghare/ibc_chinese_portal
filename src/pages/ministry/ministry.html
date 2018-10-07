@@ -9,7 +9,7 @@
   <ion-navbar>
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
-    </button>    
+    </button>   
     <ion-title>事工輪替</ion-title>
     <ion-buttons end>
 <!--       <button ion-button color="primary" *ngIf="displayName != 'Chinese'" (click)="displayName = 'Chinese'">
@@ -17,7 +17,7 @@
       </button>
       <button ion-button color="primary" *ngIf="displayName != 'English'" (click)="displayName = 'English'">
         英文名
-      </button>   -->    
+      </button>   -->            
       <button ion-button color="primary" [hidden]="ministrySvc.readonly" (click)="undo()">
         Undo
       </button>              
@@ -66,5 +66,9 @@
             </ion-list>
         </ion-slide>
     </ion-slides>
+
+    <button ion-button block color="teal-1" [hidden]="ministrySvc.readonly" (click)="share()">
+      微信分享
+    </button>
 
 </ion-content>

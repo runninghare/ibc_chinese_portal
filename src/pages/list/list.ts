@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnDestroy } from '@angular/core';
-import { ModalController, NavController, NavParams, Searchbar } from 'ionic-angular';
+import { IonicPage, ModalController, NavController, NavParams, Searchbar } from 'ionic-angular';
 import * as firebase from 'firebase/app';
 import { CommonProvider } from '../../providers/common/common';
 import { BrowserProvider } from '../../providers/browser/browser';
@@ -14,15 +14,17 @@ import { ChatPage } from '../chat/chat';
 /// Providers and Services
 import { S2tProvider } from '../../providers/s2t/s2t';
 import { Observable, Subscription } from 'rxjs';
-import { DataProvider, IntPopupTemplateItem, IntListItem, IntAuxiliaryButton } from '../../providers/data-adaptor/data-adaptor';
+import { DataProvider, IntPopupTemplateItem, IntListItem, IntListPageParams, IntAuxiliaryButton } from '../../providers/data-adaptor/data-adaptor';
 
-export { IntListItem } from '../../providers/data-adaptor/data-adaptor';
-
+@IonicPage({
+  segment: 'list/:type'
+})
 @Component({
   selector: 'page-list',
   templateUrl: 'list.html'
 })
 export class ListPage implements OnDestroy {
+  params: IntListPageParams;
   items$: Observable<IntListItem[]> = Observable.of([]);
   itemsDB: firebase.database.Reference;
   items: IntListItem[] = [];
@@ -55,18 +57,23 @@ export class ListPage implements OnDestroy {
     public s2t: S2tProvider,
     public browser: BrowserProvider) {
     // If we navigated to this page, we will have an item available as a nav param
-    this.itemsDB = navParams.get('itemsDB');
-    this.items$ = navParams.get('items$');
-    this.groupBy = navParams.get('groupBy');
-    this.checkNew = navParams.get('checkNew');
-    this.hideEdit = navParams.get('hideEdit');
-    this.hideDelete = navParams.get('hideDelete');
-    this.showReadOrUnread = navParams.get('showReadOrUnread');
-    this.listHasKeys = navParams.get('listHasKeys');
-    this.fullPermission = navParams.get('fullPermission');
-    this.postAddCallback = navParams.get('postAddCallback');
-    this.postDeleteCallback = navParams.get('postDeleteCallback');
-    this.additionalSlideButton = navParams.get('additionalSlideButton');
+    let type = navParams.get('type');
+
+    if (type && this.content[type]) {
+      let params = this.params = this.content[type];
+      this.itemsDB = params['itemsDB'];
+      this.items$ = params['items$'];
+      this.groupBy = params['groupBy'];
+      this.checkNew = params['checkNew'];
+      this.hideEdit = params['hideEdit'];
+      this.hideDelete = params['hideDelete'];
+      this.showReadOrUnread = params['showReadOrUnread'];
+      this.listHasKeys = params['listHasKeys'];
+      this.fullPermission = params['fullPermission'];
+      this.postAddCallback = params['postAddCallback'];
+      this.postDeleteCallback = params['postDeleteCallback'];
+      this.additionalSlideButton = params['additionalSlideButton'];
+    }
 
     if (this.additionalSlideButton && this.additionalSlideButton.getAuxiliaryDB) {
       this.additionalSlideButton.getAuxiliaryDB().on('value', snapshot => {
@@ -74,9 +81,9 @@ export class ListPage implements OnDestroy {
       });
     }
 
-    let subtitleAs = navParams.get('subtitleAs');
+    let subtitleAs = this.params.subtitleAs;
     if (typeof subtitleAs == 'string') {
-      this.subtitleAs = item => item[subtitleAs];
+      this.subtitleAs = item => subtitleAs;
     } else if (typeof subtitleAs == 'function') {
       this.subtitleAs = subtitleAs;
     } else {
@@ -110,32 +117,32 @@ export class ListPage implements OnDestroy {
       }, err => {});
     }
 
-    this.title = navParams.get('title');
-    this.templateForAdd = navParams.get('templateForAdd');
+    this.title = this.params.title;
+    this.templateForAdd = this.params.templateForAdd;
 
-    this.filterFunc = navParams.get('filterFunc');
+    this.filterFunc = this.params.filterFunc;
     if (!this.filterFunc) {
       this.filterFunc = (val, item) => {
         return `${item.title} ${item.subtitle}`.toLowerCase().indexOf(this.s2t.tranStr(val, true)) > -1;
       }
     }
-    this.mapFunc = navParams.get('mapFunc');
+    this.mapFunc = this.params.mapFunc;
     if (!this.mapFunc) {
       this.mapFunc = item => item;
     }
-    this.reverseMapFunc = navParams.get('reverseMapFunc');
+    this.reverseMapFunc = this.params.reverseMapFunc;
     if (!this.reverseMapFunc) {
       this.reverseMapFunc = item => item;
     }
-    this.callFunc = navParams.get('callFunc');
+    this.callFunc = this.params.callFunc;
     if (!this.callFunc) {
       this.callFunc = () => console.log('=== default callFunc ===');
     }
-    this.groupOrderByFunc = navParams.get('groupOrderByFunc');
+    this.groupOrderByFunc = this.params.groupOrderByFunc;
     if (!this.groupOrderByFunc) {
       this.groupOrderByFunc = (a,b) => a < b ? -1 : 1;
     }
-    this.orderByFunc = navParams.get('orderByFunc');
+    this.orderByFunc = this.params.orderByFunc;
     if (!this.orderByFunc) {
       this.orderByFunc = (a,b) => a < b ? -1 : 1;
     }

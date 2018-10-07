@@ -300,6 +300,7 @@ export class DataProvider {
     userAuthHandler(): void {
         this.currentUser$ = this.ibcFB.userProfile$.filter(u => u != null).flatMap(authUser => {
             this.auth = authUser;
+            this.ibcFB.userProfile = authUser;
 
             /* Update Auth User profile we have it in auth.providedData */
             if ((!authUser.displayName || !authUser.photoURL) && authUser.providerData && authUser.providerData[0]) {

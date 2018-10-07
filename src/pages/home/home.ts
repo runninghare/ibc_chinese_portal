@@ -11,6 +11,7 @@ import { HeaderPopoverPage } from '../../pages/Popover/header';
 import { MinistryPage } from '../../pages/ministry/ministry';
 import { ListPage } from '../../pages/list/list';
 import { AboutPage } from '../../pages/about/about';
+import { ActivityPage } from '../../pages/activity/activity';
 import { UserProfilePage } from '../../pages/user-profile/user-profile';
 import { AboutAppPage } from '../../pages/about-app/about-app';
 // import { PhotoEditPage } from '../../pages/photo-edit/photo-edit';
@@ -92,7 +93,7 @@ export class HomePage implements OnInit, AfterViewInit {
 
         ibcFB.userProfile$.filter(auth => auth != null).subscribe(userProfile => {
             this.authUser = userProfile;
-            ibcFB.userProfile = userProfile;
+            // ibcFB.userProfile = userProfile;
 
             /* Set standard background for authenticated users */
             if (this.authUser && this.ibcFB.access_level > 0) {
@@ -117,8 +118,10 @@ export class HomePage implements OnInit, AfterViewInit {
             this.platform.ready().then(() => {
                 this.loadTrackerSvc.loading = true;
                 this.deepLinks.routeWithNavController(this.navCtrl, {
-                    '/about-us': AboutPage,
-                    '/about-app/:app': AboutAppPage
+                    '/about-page': AboutPage,
+                    '/about-app-page': AboutAppPage,
+                    '/list-page/:type': ListPage,
+                    '/activity-page/:itemIndex/:itemId': ActivityPage
                 })
                 .subscribe(match => {
                     // match.$route - the route we matched, which is the matched entry from the arguments to route()
@@ -126,6 +129,43 @@ export class HomePage implements OnInit, AfterViewInit {
                     // match.$link - the full link data
                     console.log('Successfully matched route', JSON.stringify(match));
                     this.loadTrackerSvc.loading = false;
+
+                    if (match && match.$link) {
+                        let data = match.$link;
+                        let queryString = data.queryString;
+                        console.log(queryString);
+
+                        let wechatMatch = queryString.match(/code=(\w+)&state=\w+&lang=\w+&country=\w+/);
+                        if (this.wechat.linkingInProgress && wechatMatch) {
+                            let code = wechatMatch[1];
+                            this.wechat.weChatLinkSendApiRequest(this.authUser.uid, code).subscribe((res) => {
+                                let userInfo = res.json();
+
+                                this.ibcFB.wechatAuthInfo = userInfo;
+
+                                let toast = this.toastCtrl.create({
+                                    message: '成功關聯到WeChat帳戶',
+                                    duration: 3000,
+                                    position: 'top',
+                                    cssClass: 'toast-success'
+                                });
+
+                                toast.present();
+
+                                this.wechat.linkingInProgress = false;
+                            }, e => {
+                                let toast = this.toastCtrl.create({
+                                    message: 'Wechat帳戶關聯失敗！',
+                                    duration: 3000,
+                                    position: 'top',
+                                    cssClass: 'toast-danger'
+                                });
+
+                                toast.present();                      
+                                this.wechat.linkingInProgress = false;            
+                            });
+                        }
+                    }
                 }, nomatch => {
                     // nomatch.$link - the full link data
                     console.error('Got a deeplink that didn\'t match', nomatch);
@@ -228,13 +268,13 @@ export class HomePage implements OnInit, AfterViewInit {
         } else if (card.redirect == 'MinistryPage') {
             this.navCtrl.push(MinistryPage);
         } else if (card.redirect == 'SongPage') {
-            this.navCtrl.push(ListPage, this.content.nextSongPageParams);
+            this.navCtrl.push(ListPage, {type: 'nextSongPageParams'});
             // this.navCtrl.push(SongPage, { nextServiceOnly: true });
         } else if (card.redirect == 'TaskPage') {
-            this.navCtrl.push(ListPage, this.content.myTasksParams);
+            this.navCtrl.push(ListPage, {type: 'myTasksParams'});
             // this.navCtrl.push(SongPage, { nextServiceOnly: true });
         } else if (card.redirect == 'ActivityPage') {
-            this.navCtrl.push(ListPage, this.content.activitiesParams);
+            this.navCtrl.push(ListPage, {type: 'activitiesParams'});
             // this.navCtrl.push(SongPage, { nextServiceOnly: true });
         }
     }

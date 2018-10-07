@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { AppLinkPage } from './app-link';
+import { ListPage } from './list';
 import { SharedModule } from '../../app/shared.module';
 
 @NgModule({
   declarations: [
-    AppLinkPage,
+    ListPage,
   ],
   imports: [
     SharedModule,
-    IonicPageModule.forChild(AppLinkPage),
+    IonicPageModule.forChild(ListPage)
   ],
-  exports: [AppLinkPage],
-  entryComponents: [AppLinkPage]
+  exports: [ListPage],
+  entryComponents: [ListPage]
 })
-export class AppLinkPageModule {}
+export class ListPageModule {}

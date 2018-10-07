@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { AppLinkPage } from './app-link';
+import { ActivityPage } from './activity';
 import { SharedModule } from '../../app/shared.module';
 
 @NgModule({
   declarations: [
-    AppLinkPage,
+    ActivityPage,
   ],
   imports: [
     SharedModule,
-    IonicPageModule.forChild(AppLinkPage),
+    IonicPageModule.forChild(ActivityPage)
   ],
-  exports: [AppLinkPage],
-  entryComponents: [AppLinkPage]
+  exports: [ActivityPage],
+  entryComponents: [ActivityPage]
 })
-export class AppLinkPageModule {}
+export class ActivityPageModule {}
