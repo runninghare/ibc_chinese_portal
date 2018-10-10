@@ -41,7 +41,7 @@ export class MyApp implements AfterViewInit {
 
   storage: SQLite;
 
-  pages: Array<{title: string, component: any, needAuth?: boolean, params?: any}>;
+  pages: Array<{title: string, component: any, needAuth?: boolean, adminAuth?: boolean, params?: any}>;
 
   constructor(
     public platform: Platform, 
@@ -96,7 +96,9 @@ export class MyApp implements AfterViewInit {
       { title: '我的好友', component: ContactPage, needAuth: true, params: {myFriends: true, title: '我的好友'} },
       { title: '我的任务', component: ListPage, needAuth: true, params: {type: 'myTasksParams'} },
       { title: '關於我們', component: AboutPage, needAuth: false },
-      { title: '關於APP', component: AboutAppPage, needAuth: false }
+      { title: '關於APP', component: AboutAppPage, needAuth: false },
+      { title: '群組管理', component: ListPage, needAuth: true, adminAuth: true, params: {type: 'groupManagementParams'} },
+      { title: '發送消息', component: AboutAppPage, needAuth: true, adminAuth: true },
     ];
   }
 

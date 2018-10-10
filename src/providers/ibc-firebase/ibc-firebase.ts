@@ -391,30 +391,54 @@ export class IbcFirebaseProvider {
         }
     }
 
+    successHandlerLinkWechat = (res) => {
+        this.loadTrackerSvc.loading = false;
+        let userInfo = res.json();
+
+        this.wechatAuthInfo = userInfo;
+
+        let toast = this.toastCtrl.create({
+            message: '成功關聯到WeChat帳戶',
+            duration: 3000,
+            position: 'top',
+            cssClass: 'toast-success'
+        });
+
+        toast.present();
+
+        this.wechatSvc.linkingInProgress = false;
+    }
+
+    failureHandlerLinkWechat = (err) => {
+        this.loadTrackerSvc.loading = false;
+        let toast = this.toastCtrl.create({
+            message: 'Wechat帳戶關聯失敗！',
+            duration: 3000,
+            position: 'top',
+            cssClass: 'toast-danger'
+        });
+
+        toast.present();
+        this.wechatSvc.linkingInProgress = false;
+    }
+
     linkWechat(): void {
-        this.wechatSvc.weChatLink(this.userProfile.uid).then(res => {
-            let userInfo = res.json();
+        this.loadTrackerSvc.loading = true;
+        this.wechatSvc.weChatLink(this.userProfile.uid)
+            .then(this.successHandlerLinkWechat)
+            .catch(this.failureHandlerLinkWechat);
+    }
 
-            this.wechatAuthInfo = userInfo;
+    /* Ideally we should only use linkWechat. The reason why we must send another request
+     via this function is that deepLinks intercepts the incoming HTTP request such that 
+     the callback function from weChat.auth() will never be executed. 
 
-            let toast = this.toastCtrl.create({
-                message: '成功關聯到WeChat帳戶',
-                duration: 3000,
-                position: 'top',
-                cssClass: 'toast-success'
-            });
-
-            toast.present();
-        }).catch(e => {
-            let toast = this.toastCtrl.create({
-                message: 'Wechat帳戶關聯失敗！',
-                duration: 3000,
-                position: 'top',
-                cssClass: 'toast-danger'
-            });
-
-            toast.present();           
-        })
+     linkWeChatSendApiRequest() must be called within the routing logic from deepLinks.
+     */
+    linkWeChatSendApiRequest(code: string) {
+        this.loadTrackerSvc.loading = true;
+        this.wechatSvc.weChatLinkSendApiRequest(this.userProfile.uid, code)
+                      .subscribe(this.successHandlerLinkWechat, this.failureHandlerLinkWechat);
     }
 
     uploadFile(

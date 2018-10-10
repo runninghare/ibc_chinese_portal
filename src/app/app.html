@@ -7,7 +7,8 @@
 
   <ion-content no-bounce color="sidebar">
     <ion-list color="sidebar">
-      <button color="sidebar" menuClose ion-item [hidden]="p.needAuth && (!ibcFB.isAuthed || !ibcFB.access_level)" *ngFor="let p of pages" (click)="openPage(p)">
+      <button color="sidebar" menuClose ion-item 
+      [hidden]="(p.needAuth && (!ibcFB.isAuthed || !ibcFB.access_level)) || (p.adminAuth && (!ibcFB.isAuthed || ibcFB.access_level < 3))" *ngFor="let p of pages" (click)="openPage(p)">
         {{p.title}}
       </button>
     </ion-list>

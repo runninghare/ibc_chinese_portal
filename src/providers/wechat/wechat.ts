@@ -2,6 +2,7 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import { Injectable, Inject, forwardRef } from '@angular/core';
 import { ENV } from '@app/env';
 import { Observable } from 'rxjs';
+import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
 
 export interface IntWeChatAuth {
     openid?: string;
@@ -29,7 +30,7 @@ export class WechatProvider {
 
     linkingInProgress: boolean;
 
-    constructor(public http: Http) {
+    constructor(public http: Http, public loadTrackerSvc: LoadTrackerProvider) {
     }
 
     wechatInstalled(): Promise<boolean> {
@@ -94,6 +95,8 @@ export class WechatProvider {
     }
 
     weChatShareLink(webpageUrl: string, title?: string, description?: string, thumb?: string): void {
+        this.loadTrackerSvc.loading = true;
+
         let params = {
             scene: 0,   // share to Timeline
             message: {
@@ -107,11 +110,15 @@ export class WechatProvider {
             }
         };
 
-        Wechat.share(params, function () {
-            alert("Success");
-        }, function (reason) {
-            alert("Failed: " + reason);
+        Wechat.share(params, () => {
+            this.loadTrackerSvc.loading = false;
+        }, (reason) => {
+            this.loadTrackerSvc.loading = false;
         });
-    }    
+
+        setTimeout(() => {
+            this.loadTrackerSvc.loading = false;
+        }, 10000);
+    }
 
 }

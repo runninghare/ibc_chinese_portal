@@ -6,8 +6,15 @@
     <ion-title>{{title}}</ion-title>
 
     <ion-buttons end>
-      <button [hidden]="!fullPermission && commonSvc.readonly" ion-button class="bar-button-menutoggle-ios" (click)="addItemPopup()" >
+      <button [hidden]="!fullPermission && commonSvc.readonly || forSelection" ion-button class="bar-button-menutoggle-ios" (click)="addItemPopup()" >
         <ion-icon name="add"></ion-icon>
+      </button>   
+
+      <button color="primary" [hidden]="!fullPermission && commonSvc.readonly || !forSelection" ion-button class="bar-button-menutoggle-ios" (click)="cancelSelection()">
+        Cancel
+      </button>      
+      <button color="primary" [hidden]="!fullPermission && commonSvc.readonly || !forSelection" ion-button class="bar-button-menutoggle-ios" (click)="selectFunc && selectFunc(selectedItems())">
+        Done
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -17,40 +24,69 @@
 
 <ion-content no-bounce>
   <ion-list>
-    <ion-searchbar #searchBar (ionInput)="getItems($event)"></ion-searchbar>
+    <div fxLayout="row" fxLayoutAlign="start center">
+      <button [hidden]="!fullPermission && commonSvc.readonly || !forSelection" ion-button clear small (click)="selectionEmptyAll()">
+        清空
+      </button>
+      <ion-searchbar #searchBar (ionInput)="getItems($event)"></ion-searchbar>
+      <button [hidden]="!fullPermission && commonSvc.readonly || !forSelection" ion-button clear small (click)="selectionFillAll()">
+        全選
+      </button>
+    </div>
 
     <div *ngFor="let groupVal of groupValues">
       <h3 text-center [hidden]="groupEmpty(groupVal)">{{groupByCaptionFunc(groupVal, groupBy)}}</h3>
-      <ion-item-sliding *ngFor="let item of mappedItems[groupVal]; let i = index" [style.opacity]="item.read ? 0.3: 1">
-        <button ion-item [question]="item.popUpQuestion" (answer)="itemTapped($event, item)" [hidden]="!visibility[groupVal][i]">
-          <ion-avatar item-start *ngIf="item.avatar">
-            <img [src]="item.avatar">
+      <ng-container *ngIf="!forSelection">
+        <ion-item-sliding *ngFor="let item of mappedItems[groupVal]; let i = index" [style.opacity]="item.read ? 0.3: 1">
+          <button ion-item [question]="item.popUpQuestion" (answer)="itemTapped($event, item)" [hidden]="!visibility[groupVal][i]">
+            <ion-avatar item-start *ngIf="item.avatar || defaultAvatarImg">
+              <img [src]="item.avatar || defaultAvatarImg">
+            </ion-avatar>
+            <ion-badge *ngIf="checkNew && item.isNew" color="danger" class="ibc-badge">New!</ion-badge>
+            <ion-thumbnail item-start *ngIf="item.thumbnail || defaultThumbnailImg" fxLayout="column" fxLayoutAlign="center center">
+              <img class="ratio-4-3" style="height: auto" [src]="item.thumbnail || defaultThumbnailImg">
+            </ion-thumbnail>
+            <ion-icon *ngIf="!item.thumbnail && !item.avatar && !defaultAvatarImg && !defaultThumbnailImg" name="share-alt" item-left></ion-icon>
+            <div class="ibc-full-height ibc-full-width">
+              <div class="ibc-bottom-margin-5">{{item.title || titleAs(item, auxiliaryItems)}}</div>
+              <ion-note wrap small *ngIf="item.subtitle || subtitleAs">{{item.subtitle || subtitleAs(item, auxiliaryItems)}}</ion-note>
+            </div>
+          </button>
+          <ion-item-options side="right" *ngIf="!noSlideOptions">
+            <a ion-button color="teal-1" *ngIf="showReadOrUnread" (click)="markAsRead(getItemIndex(item), !item.read)">
+              {{item.read ? '未讀' : '已讀'}}
+            </a>
+            <a ion-button [color]="additionalSlideButton.getColor(item, auxiliaryItems)" *ngIf="additionalSlideButton" (click)="additionalSlideButton.click(item, auxiliaryItems)">
+              {{additionalSlideButton.getTitle(item, auxiliaryItems)}}
+            </a>
+            <a ion-button [hidden]="hideEdit" *ngIf="fullPermission || !commonSvc.readonly" (click)="editItemPopup(getItemIndex(item))">
+              編輯
+            </a>         
+            <a ion-button [hidden]="hideDelete" *ngIf="fullPermission || !commonSvc.readonly" color="danger" (click)="deleteItem(getItemIndex(item))">
+              删除
+            </a>
+          </ion-item-options>
+        </ion-item-sliding>          
+      </ng-container>
+
+      <ng-container *ngIf="forSelection">
+        <ion-item *ngFor="let item of mappedItems[groupVal]; let i = index" [hidden]="!visibility[groupVal][i]">
+          <ion-checkbox [(ngModel)]="selectedObj[item.key]"></ion-checkbox>
+          <ion-label>{{item.title || titleAs(item, auxiliaryItems)}}</ion-label>
+<!--           <ion-avatar item-start *ngIf="item.avatar || defaultAvatarImg">
+            <img [src]="item.avatar || defaultAvatarImg">
           </ion-avatar>
           <ion-badge *ngIf="checkNew && item.isNew" color="danger" class="ibc-badge">New!</ion-badge>
-          <ion-thumbnail item-start *ngIf="item.thumbnail" fxLayout="column" fxLayoutAlign="center center">
-            <img class="ratio-4-3" style="height: auto" [src]="item.thumbnail">
+          <ion-thumbnail item-start *ngIf="item.thumbnail || defaultThumbnailImg" fxLayout="column" fxLayoutAlign="center center">
+            <img class="ratio-4-3" style="height: auto" [src]="item.thumbnail || defaultThumbnailImg">
           </ion-thumbnail>
-          <ion-icon *ngIf="!item.thumbnail && !item.avatar" name="share-alt" item-left></ion-icon>
+          <ion-icon *ngIf="!item.thumbnail && !item.avatar && !defaultAvatarImg && !defaultThumbnailImg" name="share-alt" item-left></ion-icon>
           <div class="ibc-full-height ibc-full-width">
-            <div class="ibc-bottom-margin-5">{{item.title}}</div>
+            <div class="ibc-bottom-margin-5">{{item.title || titleAs(item, auxiliaryItems)}}</div>
             <ion-note wrap small *ngIf="item.subtitle || subtitleAs">{{item.subtitle || subtitleAs(item, auxiliaryItems)}}</ion-note>
-          </div>
-        </button>
-        <ion-item-options side="right">
-          <a ion-button color="teal-1" *ngIf="showReadOrUnread" (click)="markAsRead(getItemIndex(item), !item.read)">
-            {{item.read ? '未讀' : '已讀'}}
-          </a>
-          <a ion-button [color]="additionalSlideButton.getColor(item, auxiliaryItems)" *ngIf="additionalSlideButton" (click)="additionalSlideButton.click(item, auxiliaryItems)">
-            {{additionalSlideButton.getTitle(item, auxiliaryItems)}}
-          </a>
-          <a ion-button [hidden]="hideEdit" *ngIf="fullPermission || !commonSvc.readonly" (click)="editItemPopup(getItemIndex(item))">
-            編輯
-          </a>         
-          <a ion-button [hidden]="hideDelete" *ngIf="fullPermission || !commonSvc.readonly" color="danger" (click)="deleteItem(getItemIndex(item))">
-            删除
-          </a>
-        </ion-item-options>
-      </ion-item-sliding>  
+          </div> -->
+        </ion-item>
+      </ng-container>
     </div>
 
 <!--     <ion-item-sliding *ngFor="let item of mappedItems; let i = index">

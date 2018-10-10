@@ -4,6 +4,7 @@ import { MinistryProvider, IntMinistrySheet } from '../../providers/ministry/min
 import { NotificationProvider } from '../../providers/notification/notification';
 import { TypeInputUI, IntListItem } from '../../providers/data-adaptor/data-adaptor';
 import { IntArrayChanges, CommonProvider } from '../../providers/common/common';
+import { DataProvider } from '../../providers/data-adaptor/data-adaptor';
 import { WechatProvider } from '../../providers/wechat/wechat';
 import * as moment from 'moment';
 import * as _ from 'lodash';
@@ -33,6 +34,7 @@ export class MinistryPage implements OnInit {
         public ministrySvc: MinistryProvider,
         public notificationSvc: NotificationProvider,
         public common: CommonProvider,
+        public content: DataProvider,
         public wechat: WechatProvider
     ) {
         this.preloadedDate = this.navParams.get("forDate");

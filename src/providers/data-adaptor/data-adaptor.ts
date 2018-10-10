@@ -3,17 +3,18 @@ import { Injectable } from '@angular/core';
 import * as firebase from 'firebase/app';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { FileCacheProvider } from '../../providers/file-cache/file-cache';
-import { Observable, Subscription } from 'rxjs';
 import { S2tProvider } from '../s2t/s2t';
 import { VideoProvider } from '../video/video';
 import * as moment from 'moment';
 import { Badge } from '@ionic-native/badge';
-import { ModalController, NavController, NavParams } from 'ionic-angular';
+import { ModalController, NavController, NavParams, Modal } from 'ionic-angular';
 import { ENV } from '@app/env';
 import { Platform } from 'ionic-angular';
 import { UserProfilePage } from '../../pages/user-profile/user-profile';
 import { WechatProvider } from '../../providers/wechat/wechat';
 import { CommonProvider } from '../../providers/common/common';
+import { ListPage } from '../../pages/list/list';
+import { Observable, Subscription, Subject, BehaviorSubject } from 'rxjs';
 
 export interface IntSummaryData {
     id?: any;
@@ -35,7 +36,7 @@ export interface IntSummaryData {
 export interface IntListItem {
     id?: number|string;        // Identification of this list item
     sender?: string;      // contactId as sender, used by the task-type list item
-    key?: string;       // key of this item, used by the task or question type of list item, which tracks the same task being sent back and forth
+    key?: string;       // key of this item, used by the task or question type of list item, which tracks the same task being sent back and forth; key is also used for selection;
     value?: any;        // value of this item, used by the task or question type of list item, which tracks the same task being sent back and forth
     answer?: any;        // answer of the question item, used by the question-type list item, which tracks the same task being sent back and forth
     title?: string;     // Title
@@ -54,6 +55,7 @@ export interface IntListItem {
     longitude?: number;
     latitude?: number;
     createdDT?: string;
+    selected?: boolean;
 }
 
 export interface IntHomeCard {
@@ -121,6 +123,18 @@ export interface IntMinistrySheet {
     confirm?: any;
 }
 
+export interface IntUserGroup {
+    id?: string;
+    groupName?: string;
+    groupDescription?: string;
+    title?: string;
+    members?: string[];
+    avatar?: string;
+    hidden?: boolean;
+    createDT?: string;
+    updateDT?: string;
+}
+
 export enum TypeInputUI {
     Number = 'number',
     Text = 'text',
@@ -168,9 +182,10 @@ export interface IntListPageParams {
     hideEdit?: boolean;
     hideDelete?: boolean;
     listHasKeys?: boolean;
+    titleAs?: string | ((item?: any, auxiliaryItems?: any[]) => string);
     subtitleAs?: string | ((item?: any, auxiliaryItems?: any[]) => string);
     filterFunc?(text:string, item:any): boolean; 
-    mapFunc?(item:any): any; 
+    mapFunc?(item:any, index?:number): any; 
     reverseMapFunc?(item:any): any;
     callFunc?(item:any): void; 
     orderByFunc?(a: any, b: any): number;
@@ -178,6 +193,14 @@ export interface IntListPageParams {
     additionalSlideButton?: IntAuxiliaryButton;
     postAddCallback?(item: any, keyOrIndex: any): Promise<any>;
     postDeleteCallback?(item: any, keyOrIndex: any): Promise<any>;
+    defaultAvatarImg?: string;
+    defaultThumbnailImg?: string;
+    preselectedItemKeys?: string[];
+    itemTappedPreFunc?(item?: any, index?:any): void;
+    selectFunc?(item: any): void;
+    addItemUseComponent?: string;
+    addItemFuncFactory?(modalCtrl: ModalController, component: any): () => void;
+    noSlideOptions?: boolean;
 }
 
 export interface IntActParticipant {
@@ -251,6 +274,7 @@ export class DataProvider {
     activities$: Observable<IntListItem[]>;
     // activities:  IntListItem[] = [];
     activitiesParams: IntListPageParams;
+    contactsParams: IntListPageParams;
 
     songsDB: firebase.database.Reference;
     songs$: Observable<IntListItem[]>;
@@ -288,6 +312,12 @@ export class DataProvider {
 
     allStatusDB: firebase.database.Reference;
     allStatus$: Observable<{[index: string]: IntUserStatus}>;
+
+    userManagementParams: IntListPageParams;    
+
+    groupManagement$: Observable<IntUserGroup[]>;
+    groupManagementDB: firebase.database.Reference;
+    groupManagementParams: IntListPageParams;
 
     versionDB: firebase.database.Reference;
 
@@ -713,7 +743,31 @@ export class DataProvider {
             let classB = b.class || 'user';
             return classA < classB ? -1 : classA > classB ? 1 : (a.name < b.name ? -1 : 1);
           });
-        });
+        });        
+
+        this.contactsParams = {
+          title: '聯繫人',
+          selectFunc: data => {
+            console.log(data);
+          },
+          items$: this.allContacts$.map(contacts => contacts.filter(c => c.class != 'group' && !c.hidden)),
+          itemsDB: this.allContactsDB,
+          defaultAvatarImg: 'assets/img/default-photo.jpg',
+          titleAs: item => `${item.chinese_name} (${item.name})`,
+          filterFunc: (val, item) => {
+            return `${item.chinese_name} ${item.name}`.toLowerCase().indexOf(this.s2t.tranStr(val, true)) > -1;
+          },
+          mapFunc: (item: IntContact) => {
+                return {
+                    id: item.id,
+                    subtitle:  item.name,
+                    chinese_name: item.chinese_name,
+                    name: item.name,
+                    key: item.username,
+                    avatar: item.photoURL
+                }
+          }
+        };        
 
         this.activitiesDB = this.ibcFB.afDB.database.ref('activities');
         this.activities$ = this.ibcFB.afDB.list<IntListItem>('activities').valueChanges().map(items => {
@@ -839,6 +893,109 @@ export class DataProvider {
           }
         };
 
+        /* User Management */
+        this.userManagementParams = {
+          title: '用户页面',
+          noSlideOptions: true,
+          items$: this.allContacts$.map(contacts => contacts.filter(c => c.class != 'group' && !c.hidden)),
+          itemsDB: this.allContactsDB,
+          defaultAvatarImg: 'assets/img/default-photo.jpg',
+          titleAs: item => `${item.chinese_name} (${item.name})`,
+          filterFunc: (val, item) => {
+            return `${item.chinese_name} ${item.name}`.toLowerCase().indexOf(this.s2t.tranStr(val, true)) > -1;
+          },
+          mapFunc: (item: IntContact) => {
+                return {
+                    id: item.id,
+                    subtitle:  item.name,
+                    chinese_name: item.chinese_name,
+                    name: item.name,
+                    key: item.username,
+                    avatar: item.photoURL
+                }
+          }
+        };         
+
+        /* User group management */
+        this.groupManagementDB = this.ibcFB.afDB.database.ref('userGroups');
+        this.groupManagement$ = this.ibcFB.afDB.list<IntUserGroup>('userGroups').valueChanges();  
+        this.groupManagementParams = {
+          title: '群组管理',
+          items$: this.groupManagement$,
+          itemsDB: this.groupManagementDB,
+          defaultAvatarImg: 'assets/img/user-group.png',
+          templateForAdd: [
+              {
+                  key: 'groupName',
+                  caption: '群组关键字（英）'
+              },
+              {
+                  key: 'title',
+                  caption: '群组名（中）'
+              },              
+              {
+                  key: 'subtitle',
+                  caption: '描述'
+              },
+              {
+                  key: 'avatar',
+                  caption: '头像URL'
+              }
+          ],
+          itemTappedPreFunc: (group: IntUserGroup, groupIndex: number) => {
+              this.userManagementParams.title = group.title;
+
+              let members$: Subject<string[]> = new BehaviorSubject<string[]>(group.members || []);
+
+              this.userManagementParams.items$ = Observable.combineLatest(
+                this.allContacts$.map(contacts => contacts.filter(c => c.class != 'group' && !c.hidden)),
+                members$
+              ).map(res => {
+                return res[0].filter(c => res[1].filter(m => m == c.username).length > 0);
+              });
+
+              this.userManagementParams.addItemUseComponent = 'ListPage';
+              this.userManagementParams.addItemFuncFactory = (modalCtrl: ModalController, component: any) => {
+                  return () => {
+                      this.contactsParams.preselectedItemKeys = group.members;
+
+                      this.contactsParams.selectFunc = (contacts: IntContact[]) => {
+                          if (contacts) {
+                              let newMembers = contacts.map(c => c.username);
+                              this.groupManagementDB.child(`${groupIndex}/members`).set(newMembers).then(() => {
+                                  members$.next(newMembers);
+                                  group.members = newMembers;
+                                  this.commonSvc.toastSuccess('成功更新成员！');
+                              }).catch(err => {
+                                  this.commonSvc.toastFailure('无法更新成员', err);
+                              });
+                          }
+                          modal.dismiss();
+                      }
+                      let modal = modalCtrl.create(component, {
+                          type: 'contactsParams'
+                      });
+                      modal.present();
+                  }
+              };
+          },
+
+          mapFunc: (group: IntUserGroup, groupIndex: number) => {
+              return {
+                  id: group.id,
+                  name: group.groupName,
+                  title: group.title,
+                  subtitle: group.groupDescription,
+                  avatar: group.avatar,
+                  redirect: 'ListPage',
+                  members: group.members,
+                  params: {
+                      type: 'userManagementParams'
+                  }
+              }
+          }
+        };
+
         /* public URLs */
         this.ibcFB.afDB.database.ref('urls').on('value', snapshot => {
           this.urls = snapshot.val();
@@ -850,7 +1007,7 @@ export class DataProvider {
         }, err => { }));
 
         this.ministriesDB = this.ibcFB.afDB.database.ref('ministries');
-        this.ministries$ = this.ibcFB.afDB.list<IntMinistrySheet>('ministries').valueChanges();
+        this.ministries$ = this.ibcFB.afDB.list<IntMinistrySheet>('ministries').valueChanges();      
 
         this.threadDB = this.ibcFB.afDB.database.ref('threads');
         this.fileCache$ = this.ibcFB.afDB.list<IntCache>('updateCaches').valueChanges();

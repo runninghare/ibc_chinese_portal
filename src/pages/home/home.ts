@@ -138,32 +138,7 @@ export class HomePage implements OnInit, AfterViewInit {
                         let wechatMatch = queryString.match(/code=(\w+)&state=\w+&lang=\w+&country=\w+/);
                         if (this.wechat.linkingInProgress && wechatMatch) {
                             let code = wechatMatch[1];
-                            this.wechat.weChatLinkSendApiRequest(this.authUser.uid, code).subscribe((res) => {
-                                let userInfo = res.json();
-
-                                this.ibcFB.wechatAuthInfo = userInfo;
-
-                                let toast = this.toastCtrl.create({
-                                    message: '成功關聯到WeChat帳戶',
-                                    duration: 3000,
-                                    position: 'top',
-                                    cssClass: 'toast-success'
-                                });
-
-                                toast.present();
-
-                                this.wechat.linkingInProgress = false;
-                            }, e => {
-                                let toast = this.toastCtrl.create({
-                                    message: 'Wechat帳戶關聯失敗！',
-                                    duration: 3000,
-                                    position: 'top',
-                                    cssClass: 'toast-danger'
-                                });
-
-                                toast.present();                      
-                                this.wechat.linkingInProgress = false;            
-                            });
+                            this.ibcFB.linkWeChatSendApiRequest(code);
                         }
                     }
                 }, nomatch => {
