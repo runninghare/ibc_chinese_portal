@@ -13,6 +13,7 @@ import { AboutPage } from '../pages/about/about';
 import { AboutAppPage } from '../pages/about-app/about-app';
 import { MinistryPage } from '../pages/ministry/ministry';
 import { EditorPage } from '../pages/editor/editor';
+import { AdminSmsPage } from '../pages/admin-sms/admin-sms';
 
 // import { MonthlyVersesPage } from '../pages/monthly-verses/monthly-verses';
 import { IbcFirebaseProvider } from '../providers/ibc-firebase/ibc-firebase';
@@ -98,7 +99,7 @@ export class MyApp implements AfterViewInit {
       { title: '關於我們', component: AboutPage, needAuth: false },
       { title: '關於APP', component: AboutAppPage, needAuth: false },
       { title: '群組管理', component: ListPage, needAuth: true, adminAuth: true, params: {type: 'groupManagementParams'} },
-      { title: '發送消息', component: AboutAppPage, needAuth: true, adminAuth: true },
+      { title: '發送消息', component: AdminSmsPage, needAuth: true, adminAuth: true },
     ];
   }
 

@@ -23,8 +23,8 @@ import { ContactPage } from '../pages/contact/contact';
 import { HeaderPopoverPage } from '../pages/Popover/header';
 import { BrowserPage } from '../pages/browser/browser';
 import { ActivityPageModule } from '../pages/activity/activity.module';
-
 import { AboutPageModule } from '../pages/about/about.module';
+import { AdminSmsPageModule } from '../pages/admin-sms/admin-sms.module';
 import { CommonDirectivesModule } from '../directives/directives.module';
 
 import { AboutAppPage } from '../pages/about-app/about-app';
@@ -139,7 +139,8 @@ import { SharedModule } from './shared.module';
     SharedModule,
     AboutPageModule,
     ActivityPageModule,
-    ListPageModule
+    ListPageModule,
+    AdminSmsPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

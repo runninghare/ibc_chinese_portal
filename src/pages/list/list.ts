@@ -86,29 +86,32 @@ export class ListPage implements OnDestroy {
     // If we navigated to this page, we will have an item available as a nav param
     let type = navParams.get('type');
 
-    if (type && this.content[type]) {
-      let params = this.params = this.content[type];
-      this.itemsDB = params['itemsDB'];
-      this.items$ = params['items$'];
-      this.groupBy = params['groupBy'];
-      this.checkNew = params['checkNew'];
-      this.hideEdit = params['hideEdit'];
-      this.hideDelete = params['hideDelete'];
-      this.showReadOrUnread = params['showReadOrUnread'];
-      this.listHasKeys = params['listHasKeys'];
-      this.fullPermission = params['fullPermission'];
-      this.postAddCallback = params['postAddCallback'];
-      this.postDeleteCallback = params['postDeleteCallback'];
-      this.additionalSlideButton = params['additionalSlideButton'];
-      this.defaultAvatarImg = params['defaultAvatarImg'];
-      this.defaultThumbnailImg = params['defaultThumbnailImg'];
-      this.preselectedItemKeys = params['preselectedItemKeys'];
-      this.selectFunc = params['selectFunc'];
-      this.forSelection = !!this.selectFunc;
-      this.addItemUseComponent = params['addItemUseComponent'];
-      this.addItemFuncFactory = params['addItemFuncFactory'];
-      this.itemTappedPreFunc = params['itemTappedPreFunc'];
-      this.noSlideOptions = params['noSlideOptions'];
+    if (type) {
+      let params = this.params = typeof type == 'string' ? this.content[type] : typeof type == 'function' ? type() : type;
+
+      if (params) {
+          this.itemsDB = params['itemsDB'];
+          this.items$ = params['items$'];
+          this.groupBy = params['groupBy'];
+          this.checkNew = params['checkNew'];
+          this.hideEdit = params['hideEdit'];
+          this.hideDelete = params['hideDelete'];
+          this.showReadOrUnread = params['showReadOrUnread'];
+          this.listHasKeys = params['listHasKeys'];
+          this.fullPermission = params['fullPermission'];
+          this.postAddCallback = params['postAddCallback'];
+          this.postDeleteCallback = params['postDeleteCallback'];
+          this.additionalSlideButton = params['additionalSlideButton'];
+          this.defaultAvatarImg = params['defaultAvatarImg'];
+          this.defaultThumbnailImg = params['defaultThumbnailImg'];
+          this.preselectedItemKeys = params['preselectedItemKeys'];
+          this.selectFunc = params['selectFunc'];
+          this.forSelection = params['forSelection'];
+          this.addItemUseComponent = params['addItemUseComponent'];
+          this.addItemFuncFactory = params['addItemFuncFactory'];
+          this.itemTappedPreFunc = params['itemTappedPreFunc'];
+          this.noSlideOptions = params['noSlideOptions'];
+      }
     }
 
     if (this.preselectedItemKeys) {
@@ -277,6 +280,10 @@ export class ListPage implements OnDestroy {
             }
 
         });
+  }
+
+  defaultSelectFunc(): void {
+    this.viewCtrl.dismiss(this.selectedItems());
   }
 
   addItemPopup(): void {

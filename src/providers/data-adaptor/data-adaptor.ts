@@ -197,7 +197,8 @@ export interface IntListPageParams {
     defaultThumbnailImg?: string;
     preselectedItemKeys?: string[];
     itemTappedPreFunc?(item?: any, index?:any): void;
-    selectFunc?(item: any): void;
+    forSelection?: boolean;
+    selectFunc?(item: any): void;  /* Most of time we use modal.OnDidDismiss() so this prop is no longer necessary */
     addItemUseComponent?: string;
     addItemFuncFactory?(modalCtrl: ModalController, component: any): () => void;
     noSlideOptions?: boolean;
@@ -318,6 +319,8 @@ export class DataProvider {
     groupManagement$: Observable<IntUserGroup[]>;
     groupManagementDB: firebase.database.Reference;
     groupManagementParams: IntListPageParams;
+
+    tempListPageParams: IntListPageParams;
 
     versionDB: firebase.database.Reference;
 
@@ -747,9 +750,7 @@ export class DataProvider {
 
         this.contactsParams = {
           title: '聯繫人',
-          selectFunc: data => {
-            console.log(data);
-          },
+          forSelection: true,
           items$: this.allContacts$.map(contacts => contacts.filter(c => c.class != 'group' && !c.hidden)),
           itemsDB: this.allContactsDB,
           defaultAvatarImg: 'assets/img/default-photo.jpg',
@@ -943,23 +944,29 @@ export class DataProvider {
               }
           ],
           itemTappedPreFunc: (group: IntUserGroup, groupIndex: number) => {
-              this.userManagementParams.title = group.title;
+              this.tempListPageParams = Object.assign({}, this.userManagementParams);
+
+              this.tempListPageParams.title = group.title;
 
               let members$: Subject<string[]> = new BehaviorSubject<string[]>(group.members || []);
 
-              this.userManagementParams.items$ = Observable.combineLatest(
+              this.tempListPageParams.items$ = Observable.combineLatest(
                 this.allContacts$.map(contacts => contacts.filter(c => c.class != 'group' && !c.hidden)),
                 members$
               ).map(res => {
                 return res[0].filter(c => res[1].filter(m => m == c.username).length > 0);
               });
 
-              this.userManagementParams.addItemUseComponent = 'ListPage';
-              this.userManagementParams.addItemFuncFactory = (modalCtrl: ModalController, component: any) => {
+              this.tempListPageParams.addItemUseComponent = 'ListPage';
+              this.tempListPageParams.addItemFuncFactory = (modalCtrl: ModalController, component: any) => {
                   return () => {
-                      this.contactsParams.preselectedItemKeys = group.members;
+                      let modal = modalCtrl.create(component, {
+                          type: Object.assign({}, this.contactsParams, {
+                            preselectedItemKeys: group.members,
+                          })
+                      });
 
-                      this.contactsParams.selectFunc = (contacts: IntContact[]) => {
+                      modal.onDidDismiss((contacts: IntContact[]) => {
                           if (contacts) {
                               let newMembers = contacts.map(c => c.username);
                               this.groupManagementDB.child(`${groupIndex}/members`).set(newMembers).then(() => {
@@ -970,11 +977,8 @@ export class DataProvider {
                                   this.commonSvc.toastFailure('无法更新成员', err);
                               });
                           }
-                          modal.dismiss();
-                      }
-                      let modal = modalCtrl.create(component, {
-                          type: 'contactsParams'
                       });
+
                       modal.present();
                   }
               };
@@ -990,7 +994,7 @@ export class DataProvider {
                   redirect: 'ListPage',
                   members: group.members,
                   params: {
-                      type: 'userManagementParams'
+                      type: () => this.tempListPageParams
                   }
               }
           }

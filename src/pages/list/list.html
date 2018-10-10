@@ -13,7 +13,7 @@
       <button color="primary" [hidden]="!fullPermission && commonSvc.readonly || !forSelection" ion-button class="bar-button-menutoggle-ios" (click)="cancelSelection()">
         Cancel
       </button>      
-      <button color="primary" [hidden]="!fullPermission && commonSvc.readonly || !forSelection" ion-button class="bar-button-menutoggle-ios" (click)="selectFunc && selectFunc(selectedItems())">
+      <button color="primary" [hidden]="!fullPermission && commonSvc.readonly || !forSelection" ion-button class="bar-button-menutoggle-ios" (click)="selectFunc ? selectFunc(selectedItems()) : defaultSelectFunc()">
         Done
       </button>
     </ion-buttons>
