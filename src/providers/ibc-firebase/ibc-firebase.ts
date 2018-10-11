@@ -391,14 +391,14 @@ export class IbcFirebaseProvider {
         }
     }
 
-    successHandlerLinkWechat = (res) => {
+    successHandlerLinkWechat = (message) => (res) => {
         this.loadTrackerSvc.loading = false;
         let userInfo = res.json();
 
         this.wechatAuthInfo = userInfo;
 
         let toast = this.toastCtrl.create({
-            message: '成功關聯到WeChat帳戶',
+            message,
             duration: 3000,
             position: 'top',
             cssClass: 'toast-success'
@@ -406,39 +406,50 @@ export class IbcFirebaseProvider {
 
         toast.present();
 
-        this.wechatSvc.linkingInProgress = false;
+        // this.wechatSvc.linkingInProgress = false;
     }
 
-    failureHandlerLinkWechat = (err) => {
+    failureHandlerLinkWechat = (message) => (err) => {
         this.loadTrackerSvc.loading = false;
         let toast = this.toastCtrl.create({
-            message: 'Wechat帳戶關聯失敗！',
+            message,
             duration: 3000,
             position: 'top',
             cssClass: 'toast-danger'
         });
 
         toast.present();
-        this.wechatSvc.linkingInProgress = false;
+        // this.wechatSvc.linkingInProgress = false;
     }
 
     linkWechat(): void {
         this.loadTrackerSvc.loading = true;
         this.wechatSvc.weChatLink(this.userProfile.uid)
-            .then(this.successHandlerLinkWechat)
-            .catch(this.failureHandlerLinkWechat);
+            .then(this.successHandlerLinkWechat('成功關聯到WeChat帳戶'))
+            .catch(this.failureHandlerLinkWechat('Wechat帳戶關聯失敗！'));
     }
 
-    /* Ideally we should only use linkWechat. The reason why we must send another request
-     via this function is that deepLinks intercepts the incoming HTTP request such that 
+    /* Ideally we should only use linkWechat/loginWechat. The reason why we must send another request
+     via linkWeChatSendApiRequest/loginWeChatSendApiRequest is that deepLinks intercepts the incoming HTTP request such that 
      the callback function from weChat.auth() will never be executed. 
 
-     linkWeChatSendApiRequest() must be called within the routing logic from deepLinks.
+     linkWeChatSendApiRequest/loginWeChatSendApiRequest must be called within the routing logic from deepLinks.
      */
     linkWeChatSendApiRequest(code: string) {
         this.loadTrackerSvc.loading = true;
         this.wechatSvc.weChatLinkSendApiRequest(this.userProfile.uid, code)
-                      .subscribe(this.successHandlerLinkWechat, this.failureHandlerLinkWechat);
+                      .subscribe(this.successHandlerLinkWechat('成功關聯到WeChat帳戶'), this.failureHandlerLinkWechat('Wechat帳戶關聯失敗！'));
+    }
+
+    loginWeChatSendApiRequest(code: string) {
+        this.loadTrackerSvc.loading = true;
+        this.wechatSvc.weChatLoginSendApiRequest(code)
+            .subscribe(res => {
+                let data = res.json();
+                if (data && data.token) {
+                    return firebase.auth().signInWithCustomToken(data.token).then(this.authSuccessHandler, this.authFailureHandler);
+                }
+            }, this.failureHandlerLinkWechat('Wechat登入失敗！'));
     }
 
     uploadFile(

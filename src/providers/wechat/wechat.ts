@@ -29,6 +29,7 @@ declare var Wechat;
 export class WechatProvider {
 
     linkingInProgress: boolean;
+    LoggingInProgress: boolean;
 
     constructor(public http: Http, public loadTrackerSvc: LoadTrackerProvider) {
     }
@@ -43,16 +44,29 @@ export class WechatProvider {
         var scope = "snsapi_userinfo",
             state = "_" + (+new Date());
 
+        this.LoggingInProgress = true;
+
         return new Promise<any>((resolve, reject) => {
             Wechat.auth(scope, state, (response) => {
                 // you may use response.code to get the access token.
                 // console.log(`code = ${response.code}`);
                 // resolve(response);
                 this.http.post(`${ENV.apiServer}/wechat/login`, {code: response.code}).subscribe(res => {
+                    this.LoggingInProgress = false;
                     resolve(res);
-                }, reject);
+                }, err => {
+                    this.LoggingInProgress = false;
+                    reject(err);
+                });
                 // this.weChatShare();
             }, reject);
+        });
+    }
+
+    weChatLoginSendApiRequest(code: string): Observable<any> {
+        return this.http.post(`${ENV.apiServer}/wechat/login`, { code: code }).do(() => {
+            console.log('========= weChat successfully logged in! ===========');
+            this.LoggingInProgress = false;
         });
     }
 
@@ -91,7 +105,10 @@ export class WechatProvider {
             'Content-Type': 'application/json'
         });  
 
-        return this.http.post(`${ENV.apiServer}/wechat/associate`, { code: code }, new RequestOptions({ headers }))
+        return this.http.post(`${ENV.apiServer}/wechat/associate`, { code: code }, new RequestOptions({ headers })).do(() => {
+            console.log('========= weChat successfully linked! ===========');
+            this.linkingInProgress = false;
+        });
     }
 
     weChatShareLink(webpageUrl: string, title?: string, description?: string, thumb?: string): void {

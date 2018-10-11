@@ -139,6 +139,10 @@ export class HomePage implements OnInit, AfterViewInit {
                         if (this.wechat.linkingInProgress && wechatMatch) {
                             let code = wechatMatch[1];
                             this.ibcFB.linkWeChatSendApiRequest(code);
+                        } else if (this.wechat.LoggingInProgress && wechatMatch) {
+                            console.log('--- send request to login in! ---');
+                            let code = wechatMatch[1];
+                            this.ibcFB.loginWeChatSendApiRequest(code);
                         }
                     }
                 }, nomatch => {
