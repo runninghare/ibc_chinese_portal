@@ -114,9 +114,10 @@
 
     <ng-container *ngIf="common.isMember">
         <ion-list>
-          <button ion-item *ngFor="let card of cards" (click)="homecardRedirect(card)">
+          <button ion-item *ngFor="let card of cards" [hidden]="card.isHidden" (click)="homecardRedirect(card)">
             <img class="ratio-4-3" [ngStyle]="common.isWeb ? {width: '160px', height: '120px'} : {}" [src]="card.thumbnail" alt="" item-left>
             <ion-badge *ngIf="badgeCountIsNumber(card.badgeCount) && card.badgeCount > 0" color="danger" class="ibc-badge">{{card.badgeCount}}</ion-badge>
+            <ion-badge *ngIf="card.isNew" color="danger" class="ibc-badge">New!</ion-badge>
             <div class="ibc-full-height ibc-full-width">
               <div><strong>{{card.title}}</strong></div>
               <br>

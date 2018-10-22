@@ -346,16 +346,16 @@ export class ListPage implements OnDestroy {
 
   editItemPopup(i: number): void {
 
-    let itemToEdit = {};
-
-    this.templateForAdd.forEach(d => {
-      itemToEdit[d.key] = this.items[i][d.key] || null;
-    });
+    // let itemToEdit = {};
+    // this.templateForAdd.forEach(d => {
+    //   itemToEdit[d.key] = this.items[i][d.key] || null;
+    // });
 
     let popupModal = this.modalCtrl.create(PopupComponent, { 
       title: this.title,
       definitions: this.templateForAdd || [],
-      item: itemToEdit,
+      item: this.items[i],
+      index: this.getItemIndex(this.items[i]),
       cancel: () => popupModal.dismiss(),
       save: (item) => {
         // console.log('--- item ---');
@@ -417,6 +417,12 @@ export class ListPage implements OnDestroy {
           let component;
           let index = this.items.map(item => item.id).indexOf(item.id);
           component = this.getComponentFromName(item.redirect);
+
+          if (typeof item.params == 'string') {
+            try {
+              item.params = JSON.parse(item.params);
+            } catch(e) {}
+          }
 
           if (component) {
             this.navCtrl.push(component, Object.assign({

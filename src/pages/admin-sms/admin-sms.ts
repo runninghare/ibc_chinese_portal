@@ -60,6 +60,7 @@ export class AdminSmsPage {
     }
 
     selectMembers(): void {
+        console.log('------ select members -------');
         let modal = this.modalCtrl.create(ListPage, {
             type: Object.assign({}, this.content.contactsParams, {
                 preselectedItemKeys: this.memberRecipients.map(c => c.username)
@@ -90,6 +91,13 @@ export class AdminSmsPage {
             memberHash[c.username] = 1;
         });
         return Object.keys(memberHash);
+    }
+
+    get allRecipientsText(): string {
+        let membersCollected = this.collectMembers();
+        if (!membersCollected) return null;
+        return this.content.allContacts.filter(contact => membersCollected.filter(username => username == contact.username).length > 0)
+                                       .map(c => `${c.chinese_name} (${c.name})`).join(',');
     }
 
     ionViewDidLoad() {

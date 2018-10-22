@@ -4,7 +4,7 @@
 
 <ion-content>
 
-    <ion-title style="text-align: center; margin-top: 3rem">{{data?.id?"編輯":"添加"}} {{pageTitle}}</ion-title>
+    <ion-title style="text-align: center; margin-top: 3rem">{{itemToEdit?"編輯":"添加"}} {{pageTitle}}</ion-title>
 
     <ion-list *ngIf="data">
 
@@ -24,6 +24,15 @@
         </ion-select>          
 
         <ion-input *ngSwitchDefault [(ngModel)]="data[d.key]"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="itemToEdit">
+        <ion-label stacked>Item Index</ion-label>
+        <ion-input disabled [(ngModel)]="index"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="itemToEdit">
+        <ion-label stacked>Item Id</ion-label>
+        <ion-input disabled [(ngModel)]="itemToEdit.id"></ion-input>
       </ion-item>
 
     </ion-list>

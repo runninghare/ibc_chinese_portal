@@ -308,6 +308,10 @@ ion-content {
   color: #FFF
 }
 
+.ibc-allow-text-select {
+  user-select: text;
+}
+
 
 body {
   // user-select: text;

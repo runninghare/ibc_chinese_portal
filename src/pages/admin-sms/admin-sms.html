@@ -32,10 +32,12 @@
           </ion-select>
         </ion-item>
 
-        <ion-item>
+        <button ion-item (click)="selectMembers()">
             <ion-label color="primary">接收成員</ion-label>
-            <ion-input [value]="stringMembers" (click)="selectMembers()"></ion-input>
-        </ion-item>
+            <ion-input [value]="stringMembers" disabled></ion-input>
+            <!-- {{stringMembers}} -->
+            <!-- <button ion-button color="primary" (click)="selectMembers()">Select</button> -->
+        </button>
 
         <ion-item>
           <ion-label color="primary">類型</ion-label>
@@ -51,7 +53,7 @@
         </ion-item>
 
         <ion-item>
-            <ion-textarea [(ngModel)]="template" maxlength="2000" rows="5" style="margin-top: 10px;"></ion-textarea>
+            <ion-textarea placeholder="发送内容" [(ngModel)]="template" maxlength="2000" rows="5" style="margin-top: 10px;"></ion-textarea>
         </ion-item>
 
     </ion-list>
@@ -75,6 +77,11 @@
           <ion-col *ngIf="row.error" style="color: red">{{'失败'}}</ion-col>
       </ion-row>
     </ion-grid>  
+
+    <div *ngIf="groupRecipients.length > 0 || stringMembers" class="ibc-h-padding-20 ibc-v-padding-20" style="opacity: 0.8">
+        <p ion-note>消息将发送至：</p>
+        {{allRecipientsText}}
+    </div>
 
     <button [disabled]="!template || !stringMembers && !groupRecipients?.length" ion-button block color="blue-800" (click)="send()">发送请求</button>
 

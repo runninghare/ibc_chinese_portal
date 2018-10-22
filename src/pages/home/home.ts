@@ -242,18 +242,25 @@ export class HomePage implements OnInit, AfterViewInit {
     }
 
     homecardRedirect(card: IntHomeCard): void {
+        let params;
+        try {
+            params = eval(JSON.parse(card.params));
+        } catch (e) {
+        }
         if (card.hyperlink) {
             this.browserSvc.openPage(card.hyperlink);
         } else if (card.redirect == 'MinistryPage') {
-            this.navCtrl.push(MinistryPage);
-        } else if (card.redirect == 'SongPage') {
-            this.navCtrl.push(ListPage, {type: 'nextSongPageParams'});
-            // this.navCtrl.push(SongPage, { nextServiceOnly: true });
-        } else if (card.redirect == 'TaskPage') {
-            this.navCtrl.push(ListPage, {type: 'myTasksParams'});
-            // this.navCtrl.push(SongPage, { nextServiceOnly: true });
+            this.navCtrl.push(MinistryPage, Object.assign({},params));
+        // } else if (card.redirect == 'SongPage') {
+        //     this.navCtrl.push(ListPage, {type: 'nextSongPageParams'});
+        //     // this.navCtrl.push(SongPage, { nextServiceOnly: true });
+        // } else if (card.redirect == 'TaskPage') {
+        //     this.navCtrl.push(ListPage, {type: 'myTasksParams'});
+        //     // this.navCtrl.push(SongPage, { nextServiceOnly: true });
         } else if (card.redirect == 'ActivityPage') {
-            this.navCtrl.push(ListPage, {type: 'activitiesParams'});
+            this.navCtrl.push(ActivityPage, Object.assign({},params));
+        } else if (card.redirect == 'ListPage') {
+            this.navCtrl.push(ListPage, Object.assign({},params));
             // this.navCtrl.push(SongPage, { nextServiceOnly: true });
         }
     }

@@ -24,6 +24,7 @@ import { HeaderPopoverPage } from '../pages/Popover/header';
 import { BrowserPage } from '../pages/browser/browser';
 import { ActivityPageModule } from '../pages/activity/activity.module';
 import { AboutPageModule } from '../pages/about/about.module';
+import { AdminSystemPageModule } from '../pages/admin-system/admin-system.module';
 import { AdminSmsPageModule } from '../pages/admin-sms/admin-sms.module';
 import { CommonDirectivesModule } from '../directives/directives.module';
 
@@ -140,6 +141,7 @@ import { SharedModule } from './shared.module';
     AboutPageModule,
     ActivityPageModule,
     ListPageModule,
+    AdminSystemPageModule,
     AdminSmsPageModule
   ],
   bootstrap: [IonicApp],

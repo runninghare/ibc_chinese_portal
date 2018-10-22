@@ -20,6 +20,8 @@ export class PopupComponent {
   pageTitle: string;
   definitions: IntPopupTemplateItem[]  = [];
   data: IntSummaryData = {};
+  index: number;
+  itemToEdit: any;
   itemKeys: string[];
 
   keys: string[] = []
@@ -76,9 +78,12 @@ export class PopupComponent {
 
     /* Initialization */
     this.definitions = navParams.get('definitions');
+    this.index = navParams.get('index');
+    this.itemToEdit = navParams.get('item');
 
-    if (navParams.get('item')) {
-        this.data = navParams.get('item');
+    if (this.itemToEdit) {
+        this.data = this.itemToEdit;
+        console.log('=== itemToEdit ===');
         console.log(this.data);
     } else {
         this.data = {};

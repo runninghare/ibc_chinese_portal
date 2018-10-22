@@ -64,8 +64,10 @@ export interface IntHomeCard {
     thumbnail?: string;
     content?: string;
     redirect?: string;
+    params?: string;
+    isHidden?: boolean;
     hyperlink?: string;
-    notifCount?: number;
+    isNew?: boolean;
     badgeCount?: string;
 }
 
@@ -265,6 +267,7 @@ export class DataProvider {
     homeCardsDB: firebase.database.Reference;
     homeCards$: Observable<IntHomeCard[]>;    
     homeCards: IntHomeCard[] = [];
+    homeCardsParams: IntListPageParams;
 
     urls: any = {};
 
@@ -554,6 +557,94 @@ export class DataProvider {
 
         this.homeCardsDB = this.ibcFB.afDB.database.ref('homecards');
         this.homeCards$ = this.ibcFB.afDB.list<IntHomeCard>('homecards').valueChanges();
+        this.homeCardsParams = {
+          title: '首页卡片',
+          items$: this.homeCards$,
+          itemsDB: this.homeCardsDB,
+          templateForAdd: [
+              {
+                  key: 'title',
+                  caption: '標題'
+              },
+              {
+                  key: 'subtitle',
+                  caption: '描述'
+              },
+              {
+                  key: 'hyperlink',
+                  caption: '超鏈接'
+              },
+              {
+                  key: 'thumbnail',
+                  caption: '縮略圖',
+              },
+              {
+                  key: 'isHidden',
+                  caption: '隐藏',
+                  type: TypeInputUI.Boolean,
+                  default: false
+              }, 
+              {
+                  key: 'isNew',
+                  caption: '显示最新',
+                  type: TypeInputUI.Boolean,
+                  default: false
+              },           
+              {
+                  key: 'redirect',
+                  caption: '重定向頁面（高级）',
+                  // type: TypeInputUI.Dropdown,
+                  // lookupSource: Observable.of([
+                  //     {
+                  //         val: 'SongPage',
+                  //         cap: '詩歌頁面'
+                  //     },
+                  //     {
+                  //         val: 'ActivityPage',
+                  //         cap: '活動頁面'
+                  //     },
+                  //     {
+                  //         val: 'TaskPage',
+                  //         cap: '任務頁面'
+                  //     },
+                  //     {
+                  //         val: 'MinistryPage',
+                  //         cap: '侍奉人員頁面'
+                  //     },
+                  //     {
+                  //         val: 'ListPage',
+                  //         cap: '其他列表頁面'
+                  //     }                    
+                  // ]),
+                  // lookupCaption: 'cap',
+                  // lookupValue: 'val'                    
+              },
+              {
+                  key: 'params',
+                  caption: '重定向参数（高级）'
+              },             
+              {
+                  key: 'content',
+                  caption: '內容（高级）',
+                  type: TypeInputUI.Textarea
+              },         
+              {
+                  key: 'badgeCount',
+                  caption: '提醒計數（高級）'
+              }
+          ]
+        };        
+
+// export interface IntHomeCard {
+//     title?: string;
+//     subtitle?: string;
+//     thumbnail?: string;
+//     content?: string;
+//     redirect?: string;
+//     hyperlink?: string;
+//     notifCount?: number;
+//     badgeCount?: string;
+// }        
 
         this.beliefUrlsDB = this.ibcFB.afDB.database.ref('beliefs');
         this.beliefUrls$ = this.ibcFB.afDB.list<IntListItem>('beliefs').valueChanges();
@@ -574,7 +665,7 @@ export class DataProvider {
                   key: 'hyperlink',
                   caption: '超鏈接'
               }
-          ]
+          ]                  
         };
 
         this.songsDB = this.ibcFB.afDB.database.ref('songs');
