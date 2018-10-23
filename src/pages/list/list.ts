@@ -85,9 +85,13 @@ export class ListPage implements OnDestroy {
     public browser: BrowserProvider) {
     // If we navigated to this page, we will have an item available as a nav param
     let type = navParams.get('type');
+    console.log(type);
 
     if (type) {
       let params = this.params = typeof type == 'string' ? this.content[type] : typeof type == 'function' ? type() : type;
+
+      console.log('--- params ---');
+      console.log(params);
 
       if (params) {
           this.itemsDB = params['itemsDB'];

@@ -26,6 +26,7 @@ import { ActivityPageModule } from '../pages/activity/activity.module';
 import { AboutPageModule } from '../pages/about/about.module';
 import { AdminSystemPageModule } from '../pages/admin-system/admin-system.module';
 import { AdminSmsPageModule } from '../pages/admin-sms/admin-sms.module';
+import { IframePageModule } from '../pages/iframe/iframe.module';
 import { CommonDirectivesModule } from '../directives/directives.module';
 
 import { AboutAppPage } from '../pages/about-app/about-app';
@@ -142,7 +143,8 @@ import { SharedModule } from './shared.module';
     ActivityPageModule,
     ListPageModule,
     AdminSystemPageModule,
-    AdminSmsPageModule
+    AdminSmsPageModule,
+    IframePageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
