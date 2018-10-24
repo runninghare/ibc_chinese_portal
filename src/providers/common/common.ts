@@ -238,4 +238,13 @@ export class CommonProvider {
         return result;
     }
 
+    parseURLParameters(s: string): any {
+        let result = {};
+        s.split('&').forEach(seg => {
+            let parts = seg.split('=');
+            result[parts[0]] = parts[1];
+        });
+        return result;
+    }
+
 }

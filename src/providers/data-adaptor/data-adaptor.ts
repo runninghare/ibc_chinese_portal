@@ -69,6 +69,7 @@ export interface IntHomeCard {
     hyperlink?: string;
     isNew?: boolean;
     badgeCount?: string;
+    sortOrder?: number;
 }
 
 export interface IntContact {
@@ -584,6 +585,12 @@ export class DataProvider {
                   type: TypeInputUI.Boolean,
                   default: false
               }, 
+              {
+                  key: 'sortOrder',
+                  caption: '顺序',
+                  type: TypeInputUI.Number,
+                  default: 0
+              },   
               {
                   key: 'isNew',
                   caption: '显示最新',

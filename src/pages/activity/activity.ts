@@ -23,6 +23,7 @@ import * as moment from 'moment';
  */
 
 @IonicPage({
+  name: 'activity-page',
   segment: 'activity/:itemIndex/:itemId'
 })
 @Component({

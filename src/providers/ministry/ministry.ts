@@ -77,8 +77,15 @@ export class MinistryProvider {
         });
     }
 
+    publishUrl: string;
+
     constructor(public ibcFB: IbcFirebaseProvider, public toastCtrl: ToastController,
         public common: CommonProvider, public content: DataProvider) {
+
+        this.ibcFB.afDB.database.ref(`urls`).once('value', snapshot => {
+            let urls = snapshot.val();
+            this.publishUrl = urls.ministry;
+        });
 
         this.content.ibcFB.userProfile$.subscribe(auth => {
             // console.log("========== user profile changed! ============");

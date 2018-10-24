@@ -101,6 +101,7 @@ import { IbcHttpProvider } from '../providers/ibc-http/ibc-http';
 import { Deeplinks } from '@ionic-native/deeplinks';
 
 import { SharedModule } from './shared.module';
+import { IbcDeeplinkProvider } from '../providers/ibc-deeplink/ibc-deeplink';
 
 // const firebaseConfig = {
 //     apiKey: "AIzaSyDFkwr578ZYuu0PPQxd5MN2-OCh4O7oKtc",
@@ -201,7 +202,8 @@ import { SharedModule } from './shared.module';
     BibleProvider,
     IbcHttpProvider,
     WechatProvider,
-    Deeplinks
+    Deeplinks,
+    IbcDeeplinkProvider
   ]
 })
 export class AppModule {}

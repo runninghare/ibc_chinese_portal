@@ -45,7 +45,11 @@ export class MinistryPage implements OnInit {
     }
 
     share(): void {
-      this.wechat.weChatShareLink('https://www.google.com.au','分享谷歌2','Ross测试用','https://cordova.apache.org/images/cordova_256.png');
+      let base64Url = btoa(this.ministrySvc.publishUrl);
+      let url = `http://ibc.medocs.com.au/app/#/iframe/侍奉计划/${base64Url}`;
+      // console.log(url);
+      // console.log(this.ministrySvc.publishUrl);
+      this.wechat.weChatShareLink(url,'事工计划','下月侍奉安排','https://cordova.apache.org/images/cordova_256.png');
     }
 
     pushSheet(): void {

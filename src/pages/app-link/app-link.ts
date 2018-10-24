@@ -11,7 +11,7 @@ import * as $ from 'jquery';
  */
 
 @IonicPage({
-    segment: 'app-link/:path/:param1/:param2'
+    segment: 'app-link/:path'
 })
 @Component({
   selector: 'page-app-link',
@@ -23,14 +23,10 @@ export class AppLinkPage {
 
   // sanitizedUrl: string;
   path: string;
-  param1: string;
-  param2: string;
   hash: string;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public commonSvc: CommonProvider) {
       this.path = navParams.get('path');
-      this.param1 = navParams.get('param1');
-      this.param2 = navParams.get('param2');
   }
 
   ionViewDidLoad() {
@@ -38,19 +34,19 @@ export class AppLinkPage {
     // this.sanitizedUrl = this.commonSvc.sanitize('http://ibc.medocs.com.au/adm/news_cmIBC.htm');
 
     if (this.path) {
-        let hash = `${this.path}`
+        // let hash = `${this.path}`
 
-        if (this.param1 != 'null') {
-            hash += `/${this.param1}`;
-        }
+        // if (this.param1 != 'null') {
+        //     hash += `/${this.param1}`;
+        // }
 
-        if (this.param2 != 'null') {
-            hash += `/${this.param2}`;
-        }
+        // if (this.param2 != 'null') {
+        //     hash += `/${this.param2}`;
+        // }
 
-        this.hash = hash; 
+        this.hash = location.hash.replace('#/app-link/',''); 
 
-        location.href = `ibcchinese://redirect/${hash}`;
+        location.href = `ibcchinese://redirect/${this.hash}`;
 
         setTimeout(() => {
             if (this.commonSvc.isIos) {
@@ -58,7 +54,7 @@ export class AppLinkPage {
             } else if (this.commonSvc.isAndroid) {
                 location.href = 'https://play.google.com/store/apps/details?id=com.rjwebsolution.ibcchinese';
             }
-        }, 1000);
+        }, 2000);
     }
 
     // $(this.iframe.nativeElement).attr('src', "http://www.google.com.au");

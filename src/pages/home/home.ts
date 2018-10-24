@@ -26,6 +26,7 @@ import { File } from '@ionic-native/file';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { AudioProvider } from '../../providers/audio/audio';
 import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
+import { IbcDeeplinkProvider } from '../../providers/ibc-deeplink/ibc-deeplink';
 import { Deeplinks } from '@ionic-native/deeplinks';
 import { Observable } from 'rxjs';
 
@@ -58,7 +59,11 @@ export class HomePage implements OnInit, AfterViewInit {
     showCustomLoginConfirm: boolean = false;
 
     get cards(): IntHomeCard[] {
-        return this.content.homeCards;
+        return this.content.homeCards.sort((a,b) => {
+            if (!a.sortOrder) a.sortOrder = 0;
+            if (!b.sortOrder) b.sortOrder = 0;
+            return a.sortOrder < b.sortOrder ? -1 : a.sortOrder > b.sortOrder ? 1: 0
+        });
     }
 
     authUser: firebase.User;
@@ -86,6 +91,7 @@ export class HomePage implements OnInit, AfterViewInit {
         public socialSharing: SocialSharing,
         public wechat: WechatProvider,
         public deepLinks: Deeplinks,
+        public ibcDeepLinkSvc: IbcDeeplinkProvider,
         public loadTrackerSvc: LoadTrackerProvider
     ) {
 
@@ -114,49 +120,7 @@ export class HomePage implements OnInit, AfterViewInit {
             }, 5000);
         }
 
-        if (!this.common.isWeb) {
-            this.platform.ready().then(() => {
-                this.loadTrackerSvc.loading = true;
-                this.deepLinks.routeWithNavController(this.navCtrl, {
-                    '/about-page': AboutPage,
-                    '/about-app-page': AboutAppPage,
-                    '/list-page/:type': ListPage,
-                    '/activity-page/:itemIndex/:itemId': ActivityPage
-                })
-                .subscribe(match => {
-                    // match.$route - the route we matched, which is the matched entry from the arguments to route()
-                    // match.$args - the args passed in the link
-                    // match.$link - the full link data
-                    console.log('Successfully matched route', JSON.stringify(match));
-                    this.loadTrackerSvc.loading = false;
-
-                    if (match && match.$link) {
-                        let data = match.$link;
-                        let queryString = data.queryString;
-                        console.log(queryString);
-
-                        let wechatMatch = queryString.match(/code=(\w+)&state=\w+&lang=\w+&country=\w+/);
-                        if (this.wechat.linkingInProgress && wechatMatch) {
-                            let code = wechatMatch[1];
-                            this.ibcFB.linkWeChatSendApiRequest(code);
-                        } else if (this.wechat.LoggingInProgress && wechatMatch) {
-                            console.log('--- send request to login in! ---');
-                            let code = wechatMatch[1];
-                            this.ibcFB.loginWeChatSendApiRequest(code);
-                        }
-                    }
-                }, nomatch => {
-                    // nomatch.$link - the full link data
-                    console.error('Got a deeplink that didn\'t match', nomatch);
-                    this.loadTrackerSvc.loading = false;
-                });
-
-                setTimeout(() => {
-                    this.loadTrackerSvc.loading = false;
-                }, 2000);
-            });
-        }
-
+        this.ibcDeepLinkSvc.listen(this.navCtrl);
     }
 
     aboutUs(): void {

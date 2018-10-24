@@ -17,6 +17,7 @@ import { Observable, Subscription } from 'rxjs';
 import { DataProvider, IntPopupTemplateItem, IntListItem, IntListPageParams, IntAuxiliaryButton } from '../../providers/data-adaptor/data-adaptor';
 
 @IonicPage({
+  name: 'list-page',
   segment: 'list/:type'
 })
 @Component({
