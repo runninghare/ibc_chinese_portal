@@ -29,15 +29,13 @@ import { AdminSmsPageModule } from '../pages/admin-sms/admin-sms.module';
 import { IframePageModule } from '../pages/iframe/iframe.module';
 import { CommonDirectivesModule } from '../directives/directives.module';
 
-import { AboutAppPage } from '../pages/about-app/about-app';
-import { ChatPage } from '../pages/chat/chat';
+import { AboutAppPageModule } from '../pages/about-app/about-app.module';
+import { ChatPageModule } from '../pages/chat/chat.module';
 import { MapPage } from '../pages/map/map';
 import { SongPage } from '../pages/song/song';
 import { EditorPage } from '../pages/editor/editor';
 
-import { BiblePage } from '../pages/bible/bible';
-import { BibleBookPage } from '../pages/bible/bible-book';
-import { BibleChapterPage } from '../pages/bible/bible-chapter';
+import { BiblePageModule } from '../pages/bible/bible.module';
 
 import { MonthlyVersesPageModule } from '../pages/monthly-verses/monthly-verses.module';
 
@@ -122,13 +120,8 @@ import { IbcDeeplinkProvider } from '../providers/ibc-deeplink/ibc-deeplink';
     UserProfilePage,
     MinistryPage,
     BrowserPage,
-    ChatPage,
     MapPage,
     SongPage,
-    AboutAppPage,
-    BiblePage,
-    BibleBookPage,
-    BibleChapterPage,
     EditorPage    
   ],
   imports: [
@@ -141,29 +134,27 @@ import { IbcDeeplinkProvider } from '../providers/ibc-deeplink/ibc-deeplink';
     ImageCropperModule,
     SharedModule,
     AboutPageModule,
+    AboutAppPageModule,
     ActivityPageModule,
+    BiblePageModule,
+    ChatPageModule,
     ListPageModule,
     AdminSystemPageModule,
     AdminSmsPageModule,
-    IframePageModule
+    IframePageModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     HomePage,
     ContactPage,
-    AboutAppPage,
     HeaderPopoverPage,
     PhotoEditPage,
     UserProfilePage,
     MinistryPage,
     BrowserPage,
-    ChatPage,
     MapPage,
     SongPage,
-    BiblePage,
-    BibleBookPage,
-    BibleChapterPage,
     EditorPage    
   ],
   providers: [

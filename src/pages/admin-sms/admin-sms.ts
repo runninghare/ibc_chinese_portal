@@ -12,7 +12,9 @@ import { ListPage } from '../../pages/list/list';
  * Ionic pages and navigation.
  */
 
-@IonicPage()
+@IonicPage({
+    name: 'admin-sms-page'
+})
 @Component({
     selector: 'page-admin-sms',
     templateUrl: 'admin-sms.html',

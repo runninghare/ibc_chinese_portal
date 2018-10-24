@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { App, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, App, NavController, NavParams } from 'ionic-angular';
 import { DataProvider } from '../../providers/data-adaptor/data-adaptor';
 import { CommonProvider } from '../../providers/common/common';
 import { HomePage } from '../../pages/home/home';
@@ -11,7 +11,9 @@ import { ENV } from '@app/env';
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-
+@IonicPage({
+    name: 'about-app-page'
+})
 @Component({
   selector: 'page-about-app',
   templateUrl: 'about-app.html',

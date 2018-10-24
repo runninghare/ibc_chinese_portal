@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, Navbar } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Navbar } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 import { SQLite } from 'ionic-native';
 import { BibleProvider, IntBibleChapter, IntBibleVerse } from '../../providers/bible/bible';

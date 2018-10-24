@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
-import { NavController, NavParams, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
 import { DataProvider, IntContact, IntMessage, IntThread, IntListItem } from '../../providers/data-adaptor/data-adaptor';
 import { CommonProvider } from '../../providers/common/common';
 // import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -20,6 +20,9 @@ import { ENV } from '@app/env';
  * Ionic pages and navigation.
  */
 
+@IonicPage({
+    name: 'chat-page'
+})
 @Component({
     selector: 'page-chat',
     templateUrl: 'chat.html',

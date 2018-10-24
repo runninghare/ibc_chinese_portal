@@ -24,6 +24,9 @@ export interface BibleID {
     EnglishName: string;
 };
 
+@IonicPage({
+    name: 'bible-page'
+})
 @Component({
     selector: 'page-bible',
     templateUrl: 'bible.html',

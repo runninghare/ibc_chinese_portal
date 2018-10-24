@@ -10,6 +10,7 @@ import { CommonProvider } from '../../providers/common/common';
  */
 
 @IonicPage({
+    name: 'iframe-page',
     segment: 'iframe/:title/:url'
 })
 @Component({

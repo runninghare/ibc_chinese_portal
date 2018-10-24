@@ -11,6 +11,7 @@ import * as $ from 'jquery';
  */
 
 @IonicPage({
+    name: 'app-link-page',
     segment: 'app-link/:path'
 })
 @Component({

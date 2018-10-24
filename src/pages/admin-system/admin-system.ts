@@ -13,7 +13,9 @@ import * as moment from 'moment';
  * Ionic pages and navigation.
  */
 
-@IonicPage()
+@IonicPage({
+  name: 'admin-system-page'
+})
 @Component({
   selector: 'page-admin-system',
   templateUrl: 'admin-system.html',
