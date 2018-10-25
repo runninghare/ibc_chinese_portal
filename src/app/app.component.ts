@@ -12,7 +12,6 @@ import { ContactPage } from '../pages/contact/contact';
 import { AboutPage } from '../pages/about/about';
 import { AboutAppPage } from '../pages/about-app/about-app';
 import { MinistryPage } from '../pages/ministry/ministry';
-import { EditorPage } from '../pages/editor/editor';
 import { AdminSystemPage } from '../pages/admin-system/admin-system';
 // import { AdminSmsPage } from '../pages/admin-sms/admin-sms';
 

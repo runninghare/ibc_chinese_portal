@@ -8,8 +8,9 @@ import { FileCacheProvider } from '../../providers/file-cache/file-cache';
 import { NotificationProvider } from '../../providers/notification/notification';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { AudioProvider } from '../../providers/audio/audio';
-import { EditorPage } from '../editor/editor';
+import { IbcEditorComponent } from '../../components/editor/editor';
 import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
+import { IbcHttpProvider } from '../../providers/ibc-http/ibc-http'
 import * as moment from 'moment';
 import { ENV } from '@app/env';
 
@@ -21,7 +22,8 @@ import { ENV } from '@app/env';
  */
 
 @IonicPage({
-    name: 'chat-page'
+    name: 'chat-page',
+    segment: 'chat/:partnerId'
 })
 @Component({
     selector: 'page-chat',
@@ -41,6 +43,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
     @ViewChild('chatArea') chatArea: ElementRef;
 
+    partnerId: string;
     partner: IntContact;
 
     threadId: string;
@@ -67,7 +70,7 @@ export class ChatPage implements OnInit, OnDestroy {
     private headers: Headers;
 
     constructor( 
-        public http: Http, 
+        public http: IbcHttpProvider, 
         public navCtrl: NavController, 
         public navParams: NavParams,
         public cacheSvc: FileCacheProvider,
@@ -87,73 +90,82 @@ export class ChatPage implements OnInit, OnDestroy {
         this.time_lastMonth = moment().subtract(1, 'month').startOf('month');
         this.time_lastYear = moment().subtract(1, 'year').startOf('year');
 
-        this.partner = this.navParams.get('contact');
+        this.partnerId = this.navParams.get('partnerId');
 
-        if (this.partner) {
-            this.content.ibcFB.userProfile$.filter(auth => auth != null).flatMap(auth => {
-                this.headers = new Headers({ Authorization: `Bearer ${auth.uid}`, Accept: 'application/json', 'Content-Type': 'application/json' });
-
-                let body = { receiver_id: this.partner.id };
-
-                this.activate();
-
-                /* Clear all Unread Notifications */
-                this.content.allStatusDB
-                           .child(this.content.myselfContact.id)
-                           .child(this.partner.id)
-                           .child('chat_notifs').set(0);
-
-                this.loadTrackerSvc.loading = true;
-                return http.post(`${ENV.apiServer}/firebase/thread_with`, body, new RequestOptions({ headers: this.headers }))
-                .timeout(5000)
-            }).flatMap(res => {
-                let data = res.json();
-                this.threadId = data.result;
-                let thread = data.thread;
-
-                if (!thread.messages) {
-                    thread.messages = [];
-                }
-
-                if (thread.messages.length > 0) {
-                    thread.messages.pop();
-                }
-
-                this.thread = thread;
-
-                return this.content.ibcFB.afDB.object<IntThread>(`threads/${this.threadId}`).valueChanges()
-            }).catch(error => {
-                console.error(error);
-                return Observable.of(null);
-            })
-            .subscribe(res => {
-                // console.log(res);
-                // this.thread = res;
-                this.loadTrackerSvc.loading = false;
-
-                let fireDBThread = res;
-
-                if (fireDBThread && fireDBThread.messages && fireDBThread.messages.length > 0) {
-                    this.thread.messages.push(fireDBThread.messages[0]);
-                }
-
-                let messageCount = this.thread && this.thread.messages && this.thread.messages.length || 0;
-
-                if (messageCount > this.messageCount 
-                    && this.thread.messages[messageCount-1].sender != this.content.myselfContact.id) {
-                    this.incomingMessage$.next(this.thread.messages[messageCount-1]);
-                }
-
-                this.messageCount = messageCount;
-
-                this.scrollDown();
-            }, error => {
-                this.loadTrackerSvc.loading = false;
-            })
-        }
-
-        this.content.allContactsDB.on('value', snapshot => {
+        this.content.allContactsDB.once('value', snapshot => {
             this.contacts = snapshot.val();
+
+            console.log(this.contacts);
+
+            if (this.partnerId) {
+                this.partner = this.contacts[this.partnerId];
+            } else {
+                this.partner = this.navParams.get('contact');
+            }
+
+            console.log('--- partner ---');
+            console.log(this.partner);
+
+            if (this.partner) {
+                this.content.currentUser$.flatMap(auth => {
+
+                    let body = { receiver_id: this.partner.id };
+
+                    this.activate();
+
+                    /* Clear all Unread Notifications */
+                    this.content.allStatusDB
+                        .child(this.content.myselfContact.id)
+                        .child(this.partner.id)
+                        .child('chat_notifs').set(0);
+
+                    this.loadTrackerSvc.loading = true;
+                    return Observable.from(this.http.post(`firebase/thread_with`, body)).timeout(5000)
+                }).flatMap(data => {
+                    this.threadId = data.result;
+                    let thread = data.thread;
+
+                    if (!thread.messages) {
+                        thread.messages = [];
+                    }
+
+                    if (thread.messages.length > 0) {
+                        thread.messages.pop();
+                    }
+
+                    this.thread = thread;
+
+                    return this.content.ibcFB.afDB.object<IntThread>(`threads/${this.threadId}`).valueChanges()
+                }).catch(error => {
+                    console.error(error);
+                    return Observable.of(null);
+                })
+                    .subscribe(res => {
+                        // console.log(res);
+                        // this.thread = res;
+                        this.loadTrackerSvc.loading = false;
+
+                        let fireDBThread = res;
+
+                        if (fireDBThread && fireDBThread.messages && fireDBThread.messages.length > 0) {
+                            this.thread.messages.push(fireDBThread.messages[0]);
+                        }
+
+                        let messageCount = this.thread && this.thread.messages && this.thread.messages.length || 0;
+
+                        if (messageCount > this.messageCount
+                            && this.thread.messages[messageCount - 1].sender != this.content.myselfContact.id) {
+                            this.incomingMessage$.next(this.thread.messages[messageCount - 1]);
+                        }
+
+                        this.messageCount = messageCount;
+
+                        this.scrollDown();
+                    }, error => {
+                        this.loadTrackerSvc.loading = false;
+                    })
+            }
+
         })
 
         this.incomingMessage$.skip(1).subscribe(m => {
@@ -296,22 +308,23 @@ export class ChatPage implements OnInit, OnDestroy {
 
             console.log(`Message: ${message}`);
 
-            return this.http.post(`${ENV.apiServer}/firebase/thread_add_msg`, {
+            return Observable.from(this.http.post('firebase/thread_add_msg', {
                thread_id: this.threadId,
                message: {
                    body: message
                }
-            }, new RequestOptions({ headers: this.headers }))
-                .timeout(10000)
-                .flatMap(() => {
-                    setTimeout(() => this.audioSvc.play('messageSent'), 1000);
-                    /* Add notif to the partner's status container */
-                    this.addPartnerNotif();
-                    return Observable.of(null);
-                }, console.error).toPromise();
+            }))
+            .timeout(10000)
+            .flatMap(() => {
+                console.log('--- message added ---');
+                setTimeout(() => this.audioSvc.play('messageSent'), 1000);
+                /* Add notif to the partner's status container */
+                this.addPartnerNotif();
+                return Observable.of(null);
+            }, console.error).toPromise();
         };
 
-        this.navCtrl.push(EditorPage, {
+        this.navCtrl.push(IbcEditorComponent, {
             titleContent: `To ${this.partner.name}`,
             useNavController: true,
             callBack: callback

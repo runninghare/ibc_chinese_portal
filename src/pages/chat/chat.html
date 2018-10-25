@@ -13,7 +13,7 @@
 <load-tracker></load-tracker>
 
 <ion-content no-bounce>
-    <ng-container [ngSwitch]="content?.myselfContact?.id == partner?.id">
+    <ng-container [ngSwitch]="content?.myselfContact?.id && content?.myselfContact?.id == partner?.id">
       <div *ngSwitchCase="true" style="text-align: center; margin-top: 20px">
         <ion-chip color="danger">
           <ion-label>你不可以和自己聊天：-）</ion-label>

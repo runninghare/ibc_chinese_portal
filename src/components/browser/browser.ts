@@ -9,10 +9,10 @@ import { NavController, NavParams } from 'ionic-angular';
  */
 
 @Component({
-  selector: 'page-browser',
+  selector: 'ibc-browser',
   templateUrl: 'browser.html',
 })
-export class BrowserPage {
+export class BrowserComponent {
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }

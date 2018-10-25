@@ -19,9 +19,8 @@ import { ListPageModule } from '../pages/list/list.module';
 import { PhotoEditPage } from '../pages/photo-edit/photo-edit';
 import { UserProfilePage, ModalSelectAvatar } from '../pages/user-profile/user-profile';
 import { MinistryPage } from '../pages/ministry/ministry';
-import { ContactPage } from '../pages/contact/contact';
+import { ContactPageModule } from '../pages/contact/contact.module';
 import { HeaderPopoverPage } from '../pages/Popover/header';
-import { BrowserPage } from '../pages/browser/browser';
 import { ActivityPageModule } from '../pages/activity/activity.module';
 import { AboutPageModule } from '../pages/about/about.module';
 import { AdminSystemPageModule } from '../pages/admin-system/admin-system.module';
@@ -33,7 +32,6 @@ import { AboutAppPageModule } from '../pages/about-app/about-app.module';
 import { ChatPageModule } from '../pages/chat/chat.module';
 import { MapPage } from '../pages/map/map';
 import { SongPage } from '../pages/song/song';
-import { EditorPage } from '../pages/editor/editor';
 
 import { BiblePageModule } from '../pages/bible/bible.module';
 
@@ -114,15 +112,12 @@ import { IbcDeeplinkProvider } from '../providers/ibc-deeplink/ibc-deeplink';
   declarations: [
     MyApp,
     HomePage,
-    ContactPage,
     HeaderPopoverPage,
     PhotoEditPage,
     UserProfilePage,
     MinistryPage,
-    BrowserPage,
     MapPage,
-    SongPage,
-    EditorPage    
+    SongPage
   ],
   imports: [
     BrowserModule,
@@ -142,20 +137,18 @@ import { IbcDeeplinkProvider } from '../providers/ibc-deeplink/ibc-deeplink';
     AdminSystemPageModule,
     AdminSmsPageModule,
     IframePageModule,
+    ContactPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     HomePage,
-    ContactPage,
     HeaderPopoverPage,
     PhotoEditPage,
     UserProfilePage,
     MinistryPage,
-    BrowserPage,
     MapPage,
-    SongPage,
-    EditorPage    
+    SongPage
   ],
   providers: [
     File,

@@ -12,10 +12,10 @@ import * as $ from 'jquery';
  */
 
 @Component({
-    selector: 'page-editor',
+    selector: 'editor',
     templateUrl: 'editor.html',
 })
-export class EditorPage {
+export class IbcEditorComponent {
 
     titleHtml: string = '';
 

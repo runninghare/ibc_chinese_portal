@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnDestroy } from '@angular/core';
-import { ModalController, NavController, NavParams, Searchbar } from 'ionic-angular';
+import { IonicPage, ModalController, NavController, NavParams, Searchbar } from 'ionic-angular';
 import { AudioProvider } from '../../providers/audio/audio';
 import { S2tProvider } from '../../providers/s2t/s2t';
 import { DataProvider, IntContact, IntPopupTemplateItem, TypeInputUI} from '../../providers/data-adaptor/data-adaptor';
@@ -21,6 +21,9 @@ import * as moment from 'moment';
  * Ionic pages and navigation.
  */
 
+@IonicPage({
+  name: 'contact-page'
+})
 @Component({
   selector: 'page-contact',
   templateUrl: 'contact.html',
@@ -120,9 +123,10 @@ export class ContactPage implements OnDestroy {
       this.title = this.navParams.get('title');
       this.prefilter = this.navParams.get('prefilter') || (() => true);
 
-      this.subscriptions.push(this.content.allContacts$.subscribe(res => {
+      this.subscriptions.push(
+        Observable.combineLatest(this.content.currentUser$, this.content.allContacts$).subscribe(res => {
           // console.log(res);
-          this.items = this.allContacts = res;
+          this.items = this.allContacts = res[1];
 
           if (this.onlyForFriends) {
             let friends = Object.keys(this.content.myselfContact.myFriends || {});
