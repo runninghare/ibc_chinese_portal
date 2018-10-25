@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, animate, state, trigger, style, transition } from '@angular/core';
-import { App, NavController, Platform, PopoverController, AlertController } from 'ionic-angular';
+import { IonicPage, App, NavController, Platform, PopoverController, AlertController } from 'ionic-angular';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { CommonProvider } from '../../providers/common/common';
 import { BrowserProvider } from '../../providers/browser/browser';
@@ -7,14 +7,13 @@ import { IbcStyleProvider } from '../../providers/ibc-style/ibc-style';
 import * as firebase from 'firebase/app';
 import * as rxjs from 'rxjs';
 import { ToastController } from 'ionic-angular';
-import { HeaderPopoverPage } from '../../pages/Popover/header';
+import { HeaderPopOverComponent } from '../../components/header-pop-over/header';
 import { MinistryPage } from '../../pages/ministry/ministry';
 import { ListPage } from '../../pages/list/list';
 import { AboutPage } from '../../pages/about/about';
 import { ActivityPage } from '../../pages/activity/activity';
 import { UserProfilePage } from '../../pages/user-profile/user-profile';
 import { AboutAppPage } from '../../pages/about-app/about-app';
-// import { PhotoEditPage } from '../../pages/photo-edit/photo-edit';
 import { PhotoProvider } from '../../providers/photo/photo';
 import { FileCacheProvider } from '../../providers/file-cache/file-cache';
 // import { InAppBrowser } from '@ionic-native/in-app-browser';
@@ -32,6 +31,9 @@ import { Observable } from 'rxjs';
 
 // declare var cordova;
 
+@IonicPage({
+    name: 'home-page',
+})
 @Component({
     selector: 'page-home',
     templateUrl: 'home.html',
@@ -179,7 +181,7 @@ export class HomePage implements OnInit, AfterViewInit {
             return;
         }
 
-        let popover = this.popOverCtrl.create(HeaderPopoverPage, {
+        let popover = this.popOverCtrl.create(HeaderPopOverComponent, {
             logout: this.logout.bind(this)
         });
 

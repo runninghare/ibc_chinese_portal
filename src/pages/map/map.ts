@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ViewController, NavParams } from 'ionic-angular';
+import { IonicPage, ViewController, NavParams } from 'ionic-angular';
 
 /**
  * Generated class for the MapPage page.
@@ -8,6 +8,10 @@ import { ViewController, NavParams } from 'ionic-angular';
  * Ionic pages and navigation.
  */
 
+@IonicPage({
+  name: 'map-page',
+  segment: 'map/:title/:address'
+})
 @Component({
   selector: 'page-map',
   templateUrl: 'map.html',

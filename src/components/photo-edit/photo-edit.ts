@@ -25,10 +25,10 @@ export interface IntCropperSettings {
 }
 
 @Component({
-    selector: 'photo-edit-page',
+    selector: 'photo-edit',
     templateUrl: 'photo-edit.html'
 })
-export class PhotoEditPage implements OnInit  {
+export class PhotoEditComponent implements OnInit  {
 
 
     /**

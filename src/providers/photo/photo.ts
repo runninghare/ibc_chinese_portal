@@ -1,11 +1,12 @@
+
 import { Injectable } from '@angular/core';
 import { App, NavController, Platform, ModalController } from 'ionic-angular';
-import { PhotoEditPage, IntCropperSettings } from '../../pages/photo-edit/photo-edit';
+import { PhotoEditComponent, IntCropperSettings } from '../../components/photo-edit/photo-edit';
 import 'rxjs/add/operator/map';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { Crop } from '@ionic-native/crop';
 
-export * from '../../pages/photo-edit/photo-edit';
+export * from '../../components/photo-edit/photo-edit';
 
 // @Component({
 //   template: `
@@ -106,8 +107,8 @@ export class PhotoProvider {
                 } else {
                     this.imgData = "data:image/png;base64," + data;
                     // console.log(this.imgData);
-                    // this.navCtrl.push(PhotoEditPage, { imgData: this.imgData, croppingOptions, successHandler, failureHandler });
-                    let selectCtrl = this.modalCtrl.create(PhotoEditPage, { imgData: this.imgData, croppingOptions, successHandler, failureHandler });
+                    // this.navCtrl.push(PhotoEditComponent, { imgData: this.imgData, croppingOptions, successHandler, failureHandler });
+                    let selectCtrl = this.modalCtrl.create(PhotoEditComponent, { imgData: this.imgData, croppingOptions, successHandler, failureHandler });
                     selectCtrl.present();
                 }
             }, failureHandler);

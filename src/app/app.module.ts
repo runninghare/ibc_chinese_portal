@@ -14,13 +14,12 @@ import { IbcMapComponent } from '../components/ibc-map/ibc-map';
 import { YoutubeVideoComponent } from '../components/youtube-video/youtube-video';
 
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
+import { HomePageModule } from '../pages/home/home.module';
 import { ListPageModule } from '../pages/list/list.module';
-import { PhotoEditPage } from '../pages/photo-edit/photo-edit';
+
 import { UserProfilePage, ModalSelectAvatar } from '../pages/user-profile/user-profile';
-import { MinistryPage } from '../pages/ministry/ministry';
+import { MinistryPageModule } from '../pages/ministry/ministry.module';
 import { ContactPageModule } from '../pages/contact/contact.module';
-import { HeaderPopoverPage } from '../pages/Popover/header';
 import { ActivityPageModule } from '../pages/activity/activity.module';
 import { AboutPageModule } from '../pages/about/about.module';
 import { AdminSystemPageModule } from '../pages/admin-system/admin-system.module';
@@ -30,7 +29,7 @@ import { CommonDirectivesModule } from '../directives/directives.module';
 
 import { AboutAppPageModule } from '../pages/about-app/about-app.module';
 import { ChatPageModule } from '../pages/chat/chat.module';
-import { MapPage } from '../pages/map/map';
+import { MapPageModule } from '../pages/map/map.module';
 import { SongPage } from '../pages/song/song';
 
 import { BiblePageModule } from '../pages/bible/bible.module';
@@ -111,12 +110,7 @@ import { IbcDeeplinkProvider } from '../providers/ibc-deeplink/ibc-deeplink';
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    HeaderPopoverPage,
-    PhotoEditPage,
     UserProfilePage,
-    MinistryPage,
-    MapPage,
     SongPage
   ],
   imports: [
@@ -128,12 +122,15 @@ import { IbcDeeplinkProvider } from '../providers/ibc-deeplink/ibc-deeplink';
     AngularFirestoreModule,
     ImageCropperModule,
     SharedModule,
+    HomePageModule,
     AboutPageModule,
     AboutAppPageModule,
     ActivityPageModule,
     BiblePageModule,
     ChatPageModule,
     ListPageModule,
+    MapPageModule,
+    MinistryPageModule,
     AdminSystemPageModule,
     AdminSmsPageModule,
     IframePageModule,
@@ -142,12 +139,7 @@ import { IbcDeeplinkProvider } from '../providers/ibc-deeplink/ibc-deeplink';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
-    HeaderPopoverPage,
-    PhotoEditPage,
     UserProfilePage,
-    MinistryPage,
-    MapPage,
     SongPage
   ],
   providers: [

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController, NavParams, Slides } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Slides } from 'ionic-angular';
 import { MinistryProvider, IntMinistrySheet } from '../../providers/ministry/ministry';
 import { NotificationProvider } from '../../providers/notification/notification';
 import { TypeInputUI, IntListItem } from '../../providers/data-adaptor/data-adaptor';
@@ -16,6 +16,10 @@ import * as _ from 'lodash';
  * Ionic pages and navigation.
  */
 
+@IonicPage({
+  name: 'ministry-page',
+  segment: 'ministry/:forDate'
+})
 @Component({
   selector: 'page-ministry',
   templateUrl: 'ministry.html',

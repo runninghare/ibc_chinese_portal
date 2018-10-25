@@ -10,7 +10,7 @@ import { UserProfilePage } from '../../pages/user-profile/user-profile';
     </ion-list>
   `
 })
-export class HeaderPopoverPage implements OnInit {
+export class HeaderPopOverComponent implements OnInit {
   constructor(public app: App, public viewCtrl: ViewController, public navParams: NavParams, public navCtrl: NavController) {}
 
   ngOnInit(): void {
