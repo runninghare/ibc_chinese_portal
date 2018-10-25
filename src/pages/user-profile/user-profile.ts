@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { animate, state, trigger, style, transition } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavController, NavParams, ModalController, ViewController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, ViewController } from 'ionic-angular';
 import { IbcFirebaseProvider, IntProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { ToastController } from 'ionic-angular';
 import { PhotoProvider } from '../../providers/photo/photo';
@@ -32,6 +32,9 @@ export class PasswordValidation {
  * Ionic pages and navigation.
  */
 
+@IonicPage({
+    name: 'user-profile'
+})
 @Component({
   selector: 'page-user-profile',
   templateUrl: 'user-profile.html',
@@ -102,7 +105,6 @@ export class UserProfilePage implements OnInit {
         public modalCtrl: ModalController,
         public commonSvc: CommonProvider
     ) {
-        console.log(JSON.stringify(ibcFB.afAuth.auth.currentUser.providerData));
 
         this.authForm = fb.group({
             username:     [null, Validators.required],
@@ -135,9 +137,9 @@ export class UserProfilePage implements OnInit {
     }
 
     ngOnInit(): void {
-        this.uid = this.ibcFB.afAuth.auth.currentUser.uid
 
         this.content.currentUser$.subscribe((user: IntContact) => {
+            this.uid = this.ibcFB.afAuth.auth.currentUser.uid
             this.authForm.controls.username.setValue(user.username);
 
             if (!user.visited) {

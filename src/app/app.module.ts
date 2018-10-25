@@ -17,7 +17,7 @@ import { MyApp } from './app.component';
 import { HomePageModule } from '../pages/home/home.module';
 import { ListPageModule } from '../pages/list/list.module';
 
-import { UserProfilePage, ModalSelectAvatar } from '../pages/user-profile/user-profile';
+import { UserProfilePageModule } from '../pages/user-profile/user-profile.module';
 import { MinistryPageModule } from '../pages/ministry/ministry.module';
 import { ContactPageModule } from '../pages/contact/contact.module';
 import { ActivityPageModule } from '../pages/activity/activity.module';
@@ -30,7 +30,7 @@ import { CommonDirectivesModule } from '../directives/directives.module';
 import { AboutAppPageModule } from '../pages/about-app/about-app.module';
 import { ChatPageModule } from '../pages/chat/chat.module';
 import { MapPageModule } from '../pages/map/map.module';
-import { SongPage } from '../pages/song/song';
+import { SongPageModule } from '../pages/song/song.module';
 
 import { BiblePageModule } from '../pages/bible/bible.module';
 
@@ -109,9 +109,7 @@ import { IbcDeeplinkProvider } from '../providers/ibc-deeplink/ibc-deeplink';
 
 @NgModule({
   declarations: [
-    MyApp,
-    UserProfilePage,
-    SongPage
+    MyApp
   ],
   imports: [
     BrowserModule,
@@ -134,14 +132,11 @@ import { IbcDeeplinkProvider } from '../providers/ibc-deeplink/ibc-deeplink';
     AdminSystemPageModule,
     AdminSmsPageModule,
     IframePageModule,
-    ContactPageModule
+    ContactPageModule,
+    SongPageModule,
+    UserProfilePageModule
   ],
   bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
-    UserProfilePage,
-    SongPage
-  ],
   providers: [
     File,
     FileOpener,

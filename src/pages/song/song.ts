@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { VideoProvider } from '../../providers/video/video';
+import { DataProvider } from '../../providers/data-adaptor/data-adaptor';
 
 /**
  * Generated class for the SongPage page.
@@ -9,6 +10,10 @@ import { VideoProvider } from '../../providers/video/video';
  * Ionic pages and navigation.
  */
 
+@IonicPage({
+  name: 'song-page',
+  segment: 'song/:id'
+})
 @Component({
   selector: 'page-song',
   templateUrl: 'song.html',
@@ -22,13 +27,19 @@ export class SongPage {
   lyric: string;
   language: string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public videoSvc: VideoProvider) {
+  activeSong: any;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public videoSvc: VideoProvider, public content: DataProvider) {
       this.id = navParams.get('id');
       this.album = navParams.get('album');
       this.title = navParams.get('title');
       this.set = navParams.get('set');
       this.lyric = navParams.get('lyric');
       this.language = navParams.get('language');
+
+      this.content.songs$.subscribe(songs => {
+        this.activeSong = songs.filter(s => s.id == this.id)[0];
+      })
   }
 
   play(): void {

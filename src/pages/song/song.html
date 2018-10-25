@@ -7,17 +7,17 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>{{album}}</ion-title>
+    <ion-title>{{activeSong?.album || album}}</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 <ion-content padding>
 
-    <h3 text-center>{{title}} ({{language || '國語'}})</h3>
+    <h3 text-center>{{activeSong?.title || title}} ({{activeSong?.language || language || '國語'}})</h3>
 
     <div text-center class="ibc-full-width ibc-bottom-margin-10">
-        <ion-note>Set {{set}}</ion-note>
+        <ion-note>Set {{activeSong?.set || set}}</ion-note>
     </div>
 
     <div text-center>
@@ -32,6 +32,6 @@
     </div>
 
 
-    <pre text-center>{{lyric}}</pre>
+    <pre text-center>{{activeSong?.lyric || lyric}}</pre>
 
 </ion-content>
