@@ -137,7 +137,7 @@ export class ListPage implements OnDestroy {
     } else if (typeof titleAs == 'function') {
       this.titleAs = titleAs;
     } else {
-      this.titleAs = null;
+      this.titleAs = () => null;
     }
 
     let subtitleAs = this.params.subtitleAs;
@@ -152,6 +152,8 @@ export class ListPage implements OnDestroy {
     if (this.items$) {
       this.subscription = this.items$.subscribe(items => {
         this.items = items;
+
+        console.log(items);
 
         if (this.groupBy) {
           /* This trick is aiming at resolving the conflicts between number and string type during uniquification */

@@ -11,7 +11,8 @@ import { VideoProvider } from '../../providers/video/video';
   selector: 'youtube-video',
   templateUrl: 'youtube-video.html',
   host: {
-      '(click)': 'play()'
+      '(click)': 'play()',
+      class: 'ibc-display-block'
   }
 })
 export class YoutubeVideoComponent {
@@ -24,7 +25,6 @@ export class YoutubeVideoComponent {
   }
 
   constructor(public videoSvc: VideoProvider) {
-    this.title = 'Hello World';
   }
 
 }

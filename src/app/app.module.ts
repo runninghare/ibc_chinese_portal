@@ -8,15 +8,10 @@ import { ImageCropperModule } from "ng2-img-cropper/index";
 import { HttpClientModule } from '@angular/common/http';
 import { IonicSelectableModule } from 'ionic-selectable';
 
-import { PopupComponent } from '../components/popup/popup';
-import { LoadTrackerComponent } from '../components/load-tracker/load-tracker';
-import { IbcMapComponent } from '../components/ibc-map/ibc-map';
-import { YoutubeVideoComponent } from '../components/youtube-video/youtube-video';
-
+import { CommonDirectivesModule } from '../directives/directives.module';
 import { MyApp } from './app.component';
 import { HomePageModule } from '../pages/home/home.module';
 import { ListPageModule } from '../pages/list/list.module';
-
 import { UserProfilePageModule } from '../pages/user-profile/user-profile.module';
 import { MinistryPageModule } from '../pages/ministry/ministry.module';
 import { ContactPageModule } from '../pages/contact/contact.module';
@@ -25,16 +20,13 @@ import { AboutPageModule } from '../pages/about/about.module';
 import { AdminSystemPageModule } from '../pages/admin-system/admin-system.module';
 import { AdminSmsPageModule } from '../pages/admin-sms/admin-sms.module';
 import { IframePageModule } from '../pages/iframe/iframe.module';
-import { CommonDirectivesModule } from '../directives/directives.module';
-
 import { AboutAppPageModule } from '../pages/about-app/about-app.module';
 import { ChatPageModule } from '../pages/chat/chat.module';
 import { MapPageModule } from '../pages/map/map.module';
 import { SongPageModule } from '../pages/song/song.module';
-
 import { BiblePageModule } from '../pages/bible/bible.module';
-
 import { MonthlyVersesPageModule } from '../pages/monthly-verses/monthly-verses.module';
+import { SermonPageModule } from '../pages/sermon/sermon.module';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -125,6 +117,8 @@ import { IbcDeeplinkProvider } from '../providers/ibc-deeplink/ibc-deeplink';
     AboutAppPageModule,
     ActivityPageModule,
     BiblePageModule,
+    MonthlyVersesPageModule,
+    SermonPageModule,
     ChatPageModule,
     ListPageModule,
     MapPageModule,

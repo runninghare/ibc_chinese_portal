@@ -87,6 +87,7 @@ export class MyApp implements AfterViewInit {
     // used for an example of ngFor and navigation
     this.pages = [
       { title: '回到首頁', component: HomePage, needAuth: false },
+      { title: '教會講道', component: ListPage, needAuth: false, params: {type: 'sermonPageParams'} },
       { title: '贊美詩歌', component: ListPage, needAuth: false, params: {type: 'fullSongPageParams'}},
       // { title: '本月金句', component: MonthlyVersesPage, needAuth: false },
       { title: '教會成員', component: ContactPage, needAuth: true },
