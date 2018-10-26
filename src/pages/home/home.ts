@@ -215,20 +215,10 @@ export class HomePage implements OnInit, AfterViewInit {
         }
         if (card.hyperlink) {
             this.browserSvc.openPage(card.hyperlink);
-        } else if (card.redirect == 'MinistryPage') {
-            this.navCtrl.push(MinistryPage, Object.assign({},params));
-        // } else if (card.redirect == 'SongPage') {
-        //     this.navCtrl.push(ListPage, {type: 'nextSongPageParams'});
-        //     // this.navCtrl.push(SongPage, { nextServiceOnly: true });
-        // } else if (card.redirect == 'TaskPage') {
-        //     this.navCtrl.push(ListPage, {type: 'myTasksParams'});
-        //     // this.navCtrl.push(SongPage, { nextServiceOnly: true });
-        } else if (card.redirect == 'ActivityPage') {
-            this.navCtrl.push(ActivityPage, Object.assign({},params));
-        } else if (card.redirect == 'ListPage') {
-            this.navCtrl.push(ListPage, Object.assign({},params));
-            // this.navCtrl.push(SongPage, { nextServiceOnly: true });
+        } else if (card.redirect) {
+            this.navCtrl.push(card.redirect, Object.assign({},params));
         }
+
     }
 
     badgeCountIsNumber(badgeCount: any): boolean {

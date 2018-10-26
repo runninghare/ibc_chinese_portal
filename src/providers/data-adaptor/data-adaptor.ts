@@ -157,7 +157,7 @@ export interface IntPopupTemplateItem {
     lookupCaption?: string;
     lookupValue?: any;
     required?: boolean;
-    default?: any;
+    default?: any;  // could be a function
     hidden?: any;
     notifications?: IntListItem[];
     recipient?: string;
@@ -599,37 +599,76 @@ export class DataProvider {
               },           
               {
                   key: 'redirect',
-                  caption: '重定向頁面（高级）',
-                  // type: TypeInputUI.Dropdown,
-                  // lookupSource: Observable.of([
-                  //     {
-                  //         val: 'SongPage',
-                  //         cap: '詩歌頁面'
-                  //     },
-                  //     {
-                  //         val: 'ActivityPage',
-                  //         cap: '活動頁面'
-                  //     },
-                  //     {
-                  //         val: 'TaskPage',
-                  //         cap: '任務頁面'
-                  //     },
-                  //     {
-                  //         val: 'MinistryPage',
-                  //         cap: '侍奉人員頁面'
-                  //     },
-                  //     {
-                  //         val: 'ListPage',
-                  //         cap: '其他列表頁面'
-                  //     }                    
-                  // ]),
-                  // lookupCaption: 'cap',
-                  // lookupValue: 'val'                    
+                  caption: '重定向頁面',
+                  hidden: card => card.hyperlink,
+                  type: TypeInputUI.Dropdown,
+                  lookupSource: Observable.of([
+                      {
+                        val: null,
+                        cap: 'N/A'
+                      },
+                      {
+                          val: 'list-page',
+                          cap: '列表頁面'
+                      },        
+                      {
+                          val: 'song-page',
+                          cap: '詩歌頁面'
+                      },
+                      {
+                          val: 'activity-page',
+                          cap: '活動頁面'
+                      },
+                      {
+                          val: 'task-page',
+                          cap: '任務頁面'
+                      },
+                      {
+                          val: 'ministry-page',
+                          cap: '侍奉人員頁面'
+                      },
+                      {
+                          val: 'chat-page',
+                          cap: '討論頁面'
+                      }                         
+                  ]),
+                  lookupCaption: 'cap',
+                  lookupValue: 'val'                    
               },
               {
                   key: 'params',
-                  caption: '重定向参数（高级）'
-              },             
+                  caption: '重定向参数（高级）',
+                  type: TypeInputUI.Dropdown,
+                  hidden: card => !card.redirect || card.redirect != 'list-page',
+                  lookupSource: Observable.of([
+                      {
+                          val: '{"type":"fullSongPageParams"}',
+                          cap: '全部詩歌列表'
+                      },
+                      {
+                          val: '{"type":"nextSongPageParams"}',
+                          cap: '本週敬拜詩歌列表'
+                      },
+                      {
+                          val: '{"type":"myTasksParams"}',
+                          cap: '我的任務列表'
+                      },
+                      {
+                          val: '{"type":"activitiesParams"}',
+                          cap: '活動列表'
+                      }                      
+                  ]),
+                  lookupCaption: 'cap',
+                  lookupValue: 'val'                  
+              },               
+              {
+                  key: 'params',
+                  caption: '重定向参数（高级）',
+                  hidden: card => !card.redirect || card.redirect == 'list-page',
+                  // default: card => card.redirect == 'activity-page' ? '{"itemIndex": 3, "itemId": "RXZZ7ILx"}' :
+                  //          card.redirect == 'chat-page' ? '{"partnerId": "002"}' :
+                  //          null
+              },
               {
                   key: 'content',
                   caption: '內容（高级）',
@@ -753,7 +792,7 @@ export class DataProvider {
                     title: item.name,
                     set: item.set,
                     thumbnail: 'https://img.youtube.com/vi/' + item.id + '/0.jpg',
-                    redirect: 'SongPage',
+                    redirect: 'song-page',
                     params: {
                       id: item.id,
                       album: item.album,
@@ -960,7 +999,7 @@ export class DataProvider {
                     subtitle:  moment(item.datetime).format('YYYY年M月D日'),
                     datetime:  item.datetime,
                     thumbnail: item.thumbnail,
-                    redirect: item.redirect,
+                    redirect: 'activity-page',
                     isNew: item.isNew
                 }
           },
@@ -1055,7 +1094,7 @@ export class DataProvider {
                 return res[0].filter(c => res[1].filter(m => m == c.username).length > 0);
               });
 
-              this.tempListPageParams.addItemUseComponent = 'ListPage';
+              this.tempListPageParams.addItemUseComponent = 'list-page';
               this.tempListPageParams.addItemFuncFactory = (modalCtrl: ModalController, component: any) => {
                   return () => {
                       let modal = modalCtrl.create(component, {
@@ -1089,7 +1128,7 @@ export class DataProvider {
                   title: group.title,
                   subtitle: group.groupDescription,
                   avatar: group.avatar,
-                  redirect: 'ListPage',
+                  redirect: 'list-page',
                   members: group.members,
                   params: {
                       type: () => this.tempListPageParams

@@ -11,6 +11,7 @@ import { FileCacheProvider } from '../../providers/file-cache/file-cache';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PopupComponent } from '../../components/popup/popup';
 import { CommonProvider } from '../../providers/common/common';
+import { IbcHttpProvider } from '../../providers/ibc-http/ibc-http';
 import { Observable, Subscription } from 'rxjs';
 import * as moment from 'moment';
 
@@ -46,6 +47,10 @@ export class ContactPage implements OnDestroy {
 
   templateForAdd: IntPopupTemplateItem[] = [
         {
+          key: 'username',
+          caption: '用户ID (Unique)'
+        },
+        {
           key: 'name',
           caption: '英文名'
         },
@@ -69,7 +74,7 @@ export class ContactPage implements OnDestroy {
           ]),
           lookupCaption: 'cap',
           lookupValue: 'val',
-        },
+        },      
         {
           key: 'skills',
           caption: '事奉',
@@ -115,7 +120,7 @@ export class ContactPage implements OnDestroy {
 
   constructor(
     public navCtrl: NavController, public navParams: NavParams, public s2t: S2tProvider, 
-    public cacheSvc: FileCacheProvider, public sanitizer: DomSanitizer,
+    public cacheSvc: FileCacheProvider, public sanitizer: DomSanitizer, public ibcHttp: IbcHttpProvider,
     public content: DataProvider, public audioSvc: AudioProvider, public socialSharing: SocialSharing, 
     public navLauncher: LaunchNavigator, public modalCtrl: ModalController, public commonSvc: CommonProvider) {
 
@@ -234,6 +239,12 @@ export class ContactPage implements OnDestroy {
       save: (data: any) => {
         console.log(JSON.stringify(data,null,2));
 
+        /* Check whether username already exists */
+        if (this.allContacts.filter(c => c.username == data.username).length > 0) {
+          this.commonSvc.toastFailure(`${data.username}已被占用，请换一个username`);
+          return;
+        }
+
         let lastId = this.lastCounts && this.lastCounts.contacts;
 
         console.log(`lastId = ${lastId}`);
@@ -242,11 +253,12 @@ export class ContactPage implements OnDestroy {
           let newId = lastId + 1;
           Promise.all([
             this.content.allContactsDB.child(newId).set({
+              username: data.username,
               id: newId,
               name: data.name,
               chinese_name: data.chinese_name,
               skills: data.skills || [],
-              email: data.email,
+              email: data.email || `${data.username}@unknown.com`,
               mobile: data.mobile,
               address1: data.address1,
               state: data.state,
@@ -257,8 +269,16 @@ export class ContactPage implements OnDestroy {
             }),
             this.content.lastCountDB.child('contacts').set(newId)
           ])
-          .then(() => {
-            this.commonSvc.toastSuccess('添加成功');
+          .then(res => {
+            return this.ibcHttp.post('user', {
+              name: data.username,
+              access_level: 1,
+              email: data.email || `${data.username}@unknown.com`
+            });
+          })
+          .then((res) => {
+            console.log(res);
+            this.commonSvc.toastSuccess(`添加成功! 用户名：${res.name} 密码：${res.password}`, 300000);
             popupModal.dismiss();
           })
           .catch(err => {
@@ -274,7 +294,18 @@ export class ContactPage implements OnDestroy {
 
   deleteContact(id: string): void {
     this.commonSvc.confirmDialog(null, '你确定要删除吗?', () => {
-      this.content.allContactsDB.child(id).remove().then(() => {
+      let contact = this.allContacts.filter(c => c.id == id)[0];
+      if (!contact) {
+          this.commonSvc.toastFailure(`无法找到与${id}匹配的记录`);
+          return;
+      }
+      this.content.allContactsDB.child(id).remove()
+      .then(res => {
+        return this.ibcHttp.delete('user', {
+            name: contact.username
+        });
+      })
+      .then(() => {
         this.commonSvc.toastSuccess('删除成功');
       }, err => {
         this.commonSvc.toastFailure('删除失败', err);

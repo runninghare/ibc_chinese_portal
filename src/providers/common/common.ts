@@ -161,23 +161,25 @@ export class CommonProvider {
         return text;
     }
 
-    toastSuccess(msg: string): void {
+    toastSuccess(msg: string, duration: number = 3000): void {
         let toast = this.toastCtrl.create({
             message: msg,
-            duration: 3000,
+            duration,
             position: 'top',
-            cssClass: 'toast-success'
+            cssClass: 'toast-success',
+            showCloseButton: true
         });
 
         toast.present();
     }
 
-    toastFailure(msg: string, err: any): void {
+    toastFailure(msg: string, err?: any, duration: number = 3000): void {
         let toast = this.toastCtrl.create({
-            message: msg + ': ' + JSON.stringify(err),
-            duration: 3000,
+            message: err ? (msg + ': ' + JSON.stringify(err)) : msg,
+            duration,
             position: 'top',
-            cssClass: 'toast-danger'
+            cssClass: 'toast-danger',
+            showCloseButton: true
         });
 
         toast.present();

@@ -8,23 +8,25 @@
 
     <ion-list *ngIf="data">
 
-      <ion-item *ngFor="let d of definitions" [ngSwitch]="d.type" [hidden]="isHidden(d)">
+    <ng-container *ngFor="let d of definitions">
+      <ion-item [ngSwitch]="d.type" *ngIf="!isHidden(d)">
         <ion-label stacked>{{d.caption || d.key}}</ion-label>
         <ion-input *ngSwitchCase="'number'" type="number" [(ngModel)]="data[d.key]"></ion-input>
         <ion-textarea *ngSwitchCase="'textarea'" [(ngModel)]="data[d.key]"></ion-textarea>
         <ion-checkbox *ngSwitchCase="'boolean'" [(ngModel)]="data[d.key]"></ion-checkbox>
         <ion-datetime *ngSwitchCase="'date'" displayFormat="YYYY-MM-DD" [(ngModel)]="data[d.key]"></ion-datetime>
-
+      
         <ion-select *ngSwitchCase="'dropdown'" [(ngModel)]="data[d.key]">
           <ion-option [value]="o[d.lookupValue]" *ngFor="let o of d.lookupSource | async">{{getCaption(d.lookupCaption,o)}}</ion-option>
         </ion-select>
-
+      
         <ion-select *ngSwitchCase="'multi-dropdown'" [(ngModel)]="data[d.key]" multiple="true">
           <ion-option [value]="o[d.lookupValue]" *ngFor="let o of d.lookupSource | async">{{getCaption(d.lookupCaption,o)}}</ion-option>
         </ion-select>          
-
+      
         <ion-input *ngSwitchDefault [(ngModel)]="data[d.key]"></ion-input>
       </ion-item>
+    </ng-container>
 
       <ion-item *ngIf="itemToEdit">
         <ion-label stacked>Item Index</ion-label>

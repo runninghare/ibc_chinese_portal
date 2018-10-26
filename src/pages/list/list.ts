@@ -49,19 +49,19 @@ export class ListPage implements OnDestroy {
   forSelection: boolean;
   preselectedItemKeys: string[];
   selectFunc?(item: any): void;
-  itemTappedPreFunc?(item?: any, index?:any): void;
+  itemTappedPreFunc?(item?: any, index?: any): void;
   addItemUseComponent: string;
   addItemFuncFactory?(modalCtrl: ModalController, componentName: string): () => void;
   noSlideOptions: boolean;
 
-  filterFunc: (a:string, b:any) => boolean;
-  mapFunc: (a?:any, index?: number) => any;
-  orderByFunc: (a:any, b:any) => number;
-  groupOrderByFunc: (a:any, b:any) => number;
-  reverseMapFunc: (a?:any) => any;
-  callFunc: (a?:any) => any;
-  subtitleAs: (a?:any) => any;
-  titleAs: (a?:any) => any;
+  filterFunc: (a: string, b: any) => boolean;
+  mapFunc: (a?: any, index?: number) => any;
+  orderByFunc: (a: any, b: any) => number;
+  groupOrderByFunc: (a: any, b: any) => number;
+  reverseMapFunc: (a?: any) => any;
+  callFunc: (a?: any) => any;
+  subtitleAs: (a?: any) => any;
+  titleAs: (a?: any) => any;
 
   visibility: boolean[][] = [];
 
@@ -80,8 +80,8 @@ export class ListPage implements OnDestroy {
     public commonSvc: CommonProvider,
     public modalCtrl: ModalController,
     public viewCtrl: ViewController,
-    public navCtrl: NavController, 
-    public navParams: NavParams, 
+    public navCtrl: NavController,
+    public navParams: NavParams,
     public s2t: S2tProvider,
     public browser: BrowserProvider) {
     // If we navigated to this page, we will have an item available as a nav param
@@ -95,27 +95,27 @@ export class ListPage implements OnDestroy {
       console.log(params);
 
       if (params) {
-          this.itemsDB = params['itemsDB'];
-          this.items$ = params['items$'];
-          this.groupBy = params['groupBy'];
-          this.checkNew = params['checkNew'];
-          this.hideEdit = params['hideEdit'];
-          this.hideDelete = params['hideDelete'];
-          this.showReadOrUnread = params['showReadOrUnread'];
-          this.listHasKeys = params['listHasKeys'];
-          this.fullPermission = params['fullPermission'];
-          this.postAddCallback = params['postAddCallback'];
-          this.postDeleteCallback = params['postDeleteCallback'];
-          this.additionalSlideButton = params['additionalSlideButton'];
-          this.defaultAvatarImg = params['defaultAvatarImg'];
-          this.defaultThumbnailImg = params['defaultThumbnailImg'];
-          this.preselectedItemKeys = params['preselectedItemKeys'];
-          this.selectFunc = params['selectFunc'];
-          this.forSelection = params['forSelection'];
-          this.addItemUseComponent = params['addItemUseComponent'];
-          this.addItemFuncFactory = params['addItemFuncFactory'];
-          this.itemTappedPreFunc = params['itemTappedPreFunc'];
-          this.noSlideOptions = params['noSlideOptions'];
+        this.itemsDB = params['itemsDB'];
+        this.items$ = params['items$'];
+        this.groupBy = params['groupBy'];
+        this.checkNew = params['checkNew'];
+        this.hideEdit = params['hideEdit'];
+        this.hideDelete = params['hideDelete'];
+        this.showReadOrUnread = params['showReadOrUnread'];
+        this.listHasKeys = params['listHasKeys'];
+        this.fullPermission = params['fullPermission'];
+        this.postAddCallback = params['postAddCallback'];
+        this.postDeleteCallback = params['postDeleteCallback'];
+        this.additionalSlideButton = params['additionalSlideButton'];
+        this.defaultAvatarImg = params['defaultAvatarImg'];
+        this.defaultThumbnailImg = params['defaultThumbnailImg'];
+        this.preselectedItemKeys = params['preselectedItemKeys'];
+        this.selectFunc = params['selectFunc'];
+        this.forSelection = params['forSelection'];
+        this.addItemUseComponent = params['addItemUseComponent'];
+        this.addItemFuncFactory = params['addItemFuncFactory'];
+        this.itemTappedPreFunc = params['itemTappedPreFunc'];
+        this.noSlideOptions = params['noSlideOptions'];
       }
     }
 
@@ -138,7 +138,7 @@ export class ListPage implements OnDestroy {
       this.titleAs = titleAs;
     } else {
       this.titleAs = null;
-    }    
+    }
 
     let subtitleAs = this.params.subtitleAs;
     if (typeof subtitleAs == 'string') {
@@ -163,7 +163,7 @@ export class ListPage implements OnDestroy {
           });
           this.groupValues = this.items.map(item => item[this.groupBy]).filter(this.commonSvc.arrayUniq).sort(this.groupOrderByFunc);
         } else {
-          this.groupValues =[null];
+          this.groupValues = [null];
         }
 
         this.groupValues.forEach(gv => {
@@ -172,8 +172,8 @@ export class ListPage implements OnDestroy {
         })
 
         let value = this.searchBar.value;
-        this.getItems({target: {value}});
-      }, err => {});
+        this.getItems({ target: { value } });
+      }, err => { });
     }
 
     this.title = this.params.title;
@@ -199,11 +199,11 @@ export class ListPage implements OnDestroy {
     }
     this.groupOrderByFunc = this.params.groupOrderByFunc;
     if (!this.groupOrderByFunc) {
-      this.groupOrderByFunc = (a,b) => a < b ? -1 : 1;
+      this.groupOrderByFunc = (a, b) => a < b ? -1 : 1;
     }
     this.orderByFunc = this.params.orderByFunc;
     if (!this.orderByFunc) {
-      this.orderByFunc = (a,b) => a < b ? -1 : 1;
+      this.orderByFunc = (a, b) => a < b ? -1 : 1;
     }
   }
 
@@ -217,7 +217,7 @@ export class ListPage implements OnDestroy {
     if (!this.templateForAdd) return null;
     let defOfGroupByItem = this.templateForAdd.filter(item => item.key == this.groupBy)[0];
     if (defOfGroupByItem && defOfGroupByItem.groupByFunc) {
-      return defOfGroupByItem.groupByFunc(val, key); 
+      return defOfGroupByItem.groupByFunc(val, key);
     } else {
       return `${key + ' ' + val}`;
     }
@@ -229,10 +229,10 @@ export class ListPage implements OnDestroy {
   }
 
   mappedItemsFunc(groupVal: any): IntListItem[] {
-      return this.items.filter(item => item[this.groupBy] == groupVal).sort(this.orderByFunc).map((item, i) => {
-          this.visibility[groupVal][i] = (!this.filterText || this.filterFunc(this.filterText, item)) ? true : false;
-          return item;
-      }).map(this.mapFunc);
+    return this.items.filter(item => item[this.groupBy] == groupVal).sort(this.orderByFunc).map((item, i) => {
+      this.visibility[groupVal][i] = (!this.filterText || this.filterFunc(this.filterText, item)) ? true : false;
+      return item;
+    }).map(this.mapFunc);
   }
 
   groupEmpty(groupVal: any): boolean {
@@ -247,44 +247,44 @@ export class ListPage implements OnDestroy {
   }
 
   deleteItem(i: number): void {
-        this.commonSvc.confirmDialog(null, '你确定要删除吗?', () => {
+    this.commonSvc.confirmDialog(null, '你确定要删除吗?', () => {
 
-            if (this.listHasKeys) {
-              let key = this.items[i].key || i;
+      if (this.listHasKeys) {
+        let key = this.items[i].key || i;
 
-              // console.log(`key = ${key}`);
+        // console.log(`key = ${key}`);
 
-              if (key) {
-                this.itemsDB.child(`${key}`).remove().then(() => {
-                  if (this.postDeleteCallback) {
-                    this.postDeleteCallback(this.items[i], key).then(() => {
-                      this.commonSvc.toastSuccess('删除成功');
-                    }) 
-                  } else {
-                    this.commonSvc.toastSuccess('删除成功');
-                  }
-                }).catch(err => {
-                    this.commonSvc.toastFailure('删除失败', err);
-                });
-              }
+        if (key) {
+          this.itemsDB.child(`${key}`).remove().then(() => {
+            if (this.postDeleteCallback) {
+              this.postDeleteCallback(this.items[i], key).then(() => {
+                this.commonSvc.toastSuccess('删除成功');
+              })
             } else {
-                let item = this.items.splice(i, 1)[0];
-                let itemsToSave = this.items.map(item => this.reverseMapFunc(item));
-                this.itemsDB.set(itemsToSave).then(() => {
-                  if (this.postDeleteCallback) {
-                    this.postDeleteCallback(item, i).then(() => {
-                      this.commonSvc.toastSuccess('删除成功');
-                    }) 
-                  } else {
-                    this.commonSvc.toastSuccess('删除成功');
-                  }
-                }).catch(err => {
-                    this.commonSvc.toastFailure('删除失败', err);
-                    this.items.splice(i, 0, item);
-                });              
+              this.commonSvc.toastSuccess('删除成功');
             }
-
+          }).catch(err => {
+            this.commonSvc.toastFailure('删除失败', err);
+          });
+        }
+      } else {
+        let item = this.items.splice(i, 1)[0];
+        let itemsToSave = this.items.map(item => this.reverseMapFunc(item));
+        this.itemsDB.set(itemsToSave).then(() => {
+          if (this.postDeleteCallback) {
+            this.postDeleteCallback(item, i).then(() => {
+              this.commonSvc.toastSuccess('删除成功');
+            })
+          } else {
+            this.commonSvc.toastSuccess('删除成功');
+          }
+        }).catch(err => {
+          this.commonSvc.toastFailure('删除失败', err);
+          this.items.splice(i, 0, item);
         });
+      }
+
+    });
   }
 
   defaultSelectFunc(): void {
@@ -293,59 +293,59 @@ export class ListPage implements OnDestroy {
 
   addItemPopup(): void {
     if (this.addItemFuncFactory && this.addItemUseComponent) {
-      this.addItemFuncFactory(this.modalCtrl, this.getComponentFromName(this.addItemUseComponent))();
+      this.addItemFuncFactory(this.modalCtrl, this.addItemUseComponent)();
     } else {
-        let popupModal = this.modalCtrl.create(PopupComponent, {
-            title: this.title,
-            definitions: this.templateForAdd || [],
-            cancel: () => popupModal.dismiss(),
-            save: (data: any) => {
+      let popupModal = this.modalCtrl.create(PopupComponent, {
+        title: this.title,
+        definitions: this.templateForAdd || [],
+        cancel: () => popupModal.dismiss(),
+        save: (data: any) => {
 
-                if (this.listHasKeys) {
-                    data.key = data.key || this.commonSvc.makeRandomString(8);
-                    data.isNew = true;
+          if (this.listHasKeys) {
+            data.key = data.key || this.commonSvc.makeRandomString(8);
+            data.isNew = true;
 
-                    this.itemsDB.child(data.key).set(data).then(() => {
-                        if (this.postAddCallback) {
-                            this.postAddCallback(data, data.key).then(() => {
-                                this.commonSvc.toastSuccess('添加成功');
-                            })
-                        } else {
-                            this.commonSvc.toastSuccess('添加成功');
-                        }
-                        popupModal.dismiss();
-                    }).catch(err => {
-                        this.commonSvc.toastFailure('添加失败', err);
-                        this.items.pop();
-                        popupModal.dismiss();
-                    });
-                } else {
-                    data.id = data.id || this.commonSvc.makeRandomString(8);
-                    data.isNew = true;
+            this.itemsDB.child(data.key).set(data).then(() => {
+              if (this.postAddCallback) {
+                this.postAddCallback(data, data.key).then(() => {
+                  this.commonSvc.toastSuccess('添加成功');
+                })
+              } else {
+                this.commonSvc.toastSuccess('添加成功');
+              }
+              popupModal.dismiss();
+            }).catch(err => {
+              this.commonSvc.toastFailure('添加失败', err);
+              this.items.pop();
+              popupModal.dismiss();
+            });
+          } else {
+            data.id = data.id || this.commonSvc.makeRandomString(8);
+            data.isNew = true;
 
-                    this.items.push(data);
+            this.items.push(data);
 
-                    let itemsToSave = this.items.map(item => this.reverseMapFunc(item));
+            let itemsToSave = this.items.map(item => this.reverseMapFunc(item));
 
-                    this.itemsDB.set(itemsToSave).then(() => {
-                        if (this.postAddCallback) {
-                            this.postAddCallback(data, this.items.length - 1).then(result => {
-                                this.commonSvc.toastSuccess('添加成功');
-                            })
-                        } else {
-                            this.commonSvc.toastSuccess('添加成功');
-                        }
-                        popupModal.dismiss();
-                    }).catch(err => {
-                        this.commonSvc.toastFailure('添加失败', err);
-                        this.items.pop();
-                        popupModal.dismiss();
-                    })
-                }
+            this.itemsDB.set(itemsToSave).then(() => {
+              if (this.postAddCallback) {
+                this.postAddCallback(data, this.items.length - 1).then(result => {
+                  this.commonSvc.toastSuccess('添加成功');
+                })
+              } else {
+                this.commonSvc.toastSuccess('添加成功');
+              }
+              popupModal.dismiss();
+            }).catch(err => {
+              this.commonSvc.toastFailure('添加失败', err);
+              this.items.pop();
+              popupModal.dismiss();
+            })
+          }
 
-            }
-        });
-        popupModal.present();
+        }
+      });
+      popupModal.present();
     }
   }
 
@@ -356,7 +356,7 @@ export class ListPage implements OnDestroy {
     //   itemToEdit[d.key] = this.items[i][d.key] || null;
     // });
 
-    let popupModal = this.modalCtrl.create(PopupComponent, { 
+    let popupModal = this.modalCtrl.create(PopupComponent, {
       title: this.title,
       definitions: this.templateForAdd || [],
       item: this.items[i],
@@ -367,87 +367,62 @@ export class ListPage implements OnDestroy {
         // console.log(this.reverseMapFunc(item));
         // console.log(`--- number i = ${i} ---`);
 
-          let k = this.listHasKeys && this.items[i].key || i;
-          console.log(`key = ${k}`);
+        let k = this.listHasKeys && this.items[i].key || i;
+        console.log(`key = ${k}`);
 
-          this.itemsDB.child(`${k}`).update(this.reverseMapFunc(item)).then(() => {
-              this.commonSvc.toastSuccess('编辑成功');
-              popupModal.dismiss();
-          }, err => {
-              this.commonSvc.toastFailure('编辑失败', err);
-              this.items.pop();
-              popupModal.dismiss();
-          });
+        this.itemsDB.child(`${k}`).update(this.reverseMapFunc(item)).then(() => {
+          this.commonSvc.toastSuccess('编辑成功');
+          popupModal.dismiss();
+        }, err => {
+          this.commonSvc.toastFailure('编辑失败', err);
+          this.items.pop();
+          popupModal.dismiss();
+        });
 
       }
     });
     popupModal.present();
   }
 
-  getComponentFromName(s: string): any {
-      switch (s) {
-          case "ActivityPage":
-              return ActivityPage;
-          case "MinistryPage":
-              return MinistryPage;
-          case "SongPage":
-              return SongPage;
-          case "ChatPage":
-              return ChatPage;
-          case "ListPage":
-              return ListPage;
-          default:
-              return null;
-      }
-  }
-
-  // .sort((a,b) => (a['params'] && a['params']['datetime']) > (b['params'] && b['params']['datetime']) ? -1 : 1)
-
   itemTapped(event: any, item: IntListItem) {
-      let i = this.getItemIndex(item);
+    let i = this.getItemIndex(item);
 
-      if (this.itemTappedPreFunc) {
-        this.itemTappedPreFunc(item, i);
+    if (this.itemTappedPreFunc) {
+      this.itemTappedPreFunc(item, i);
+    }
+
+    let k = this.listHasKeys ? item.key : i;
+
+    if (this.fullPermission) {
+      this.itemsDB.child(`${k}/isNew`).set(false);
+    }
+
+    if (item.hyperlink) {
+      this.browser.openPage(item.hyperlink);
+    } else if (item.redirect) {
+      let index = this.items.map(item => item.id).indexOf(item.id);
+
+      if (typeof item.params == 'string') {
+        try {
+          item.params = JSON.parse(item.params);
+        } catch (e) { }
       }
 
-      let k = this.listHasKeys ? item.key : i;
+      this.navCtrl.push(item.redirect, Object.assign({
+        item$: this.items$.map(res => res.filter(resItem => this.listHasKeys ? (resItem.key == item.key) : (resItem.id == item.id))[0]),
+        itemDB: this.itemsDB.child(`${index}`),
+        itemKey: item.key,
+        itemId: item.id,
+        itemIndex: i
+      }, item.params || {}));
 
-      if (this.fullPermission) {
-        this.itemsDB.child(`${k}/isNew`).set(false);
-      }
-
-      if (item.hyperlink) {
-          this.browser.openPage(item.hyperlink);
-      } else if (item.redirect) {
-          let component;
-          let index = this.items.map(item => item.id).indexOf(item.id);
-          component = this.getComponentFromName(item.redirect);
-
-          if (typeof item.params == 'string') {
-            try {
-              item.params = JSON.parse(item.params);
-            } catch(e) {}
-          }
-
-          if (component) {
-            this.navCtrl.push(component, Object.assign({
-                item$: this.items$.map(res => res.filter(resItem => this.listHasKeys ? (resItem.key == item.key) : (resItem.id == item.id))[0]),
-                itemDB: this.itemsDB.child(`${index}`),
-                itemKey: item.key,
-                itemId: item.id,
-                itemIndex: i
-            }, item.params || {}));
-          } else {
-            console.error(`Can't find component with name "${item.redirect}" `);
-            return;
-          }
-      } else if (this.callFunc) {
-          this.callFunc(item);
-      }
-      // That's right, we're pushing to ourselves!
-      // this.navCtrl.push(ListPage, {
-      //   item: item
-      // }); 
+    } else if (this.callFunc) {
+      this.callFunc(item);
+    }
+    // That's right, we're pushing to ourselves!
+    // this.navCtrl.push(ListPage, {
+    //   item: item
+    // }); 
   }
 
   markAsRead(i: number, read: boolean = true): void {
@@ -465,7 +440,7 @@ export class ListPage implements OnDestroy {
   }
 
   selectionEmptyAll(): void {
-    this.items.forEach((item,index) => {
+    this.items.forEach((item, index) => {
       let mappedItem = this.mapFunc(item, index);
       if (mappedItem.key) {
         this.selectedObj[mappedItem.key] = false;

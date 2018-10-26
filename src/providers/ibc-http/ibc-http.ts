@@ -48,4 +48,31 @@ export class IbcHttpProvider {
       });
   }
 
+  put(url: string, body: any): Promise<any> {
+      this.loadTrackerSvc.loading = true;
+      return this.http.put(`${ENV.apiServer}/${url}`, body, { headers: this.headers }).toPromise().then(res => {
+          this.loadTrackerSvc.loading = false;
+          return res;
+      }).catch(err => {
+          this.loadTrackerSvc.loading = false;
+          throw(err);
+      });
+  }  
+
+  delete(url: string, body: any = {}): Promise<any> {
+      this.loadTrackerSvc.loading = true;
+      let queries = [];
+      Object.keys(body).forEach(k => {
+        queries.push(`${k}=${body[k]}`);
+      });
+      console.log(queries);
+      return this.http.delete(`${ENV.apiServer}/${url}?${queries.join('&')}`, { headers: this.headers }).toPromise().then(res => {
+          this.loadTrackerSvc.loading = false;
+          return res;
+      }).catch(err => {
+          this.loadTrackerSvc.loading = false;
+          throw(err);
+      });
+  }  
+
 }
