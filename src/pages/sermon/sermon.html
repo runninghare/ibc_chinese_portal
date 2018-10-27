@@ -22,7 +22,10 @@
     <div class="ibc-full-width">
         {{sermon?.description}}
     </div>
-    <ion-buttons class="ibc-top-margin-20" ion-end *ngIf="commonSvc.isMember && content.auth && sermon?.chatId">
-      <button ion-button block ion-end (click)="goToChat()">留言評論</button>
-    </ion-buttons>      
+    <ibc-comment [title]="sermon?.title" [chatId]="sermon?.chatId"></ibc-comment>   
+    <button *ngIf="content.allowWechat" ion-button block color="green" (click)="share()">
+      微信分享
+    </button>       
 </ion-content>
+
+<load-tracker></load-tracker>

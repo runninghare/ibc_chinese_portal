@@ -7,6 +7,9 @@
 <ion-header>
 
   <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>    
     <ion-title>{{ activity?.title }}</ion-title>
   </ion-navbar>
 
@@ -70,17 +73,16 @@
       <button ion-button block color="danger" ion-end *ngIf="myIndex >= 0" (click)="cancel()">取消報名</button>
     </ion-buttons>
 
-    <ion-buttons class="ibc-top-margin-20" ion-end *ngIf="commonSvc.isMember && content.auth && activity.chatId">
-      <button ion-button block ion-end (click)="goToChat()">留言評論</button>
-    </ion-buttons>
+    <ibc-comment *ngIf="activity?.chatId" [title]="activity?.title" [chatId]="activity?.chatId"></ibc-comment>  
+    <ion-buttons ion-end *ngIf="commonSvc.isMember && content.auth">
+      <button ion-button block ion-end color="teal-1" (click)="uploadPhoto()">上傳圖片</button>
+      <button *ngIf="commonSvc.isWeb" ion-button block ion-end color="teal-1" (click)="addVideo()">添加Youtube</button>
+    </ion-buttons>    
+    <button *ngIf="content.allowWechat" ion-button block color="green" (click)="share()">
+      微信分享
+    </button>    
 
-    <!-- <ibc-map lng="-32.89455339999999" lat="151.7181718" title="My Home" height="200px"></ibc-map> -->
-
-    <p></p>
-
-    <!-- <youtube-video [title]='"云上太阳"' [youtubeId]="'1pja2IszGOU'"></youtube-video> -->
-
-    <ion-list>
+    <ion-list class="ibc-top-margin-20">
         <ng-container *ngIf="activity?.videos?.length > 0">
             <h3 text-center >影像</h3>
             <ion-item-sliding *ngFor="let video of activity?.videos" class="ibc-v-margin-5">
@@ -105,11 +107,6 @@
             </ion-item-options>
         </ion-item-sliding> 
     </ion-list>
-
-    <ion-buttons class="ibc-top-margin-20" ion-end *ngIf="commonSvc.isMember && content.auth">
-      <button ion-button block ion-end color="teal-1" (click)="uploadPhoto()">上傳圖片</button>
-      <button *ngIf="commonSvc.isWeb" ion-button block ion-end color="teal-1" (click)="addVideo()">添加Youtube</button>
-    </ion-buttons>
 <!--     <div>
         <div *ngFor="let photo of activity?.pictures" style="align-items: start">
             <img [src]="photo" (click)="openLink(photo)"/>

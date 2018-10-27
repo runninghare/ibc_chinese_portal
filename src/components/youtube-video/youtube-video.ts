@@ -12,7 +12,7 @@ import { VideoProvider } from '../../providers/video/video';
   templateUrl: 'youtube-video.html',
   host: {
       '(click)': 'play()',
-      class: 'ibc-display-block'
+      class: 'ibc-display-block ibc-pointer'
   }
 })
 export class YoutubeVideoComponent {

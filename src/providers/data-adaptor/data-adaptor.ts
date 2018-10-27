@@ -68,7 +68,8 @@ export interface IntHomeCard {
     isHidden?: boolean;
     hyperlink?: string;
     isNew?: boolean;
-    badgeCount?: string;
+    badgeCount?: string; // This is an eval string which can be executed. e.g. to return new activity numbers:
+                         // content.activities$.map(function(items) {return items.filter(function(item) {return item.isNew}).length})
     sortOrder?: number;
 }
 
@@ -707,9 +708,6 @@ export class DataProvider {
                     key: 'params',
                     caption: '重定向参数（高级）',
                     hidden: card => !card.redirect || card.redirect == 'list-page',
-                    // default: card => card.redirect == 'activity-page' ? '{"itemIndex": 3, "itemId": "RXZZ7ILx"}' :
-                    //          card.redirect == 'chat-page' ? '{"partnerId": "002"}' :
-                    //          null
                 },
                 {
                     key: 'content',
@@ -1042,11 +1040,6 @@ export class DataProvider {
                     caption: '地點',
                     type: TypeInputUI.Text
                 },
-                {
-                    key: 'redirect',
-                    default: 'ActivityPage',
-                    hidden: true
-                },
                 // {
                 //     key: 'past',
                 //     groupByFunc: (val) => {
@@ -1100,7 +1093,8 @@ export class DataProvider {
                     datetime: item.datetime,
                     thumbnail: item.thumbnail,
                     redirect: 'activity-page',
-                    isNew: item.isNew
+                    isNew: item.isNew,
+                    params: {id: item.id}
                 }
             },
             postAddCallback: this.createAddChatIdFunc('Activity', this.activitiesDB),

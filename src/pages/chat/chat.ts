@@ -13,6 +13,7 @@ import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
 import { IbcHttpProvider } from '../../providers/ibc-http/ibc-http'
 import * as moment from 'moment';
 import { ENV } from '@app/env';
+import { Subscription } from 'rxjs';
 
 /**
  * Generated class for the ChatPage page.
@@ -60,6 +61,8 @@ export class ChatPage implements OnInit, OnDestroy {
 
     partnerUnreadCount: number = 0;
 
+    subscription: Subscription;
+
     time_lastHour:  moment.Moment;
     time_today:     moment.Moment;
     time_yesterday: moment.Moment;
@@ -91,6 +94,7 @@ export class ChatPage implements OnInit, OnDestroy {
         this.time_lastYear = moment().subtract(1, 'year').startOf('year');
 
         this.partnerId = this.navParams.get('partnerId');
+        let preloaded_thread = this.navParams.get('thread');
 
         this.content.allContactsDB.once('value', snapshot => {
             this.contacts = snapshot.val();
@@ -107,7 +111,7 @@ export class ChatPage implements OnInit, OnDestroy {
             console.log(this.partner);
 
             if (this.partner) {
-                this.content.currentUser$.flatMap(auth => {
+                this.subscription = this.content.currentUser$.flatMap(auth => {
 
                     let body = { receiver_id: this.partner.id };
 
@@ -120,10 +124,16 @@ export class ChatPage implements OnInit, OnDestroy {
                         .child('chat_notifs').set(0);
 
                     this.loadTrackerSvc.loading = true;
-                    return Observable.from(this.http.post(`firebase/thread_with`, body)).timeout(5000)
+                    if (preloaded_thread) {
+                        return Observable.of(preloaded_thread);
+                    } else {
+                        return Observable.from(this.http.post(`firebase/thread_with`, body)).timeout(5000)
+                    }
                 }).flatMap(data => {
                     this.threadId = data.result;
                     let thread = data.thread;
+
+                    preloaded_thread = null;
 
                     if (!thread.messages) {
                         thread.messages = [];
@@ -148,6 +158,8 @@ export class ChatPage implements OnInit, OnDestroy {
                         let fireDBThread = res;
 
                         if (fireDBThread && fireDBThread.messages && fireDBThread.messages.length > 0) {
+                            if (this.thread.messages.length == 0 || 
+                                this.thread.messages[this.thread.messages.length-1].timestamp != fireDBThread.messages[0].timestamp)
                             this.thread.messages.push(fireDBThread.messages[0]);
                         }
 
@@ -187,6 +199,10 @@ export class ChatPage implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.deactivate();
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+            this.subscription = null;
+        }
     }
 
     updateActive(val: boolean = true): void {
@@ -241,6 +257,8 @@ export class ChatPage implements OnInit, OnDestroy {
     }
 
     addPartnerNotif(): void {
+       if (this.partner.class == 'group') return;
+
        this.content.allStatusDB
                    .child(this.partner.id)
                    .child(this.content.myselfContact.id)
@@ -308,20 +326,19 @@ export class ChatPage implements OnInit, OnDestroy {
 
             console.log(`Message: ${message}`);
 
-            return Observable.from(this.http.post('firebase/thread_add_msg', {
+            return this.http.post('firebase/thread_add_msg', {
                thread_id: this.threadId,
                message: {
                    body: message
                }
-            }))
-            .timeout(10000)
-            .flatMap(() => {
+            })
+            .then(() => {
                 console.log('--- message added ---');
                 setTimeout(() => this.audioSvc.play('messageSent'), 1000);
                 /* Add notif to the partner's status container */
                 this.addPartnerNotif();
-                return Observable.of(null);
-            }, console.error).toPromise();
+                return null;
+            }, console.error)
         };
 
         this.navCtrl.push(IbcEditorComponent, {
@@ -364,11 +381,9 @@ export class ChatPage implements OnInit, OnDestroy {
             key: `${this.partner.id}-message`,
             value: `${this.partner.id}-${this.partnerUnreadCount}`,
             params: {
-                // itemIndex: this.activityIndex || null,
-                // itemId: this.activityId
                 contact: this.content.myselfContact
             },
-            redirect: "ChatPage",
+            redirect: "chat-page",
             sender: this.content.myselfContact.id,
             subtitle: "點擊查看",
             title: `${this.content.myselfContact.name}給你發了消息`

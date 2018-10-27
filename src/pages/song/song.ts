@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { VideoProvider } from '../../providers/video/video';
 import { DataProvider } from '../../providers/data-adaptor/data-adaptor';
+import { CommonProvider } from '../../providers/common/common';
+import { WechatProvider } from '../../providers/wechat/wechat';
 
 /**
  * Generated class for the SongPage page.
@@ -17,6 +18,9 @@ import { DataProvider } from '../../providers/data-adaptor/data-adaptor';
 @Component({
   selector: 'page-song',
   templateUrl: 'song.html',
+  host: {
+    class: 'ibc-allow-text-select'
+  }
 })
 export class SongPage {
 
@@ -29,7 +33,8 @@ export class SongPage {
 
   activeSong: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public videoSvc: VideoProvider, public content: DataProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public commonSvc: CommonProvider,
+    public content: DataProvider, public wechat: WechatProvider) {
       this.id = navParams.get('id');
       this.album = navParams.get('album');
       this.title = navParams.get('title');
@@ -42,8 +47,17 @@ export class SongPage {
       })
   }
 
-  play(): void {
-      this.videoSvc.play(this.id);
+  share(): void {
+    let url = `http://ibc.medocs.com.au/app/#/song/${this.id}`;
+    let info = `Set ${this.activeSong.set}`;
+    if (this.activeSong.album) {
+      info += ` - 专辑: ${this.activeSong.album}`;
+    }
+    if (this.activeSong.language) {
+      info += ` (${this.activeSong.language})`;
+    }
+    this.wechat.weChatShareLink(url, `诗歌分享: ${this.activeSong.name}`, info, 
+        `https://img.youtube.com/vi/${this.id}/0.jpg`);
   }
 
   ionViewDidLoad() {

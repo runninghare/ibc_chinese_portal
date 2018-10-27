@@ -42,7 +42,7 @@ export class IbcDeeplinkProvider {
                     // '/about-page': AboutPage,
                     // '/about-app-page': AboutAppPage,
                     // '/list-page/:type': ListPage,
-                    // '/activity-page/:itemIndex/:itemId': ActivityPage
+                    // '/activity-page/:id': ActivityPage
                 })
                     .subscribe(match => {
                         // match.$route - the route we matched, which is the matched entry from the arguments to route()

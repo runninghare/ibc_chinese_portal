@@ -13,6 +13,7 @@ import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
 import { IbcHttpProvider } from '../../providers/ibc-http/ibc-http';
 import { PopupComponent } from '../../components/popup/popup';
 import { VideoProvider } from '../../providers/video/video';
+import { WechatProvider } from '../../providers/wechat/wechat';
 import * as moment from 'moment';
 
 /**
@@ -24,7 +25,7 @@ import * as moment from 'moment';
 
 @IonicPage({
   name: 'activity-page',
-  segment: 'activity/:itemIndex/:itemId'
+  segment: 'activity/:id'
 })
 @Component({
   selector: 'page-activity',
@@ -36,7 +37,6 @@ export class ActivityPage implements OnDestroy {
   activityId: string;
   activity: IntActivity = {};
   activityDB: database.Reference;
-  activity$: Observable<IntActivity> = Observable.of({});
   persons: IntContact[] = [];
 
   currentParticipantsCount: number = 0;
@@ -62,21 +62,22 @@ export class ActivityPage implements OnDestroy {
       public photoSvc: PhotoProvider,
       public ibcFB: IbcFirebaseProvider,
       public loadTrackerSvc: LoadTrackerProvider,
-      public videoSvc: VideoProvider
+      public videoSvc: VideoProvider,
+      public wechat: WechatProvider
       ) {
 
-      this.activityIndex = navParams.get('itemIndex');
-      this.activityId = navParams.get('itemId');
+      this.activityId = navParams.get('id');
 
-      this.activity$ = this.content.activities$.map(res => res.filter(resItem => resItem.id == this.activityId)[0]);
-      this.activityDB = this.content.activitiesDB.child(`${this.activityIndex}`);
+      this.subscriptions.push(this.content.activities$.subscribe((activities: IntActivity[]) => {
 
-      this.subscriptions.push(this.activity$.subscribe((act: IntActivity) => {
+          let act = activities.filter(item => item.id == this.activityId)[0];
 
           if (act) {
             this.activity = act;
+            this.activityIndex = activities.indexOf(act);
             this.activity.past = moment().isAfter(act.datetime);
             this.currentParticipantsCount = act.participants ? act.participants.length : 0;
+            this.activityDB = this.content.activitiesDB.child(`${this.activityIndex}`);
           }
 
           if (act && act.participants) {
@@ -130,10 +131,9 @@ export class ActivityPage implements OnDestroy {
           key: `${this.activity.key || this.activity.title}-${this.activity.datetime}`,
           value: this.activity.key || this.activity.title,
           params: {
-              itemIndex: this.activityIndex || null,
-              itemId: this.activityId
+              id: this.activityId
           },
-          redirect: "ActivityPage",
+          redirect: "activity-page",
           sender: this.content.myselfContact.id,
           subtitle: "",
           title: `教會活動：${datetimeCaption} - ${this.activity.title}`
@@ -502,6 +502,11 @@ export class ActivityPage implements OnDestroy {
 
   playVideo(id: string) {
     this.videoSvc.play(id);
+  }
+
+  share(): void {
+      let url = `http://ibc.medocs.com.au/app/#/activity/${this.activityIndex}/${this.activityId}`;
+      this.wechat.weChatShareLink(url, `教会活动: ${this.activity.title}`, this.activity.description, this.activity.thumbnail || 'https://cordova.apache.org/images/cordova_256.png');
   }
 
   ionViewDidLoad() {

@@ -218,7 +218,6 @@ export class HomePage implements OnInit, AfterViewInit {
         } else if (card.redirect) {
             this.navCtrl.push(card.redirect, Object.assign({},params));
         }
-
     }
 
     badgeCountIsNumber(badgeCount: any): boolean {

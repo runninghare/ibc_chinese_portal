@@ -53,7 +53,7 @@ export class MinistryPage implements OnInit {
       let url = `http://ibc.medocs.com.au/app/#/iframe/侍奉计划/${base64Url}`;
       // console.log(url);
       // console.log(this.ministrySvc.publishUrl);
-      this.wechat.weChatShareLink(url,'事工计划','下月侍奉安排', this.content.urls['ministry-icon'] || 'https://cordova.apache.org/images/cordova_256.png');
+      this.wechat.weChatShareLink(url,'事工计划','下月侍奉安排', 'http://ibc.medocs.com.au/img/IBC.ico');
     }
 
     pushSheet(): void {
@@ -187,7 +187,7 @@ export class MinistryPage implements OnInit {
           params : {
             forDate : datetime
           },
-          redirect : "MinistryPage",
+          redirect : "ministry-page",
           sender : this.ministrySvc.content.myselfContact.id,
           subtitle : "",
           title : `${datetimeCaption} 事奉取消 - ${roleCaption}`
@@ -216,7 +216,7 @@ export class MinistryPage implements OnInit {
               subtitle : `{{myselfContact.name}} ({{myselfContact.chinese_name}}) 无法参加${datetimeCaption}敬拜`,
               title : `${datetimeCaption}事奉缺席 - ${roleCaption}`,
               value : roleKey,
-              redirect : "MinistryPage",
+              redirect : "ministry-page",
               params : {
                 forDate : datetime
               }
@@ -226,7 +226,7 @@ export class MinistryPage implements OnInit {
               subtitle : `{{myselfContact.name}} ({{myselfContact.chinese_name}}) 已确认事奉${datetimeCaption}敬拜`,
               title : `${datetimeCaption}事奉确认 - ${roleCaption}`,
               value : roleKey,
-              redirect : "MinistryPage",
+              redirect : "ministry-page",
               params : {
                 forDate : datetime
               }              
@@ -234,7 +234,7 @@ export class MinistryPage implements OnInit {
             recipient : this.ministrySvc.content.myselfContact.id,
             type : TypeInputUI.Boolean
           },
-          redirect : "MinistryPage",
+          redirect : "ministry-page",
           sender : this.ministrySvc.content.myselfContact.id,
           subtitle : "",
           title : `${datetimeCaption} ${this.ministrySvc.content.myselfContact.name}邀请你參加事奉 - ${roleCaption}`

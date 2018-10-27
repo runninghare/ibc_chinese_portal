@@ -14,24 +14,20 @@
 
 <ion-content padding>
 
-    <h3 text-center>{{activeSong?.title || title}} ({{activeSong?.language || language || '國語'}})</h3>
+    <h3 text-center>{{activeSong?.name || title}} ({{activeSong?.language || language || '國語'}})</h3>
 
     <div text-center class="ibc-full-width ibc-bottom-margin-10">
         <ion-note>Set {{activeSong?.set || set}}</ion-note>
     </div>
 
-    <div text-center>
-        <img width="400px" [src]="'https://img.youtube.com/vi/' + id + '/0.jpg'" (click)="play()"/>
-    </div>
-
-    <div text-center>
-        <button style="max-width: 400px; margin-left: auto; margin-right: auto;" ion-button block (click)="play()">
-          <ion-icon name="play" class="ibc-right-margin-10"></ion-icon>
-          播放
-        </button>
-    </div>
-
+    <youtube-video [youtubeId]="id"></youtube-video>  
 
     <pre text-center>{{activeSong?.lyric || lyric}}</pre>
 
+    <button *ngIf="content.allowWechat" ion-button block color="green" (click)="share()">
+      微信分享
+    </button>
+
 </ion-content>
+
+<load-tracker></load-tracker>

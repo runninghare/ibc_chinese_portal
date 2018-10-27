@@ -153,8 +153,6 @@ export class ListPage implements OnDestroy {
       this.subscription = this.items$.subscribe(items => {
         this.items = items;
 
-        console.log(items);
-
         if (this.groupBy) {
           /* This trick is aiming at resolving the conflicts between number and string type during uniquification */
           /* e.g. we may have this.groupValues = [1,2,3,4,"4"] if we don't convert the number to string */
