@@ -222,11 +222,21 @@ img.img-avatar {
 }
 
 ion-content {
-  max-width: 600px;
+  max-width: 800px;
   left: 0;
   right: 0;
   margin-left: auto;
   margin-right: auto;
+}
+
+@media
+  only screen and (-webkit-min-device-pixel-ratio: 2),
+  only screen and (   min--moz-device-pixel-ratio: 2),
+  only screen and (     -o-min-device-pixel-ratio: 2/1),
+  only screen and (        min-device-pixel-ratio: 2),
+  only screen and (                min-resolution: 264dpi),
+  only screen and (                min-resolution: 2dppx) { 
+    /* Retina styles here */
 }
 
 .ibc-content-button {

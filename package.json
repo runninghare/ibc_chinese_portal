@@ -14,6 +14,10 @@
         "build-dev": "IBC_ENV=ibc_dev ionic cordova build --aot --minifyjs --minifycss --packageType=app-store",
         "run": "IBC_ENV=ibc_prod ionic cordova run --aot --minifyjs --minifycss",
         "run-dev": "IBC_ENV=ibc_dev ionic cordova run --aot --minifyjs --minifycss",
+        "emulate": "IBC_ENV=ibc_prod ionic cordova emulate ios -lc",
+        "emulate-dev": "IBC_ENV=ibc_dev ionic cordova emulate ios -lc",
+        "emulate-ipad": "IBC_ENV=ibc_prod ionic cordova emulate ios -lc --target='iPad-Pro--12-9-inch---2nd-generation-'",
+        "emulate-ipad-dev": "IBC_ENV=ibc_dev ionic cordova emulate ios -lc --target='iPad-Pro--12-9-inch---2nd-generation-'",
         "lint": "ionic-app-scripts lint",
         "ionic:build": "ionic-app-scripts build",
         "ionic:serve": "ionic-app-scripts serve",
@@ -64,7 +68,7 @@
         "cordova-android-play-services-gradle-release": "^1.4.3",
         "cordova-android-support-gradle-release": "^1.4.4",
         "cordova-browser": "5.0.3",
-        "cordova-ios": "4.5.4",
+        "cordova-ios": "4.5.5",
         "cordova-plugin-appversion": "^1.0.0",
         "cordova-plugin-badge": "~0.8.7",
         "cordova-plugin-camera": "~2.4.1",
@@ -90,7 +94,7 @@
         "cordova-plugin-x-socialsharing": "~5.3.1",
         "cordova-plugin-youtube-video-player": "git+https://github.com/Remco75/CordovaYoutubeVideoPlayer.git",
         "cordova-plugin-zip": "^3.1.0",
-        "cordova-sqlite-ext": "^2.2.0",
+        "cordova-sqlite-ext": "https://github.com/litehelpers/cordova-sqlite-ext",
         "firebase": "^4.9.0",
         "ionic-angular": "3.9.2",
         "ionic-image-loader": "^5.0.0",
@@ -207,7 +211,8 @@
                 "DEEPLINK_4_HOST": " ",
                 "DEEPLINK_5_SCHEME": " ",
                 "DEEPLINK_5_HOST": " "
-            }
+            },
+            "cordova-sqlite-ext": {}
         }
     }
 }

@@ -32,6 +32,8 @@ export class MinistryPage implements OnInit {
 
     roleChanges: IntArrayChanges[];
 
+    text: any = {};
+
     constructor(
         public navCtrl: NavController,
         public navParams: NavParams,
@@ -43,6 +45,7 @@ export class MinistryPage implements OnInit {
     ) {
         this.preloadedDate = this.navParams.get("forDate");
         this.roleChanges = [];
+        this.text = this.common.text.chinese['wechat-share'].ministry;
     }
 
     ionViewDidLoad() {
@@ -53,7 +56,7 @@ export class MinistryPage implements OnInit {
       let url = `http://ibc.medocs.com.au/app/#/iframe/侍奉计划/${base64Url}`;
       // console.log(url);
       // console.log(this.ministrySvc.publishUrl);
-      this.wechat.weChatShareLink(url,'事工计划','下月侍奉安排', 'http://ibc.medocs.com.au/img/IBC.ico');
+      this.wechat.weChatShareLink(url, this.text.title, this.text.subtitle, 'http://ibc.medocs.com.au/img/IBC.ico');
     }
 
     pushSheet(): void {

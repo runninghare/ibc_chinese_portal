@@ -27,12 +27,19 @@ export class CommonProvider {
     constructor(public http: HttpClient, public toastCtrl: ToastController, public sanitizer: DomSanitizer,
         public platform: Platform, public ibcFB: IbcFirebaseProvider, public alertCtrl: AlertController) {
 
-        ibcFB.afDB.database.ref('version').once('value', snapshot => {
+        ibcFB.afDB.database.ref('version').on('value', snapshot => {
           this.newVersion = snapshot.val();
+        });
+
+        this.ibcFB.afDB.database.ref('text').on('value', snapshot => {
+            let text = snapshot.val();
+            this.text = text;            
         });
     }
 
     newVersion: string;
+
+    text: any = {};
 
     get versionTooOld(): boolean {
         if (ENV.version && this.newVersion) {
@@ -238,6 +245,13 @@ export class CommonProvider {
         })
 
         return result;
+    }
+
+    resolve(): Promise<any> {
+        return this.ibcFB.afDB.database.ref('text').once('value').then(snapshot => {
+            let text = snapshot.val();
+            this.text = text;
+        });
     }
 
     parseURLParameters(s: string): any {

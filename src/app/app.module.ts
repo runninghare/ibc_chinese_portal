@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { ErrorHandler, NgModule } from '@angular/core';
+import { ErrorHandler, NgModule, APP_INITIALIZER } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ImageCropperModule } from "ng2-img-cropper/index";
@@ -99,6 +99,13 @@ import { IbcDeeplinkProvider } from '../providers/ibc-deeplink/ibc-deeplink';
 //     messagingSenderId: "870700462998"
 //   };
 
+export function initializer(commonSvc: CommonProvider) {
+  return () => {
+      console.log(commonSvc);
+    return commonSvc.resolve();
+  }
+}
+
 @NgModule({
   declarations: [
     MyApp
@@ -168,7 +175,13 @@ import { IbcDeeplinkProvider } from '../providers/ibc-deeplink/ibc-deeplink';
     IbcHttpProvider,
     WechatProvider,
     Deeplinks,
-    IbcDeeplinkProvider
+    IbcDeeplinkProvider,
+    {
+        provide: APP_INITIALIZER,
+        useFactory: initializer,
+        deps: [CommonProvider],
+        multi: true
+    }
   ]
 })
 export class AppModule {}

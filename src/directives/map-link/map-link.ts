@@ -19,9 +19,9 @@ export class MapLinkDirective implements OnInit {
 
   @HostListener('click') click(): void {
       if (this.address) {
-        console.log(this.address);
-        let modal = this.modalCtrl.create(MapPage, {address: this.address, title: this.title});
-        modal.present();        
+        // console.log(this.address);
+        this.navControler.push(MapPage, {address: this.address, title: this.title});
+        // modal.present();        
         // this.navControler.push(MapPage, {address: this.address, title: this.title});
       }
   }
@@ -32,8 +32,8 @@ export class MapLinkDirective implements OnInit {
 
   ngOnInit(): void {
       if (this.address) {
-          console.log('--- directive ---');
-          console.log(this.el.nativeElement);
+          // console.log('--- directive ---');
+          // console.log(this.el.nativeElement);
           $(this.el.nativeElement).html(`<a href="#">${this.address}</a>`);
       }
   }

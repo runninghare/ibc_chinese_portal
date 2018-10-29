@@ -158,7 +158,7 @@
     關聯到Google帳號 {{ibcFB.providerData.length > 0 ? '(已關聯)' : ''}}
   </button>
 
-  <button *ngIf="content.allowWechat" ion-button block color="teal-1" [disabled]="ibcFB.wechatAuthInfo.openid" (click)="ibcFB.linkWechat()">
+  <button *ngIf="content.allowWechat" ion-button block color="green" [disabled]="ibcFB.wechatAuthInfo.openid" (click)="ibcFB.linkWechat()">
     <ion-icon name="logo-arrow-forward"></ion-icon>
     關聯到微信帳號 {{ibcFB.wechatAuthInfo.openid ? '(已關聯)' : ''}}
   </button>
