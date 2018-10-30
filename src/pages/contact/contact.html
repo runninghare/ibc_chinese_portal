@@ -42,7 +42,7 @@
         <ng-container *ngIf="contact?.hidden">
           <p ion-note>本條目被隱藏，僅管理員可見</p>         
         </ng-container>
-        <ng-container *ngIf="contact?.shareInfo">
+        <ng-container *ngIf="contact?.shareInfo && content.myselfContact.shareInfo">
           <p ion-note *ngIf="hasEmail(content?.myselfContact) && hasEmail(contact)">電郵 {{contact.email}}</p>
           <p ion-note *ngIf="content?.myselfContact?.mobile && contact.mobile">電話 {{contact.mobile}}</p>
           <!-- <p ion-note>生日 {{contact.dob | date:'M月d日'}}</p> -->
@@ -51,7 +51,7 @@
           <p ion-note *ngIf="content?.myselfContact?.dob && contact.dob">生日 {{contact.dob | date:'M月d日'}}</p>          
         </ng-container>
       </ion-item>
-      <ion-item-options *ngIf="contact?.shareInfo || content.ibcFB.access_level >= 3" side="right">
+      <ion-item-options *ngIf="contact?.shareInfo && content.myselfContact.shareInfo || content.ibcFB.access_level >= 3" side="right">
         <a ion-button color="primary" *ngIf="content?.myselfContact?.mobile && contact.mobile" (click)="socialSharing.shareViaSMS('', contact.mobile)">
           <ion-icon name="text"></ion-icon>
           短信

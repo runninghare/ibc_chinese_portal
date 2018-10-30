@@ -22,6 +22,10 @@
     <div class="ibc-full-width">
         {{sermon?.description}}
     </div>
+    <hr />
+    <div class="ibc-full-width">
+        {{sermon?.content}}
+    </div>
     <ibc-comment [title]="sermon?.title" [chatId]="sermon?.chatId"></ibc-comment>   
     <button *ngIf="content.allowWechat" ion-button block color="green" (click)="share()">
       微信分享
