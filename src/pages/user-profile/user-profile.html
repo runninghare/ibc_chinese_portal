@@ -135,7 +135,7 @@
 
         <ion-item>
           <ion-label>出生日期</ion-label>
-          <ion-datetime displayFormat="MM月DD日" [formControl]="userForm.controls.dob"></ion-datetime>
+          <ion-datetime displayFormat="MM月DD日" (ionCancel)="clearFormControl(userForm.controls.dob)" [formControl]="userForm.controls.dob"></ion-datetime>
         </ion-item>       
 
     </form>

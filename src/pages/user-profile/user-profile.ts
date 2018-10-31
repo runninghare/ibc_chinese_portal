@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { animate, state, trigger, style, transition } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { IonicPage, NavController, NavParams, ModalController, ViewController } from 'ionic-angular';
 import { IbcFirebaseProvider, IntProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { ToastController } from 'ionic-angular';
@@ -170,6 +170,11 @@ export class UserProfilePage implements OnInit {
             this.content.myselfContactDB.update(this.userForm.value);
         }
     }
+
+    clearFormControl(c: FormControl): void {
+        c.reset();
+        c.markAsDirty();
+    }    
 
     save(): void {
 
