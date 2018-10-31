@@ -303,7 +303,7 @@ export class ActivityPage implements OnDestroy {
   }
 
   goToChat(): void {
-    this.navCtrl.push(ChatPage, {contact: {id: this.activity.chatId, name: '留言', chinese_name: this.activity.title}});
+    this.navCtrl.push(ChatPage, {contact: {id: this.activity.chatId, name: '留言', chinese_name: this.activity.title, class: 'group'}});
   }
 
   openLink(url?: string): void {
@@ -505,7 +505,7 @@ export class ActivityPage implements OnDestroy {
   }
 
   share(): void {
-      let url = `http://ibc.medocs.com.au/app/#/activity/${this.activityIndex}/${this.activityId}`;
+      let url = `http://ibc.medocs.com.au/app/#/activity/${this.activityId}`;
       this.wechat.weChatShareLink(url, `教会活动: ${this.activity.title}`, this.activity.description, this.activity.thumbnail || 'https://cordova.apache.org/images/cordova_256.png');
   }
 

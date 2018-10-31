@@ -160,6 +160,7 @@ export interface IntPopupTemplateItem {
     required?: boolean;
     default?: any;  // could be a function
     hidden?: any;
+    disabled?: any;
     notifications?: IntListItem[];
     recipient?: string;
     groupByFunc?(val: any, key?: string): string;

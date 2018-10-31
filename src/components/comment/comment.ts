@@ -35,7 +35,7 @@ export class CommentComponent implements OnInit, OnDestroy {
     }
 
     goToChat(): void {
-        this.navCtrl.push(ChatPage, { contact: { id: this.chatId, name: '留言', chinese_name: this.title }, thread: this.threadRes });
+        this.navCtrl.push(ChatPage, { contact: { id: this.chatId, name: '留言', chinese_name: this.title, class: 'group' }, thread: this.threadRes });
     }
 
     ngOnInit(): void {

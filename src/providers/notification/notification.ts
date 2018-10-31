@@ -50,7 +50,7 @@ export class NotificationProvider {
                     isNew: true,
                     createdDT: moment().format('YYYY-MM-DD HH:mm:ss'),
                     sender: this.content.myselfContact.id,
-                    avatar: this.content.myselfContact.photoURL
+                    avatar: this.content.myselfContact.photoURL || null
                 })).then(() => {
                     this.processSpecialTask(item);
                 }).catch(console.error);

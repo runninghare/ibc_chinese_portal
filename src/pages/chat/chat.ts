@@ -99,15 +99,13 @@ export class ChatPage implements OnInit, OnDestroy {
         this.content.allContactsDB.once('value', snapshot => {
             this.contacts = snapshot.val();
 
-            console.log(this.contacts);
-
             if (this.partnerId) {
                 this.partner = this.contacts[this.partnerId];
             } else {
                 this.partner = this.navParams.get('contact');
             }
 
-            console.log('--- partner ---');
+            console.log('Your chatting partner is:');
             console.log(this.partner);
 
             if (this.partner) {
@@ -388,6 +386,7 @@ export class ChatPage implements OnInit, OnDestroy {
             subtitle: "點擊查看",
             title: `${this.content.myselfContact.name}給你發了消息`
         }
+
         this.notificationSvc.addNotification(this.partner.id, item);
     } 
 

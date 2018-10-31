@@ -48,7 +48,8 @@ export class ContactPage implements OnDestroy {
   templateForAdd: IntPopupTemplateItem[] = [
         {
           key: 'username',
-          caption: '用户ID (Unique)'
+          caption: '用户ID (Unique)',
+          disabled: true
         },
         {
           key: 'name',
@@ -149,11 +150,13 @@ export class ContactPage implements OnDestroy {
           this.notifTracker = this.content.allStatusDB.child(this.content.myselfContact.id).on('value', snapshot => {
               let notifMap = snapshot.val();
 
-              this.items.forEach(item => {
-                  if (notifMap[item.id]) {
-                      item.notifs = notifMap[item.id].chat_notifs;
-                  }
-              });
+              if (notifMap) {
+                  this.items.forEach(item => {
+                      if (notifMap[item.id]) {
+                          item.notifs = notifMap[item.id].chat_notifs;
+                      }
+                  });
+              }
           });
 
           let value = this.searchBar.value;
