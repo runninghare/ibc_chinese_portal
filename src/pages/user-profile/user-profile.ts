@@ -206,8 +206,10 @@ export class UserProfilePage implements OnInit {
                 }, console.error);
 
             }, err => {
+                let body = err.json();
+                // console.log(body);
                 let toast = this.toastCtrl.create({
-                    message: '密碼修改失敗',
+                    message: `密碼修改失敗: ${body && body.error}`,
                     duration: 3000,
                     position: 'top',
                     cssClass: 'toast-danger'
