@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { IonicPage, NavController, NavParams, Slides } from 'ionic-angular';
 import { MinistryProvider, IntMinistrySheet } from '../../providers/ministry/ministry';
 import { NotificationProvider } from '../../providers/notification/notification';
@@ -6,6 +6,7 @@ import { TypeInputUI, IntListItem } from '../../providers/data-adaptor/data-adap
 import { IntArrayChanges, CommonProvider } from '../../providers/common/common';
 import { DataProvider } from '../../providers/data-adaptor/data-adaptor';
 import { WechatProvider } from '../../providers/wechat/wechat';
+import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 
@@ -23,6 +24,7 @@ import * as _ from 'lodash';
 @Component({
   selector: 'page-ministry',
   templateUrl: 'ministry.html',
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MinistryPage implements OnInit {
 
@@ -41,14 +43,38 @@ export class MinistryPage implements OnInit {
         public notificationSvc: NotificationProvider,
         public common: CommonProvider,
         public content: DataProvider,
-        public wechat: WechatProvider
+        public wechat: WechatProvider,
+        public cd: ChangeDetectorRef,
+        public loadTrackerSvc: LoadTrackerProvider
     ) {
+      this.loadTrackerSvc.loading = true;
+    }
+
+    ionViewDidEnter() {
+      // This is for Android device, but still not working at the moment
+/*        setTimeout(() => {
+            $([document.documentElement, document.body]).animate({
+                scrollTop: $("#wechat-share").offset().top
+            }, 2000);
+        }, 5000)*/
+        this.loadTrackerSvc.loading = false;
+
         this.preloadedDate = this.navParams.get("forDate");
         this.roleChanges = [];
         this.text = this.common.text.chinese['wechat-share'].ministry;
-    }
 
-    ionViewDidLoad() {
+        // if (this.preloadedDate) {
+        //     let subscription = this.ministrySvc.content.ministries$.subscribe(ministries => {
+        //         let targetIndex = ministries.map(m => m.date).indexOf(this.preloadedDate);
+        //         if (targetIndex > 0) {
+        //             setTimeout(() => {
+        //                 this.slides.slideTo(targetIndex);
+        //             }, 200);
+        //         }
+        //         // this.showContents[targetIndex >= 0 ? targetIndex : 0] = true;
+        //         subscription.unsubscribe();
+        //     }, console.error);
+        // }
     }
 
     share(): void {
@@ -61,22 +87,31 @@ export class MinistryPage implements OnInit {
 
     pushSheet(): void {
         this.ministrySvc.pushSheet();
-        setTimeout(() => {
-            this.slides.slideTo(this.ministrySvc.ministrySheets.length-1, 100);
-        }, 500);
+        // if (!this.common.isAndroid) {
+        //     setTimeout(() => {
+        //         this.slides.slideTo(this.ministrySvc.ministrySheets.length - 1, 100);
+        //     }, 500);
+        // }
     }
 
     removeSheet(i: number): void {
+      this.common.confirmDialog(null, `你确定要删除 ${this.ministrySvc.ministrySheets[i].date} 页面吗？`, () => {
         this.ministrySvc.spliceSheet(i);
-        setTimeout(() => {
-            this.slides.slidePrev();
-        });
-        // this.slides.slideTo(this.ministrySvc.ministrySheets.length-1, 500);
+        // if (!this.common.isAndroid) {
+        //     setTimeout(() => {
+        //         this.slides.slidePrev();
+        //     });
+        // }
+      });
     }
 
     undo(): void {
+      this.common.confirmDialog(null, '你确定要重新载入数据吗? 所有未保存的改动都会取消', () => {
         this.ministrySvc.undo();
-        this.slides.slideTo(0, 200);
+        // if (!this.common.isAndroid) {
+        //   this.slides.slideTo(0, 200);
+        // }
+      });
     }
 
     setMinistry(sheet: IntMinistrySheet, roleKey: string, contactId: string) {
@@ -246,19 +281,43 @@ export class MinistryPage implements OnInit {
         this.notificationSvc.addNotification(contactId, item);
     }
 
+    // Used to boost slider performance, but not used for now. The only device having performance issue of slider is android
+/*    get currIndex(): number {
+      return this.slides.getActiveIndex();
+    }
+
+    slideChanged(): void {
+        console.log('slide changed!');
+        setTimeout(() => {
+          this.showContents[this.currIndex] = true;
+        }, 200);
+    } 
+
+    slideChanging(): void {
+      console.log('slide changing...');
+      this.showContents[this.currIndex] = false;
+    }   
+
+    showContents: any[] = [];*/
+
     ngOnInit(): void {
-        if (this.preloadedDate) {
+      console.log('--- loading data ---');
+/*        if (this.preloadedDate) {
             let subscription = this.ministrySvc.content.ministries$.subscribe(ministries => {
                 let targetIndex = ministries.map(m => m.date).indexOf(this.preloadedDate);
-                // console.log(`targetIndex = ${targetIndex}`);
+                console.log(`targetIndex = ${targetIndex}`);
                 if (targetIndex > 0) {
                     setTimeout(() => {
+                      if (!this.common.isAndroid) {
                         this.slides.slideTo(targetIndex);
-                    }, 200)
+                      }
+                    }, 200);
                 }
+
+                // this.showContents[targetIndex >= 0 ? targetIndex : 0] = true;
                 subscription.unsubscribe();
             }, console.error);
-        }
+        }*/
     }
 
 }

@@ -10,17 +10,14 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>   
-    <ion-title>事工輪替</ion-title>
+    <ion-title>恆常事工</ion-title>
     <ion-buttons end>
 <!--       <button ion-button color="primary" *ngIf="displayName != 'Chinese'" (click)="displayName = 'Chinese'">
         中文名
       </button>
       <button ion-button color="primary" *ngIf="displayName != 'English'" (click)="displayName = 'English'">
         英文名
-      </button>   -->            
-      <button ion-button color="primary" [hidden]="ministrySvc.readonly" (click)="undo()">
-        Undo
-      </button>              
+      </button>   -->                        
       <button ion-button color="primary" [hidden]="ministrySvc.readonly" (click)="save()">
         Save
       </button>
@@ -32,42 +29,74 @@
 
 <ion-content class="outer-content">
 
-    <ion-slides pager #slides style="height: 610px">
+<!--     <ng-container>
+      <ion-slides pager #slides (ionSlideDidChange)="slideChanged()" (ionSlideWillChange)="slideChanging()">
         <ion-slide *ngFor="let ministry of ministrySvc.ministrySheets; let i = index" style="align-items: start">
-<!--             <div fxLayout="row" fxLayoutAlign="start center" class="ibc-full-width" style="padding-left: 6px; padding-right: 6px">
-                <ion-icon name="remove"></ion-icon>
-                <h2>{{ministry.date | date:'M月d日'}}</h2>
-                <ion-icon name="add"></ion-icon>
-            </div> -->
-            <ion-list>
+          <ng-container *ngIf="showContents[i]">
+              <ion-list>
 
-              <div fxLayout="row" fxLayoutAlign="center center" style="padding: 0.5rem">
-                <button [hidden]="ministrySvc.readonly" class="ibc-content-button" ion-button small color="blue" (click)="removeSheet(i)" start>
-                  <ion-icon name="remove"></ion-icon>
-                </button>        
-                <div fxFlex></div>
-                <h3 class="ibc-h-padding-10" style="font-size: 1.8rem">{{ministry.date | date:'M月d日'}}</h3>
-                <div fxFlex></div>
-                <button [hidden]="ministrySvc.readonly" class="ibc-content-button" ion-button small color="blue" (click)="pushSheet()" end>
-                  <ion-icon name="add"></ion-icon>
-                </button>
-              </div>
+                <div fxLayout="row" fxLayoutAlign="center center" style="padding: 0.5rem">
+                  <button [hidden]="ministrySvc.readonly" class="ibc-content-button" ion-button small color="blue" (click)="removeSheet(i)" start>
+                    <ion-icon name="remove"></ion-icon>
+                  </button>        
+                  <div fxFlex></div>
+                  <h3 class="ibc-h-padding-10" style="font-size: 1.8rem">{{ministry.date | date:'M月d日'}}</h3>
+                  <div fxFlex></div>
+                  <button [hidden]="ministrySvc.readonly" class="ibc-content-button" ion-button small color="blue" (click)="pushSheet()" end>
+                    <ion-icon name="add"></ion-icon>
+                  </button>
+                </div>
 
-              <ion-item *ngFor="let role of ministrySvc.ministryRoles">
-                <ion-label>{{role.caption}}</ion-label>
-                <ion-note color="primary" *ngIf="ministrySvc.readonly && ministrySvc.getContact(ministry[role.key]) as contact" [contact-link]="contact" item-end></ion-note>
-                <ion-select [ngModel]="ministry[role.key]" (ngModelChange)="setMinistry(ministry, role.key, $event)" *ngIf="!ministrySvc.readonly">
-                  <ion-option [value]="null">N/A</ion-option>
-                  <ion-option [value]="member.id" *ngFor="let member of ministrySvc[role.optionGetter]">{{member.name}} ({{member.chinese_name}})</ion-option>
-                </ion-select>
-                <ion-icon [style.visibility]="ministry[role.key] && ministry.confirm && ministry.confirm[ministry[role.key]]?'visible':'hidden'" name="checkmark" color="teal" item-right></ion-icon>
-              </ion-item>            
+                <ion-item *ngFor="let role of ministrySvc.ministryRoles">
+                  <ion-label>{{role.caption}}</ion-label>
+                  <ion-note color="primary" *ngIf="ministrySvc.readonly && ministrySvc.getContact(ministry[role.key]) as contact" [contact-link]="contact" item-end></ion-note>
+                  <ion-select [ngModel]="ministry[role.key]" (ngModelChange)="setMinistry(ministry, role.key, $event)" *ngIf="!ministrySvc.readonly">
+                    <ion-option [value]="null">N/A</ion-option>
+                    <ion-option [value]="member.id" *ngFor="let member of ministrySvc[role.optionGetter]">{{member.name}} ({{member.chinese_name}})</ion-option>
+                  </ion-select>
+                  <ion-icon [style.visibility]="ministry[role.key] && ministry.confirm && ministry.confirm[ministry[role.key]]?'visible':'hidden'" name="checkmark" color="teal" item-right></ion-icon>
+                </ion-item>   
 
-            </ion-list>
-        </ion-slide>
-    </ion-slides>
+              </ion-list>
+            </ng-container>           
+          </ion-slide>
+        </ion-slides>      
+    </ng-container> -->
 
-    <button *ngIf="content.allowWechat" ion-button block color="green" [hidden]="ministrySvc.readonly" (click)="share()">
+    <ng-container>
+      <ng-container *ngFor="let ministry of ministrySvc.ministrySheets; let i = index; let isFirst = first">
+        <ion-list>
+
+          <div fxLayout="row" fxLayoutAlign="center center" style="padding: 0.5rem">
+            <h3 class="ibc-h-padding-10" style="font-size: 1.8rem">{{ministry.date | date:'M月d日'}}</h3>
+            <div fxFlex></div>
+            <button *ngIf="isFirst" small ion-button color="primary" class="ibc-button" [hidden]="ministrySvc.readonly" (click)="undo()">
+              Reset
+            </button>
+            <button [hidden]="ministrySvc.readonly" small ion-button color="danger" class="ibc-button" (click)="removeSheet(i)">
+              删除
+            </button>        
+          </div>
+
+          <ion-item *ngFor="let role of ministrySvc.ministryRoles">
+            <ion-label>{{role.caption}}</ion-label>
+            <ion-note color="primary" *ngIf="ministrySvc.readonly && ministrySvc.getContact(ministry[role.key]) as contact" [contact-link]="contact" item-end></ion-note>
+            <ion-select [ngModel]="ministry[role.key]" (ngModelChange)="setMinistry(ministry, role.key, $event)" *ngIf="!ministrySvc.readonly">
+              <ion-option [value]="null">N/A</ion-option>
+              <ion-option [value]="member.id" *ngFor="let member of ministrySvc[role.optionGetter]">{{member.name}} ({{member.chinese_name}})</ion-option>
+            </ion-select>
+            <ion-icon [style.visibility]="ministry[role.key] && ministry.confirm && ministry.confirm[ministry[role.key]]?'visible':'hidden'" name="checkmark" color="teal" item-right></ion-icon>
+          </ion-item>   
+
+        </ion-list>         
+      </ng-container>     
+    </ng-container>
+
+    <button [hidden]="ministrySvc.readonly" ion-button block color="teal-1" (click)="pushSheet()">
+      + 添加
+    </button>
+
+    <button id="wechat-share" *ngIf="content.allowWechat" ion-button block color="green" [hidden]="ministrySvc.readonly" (click)="share()">
       微信分享
     </button>
 
