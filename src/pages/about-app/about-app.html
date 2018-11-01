@@ -28,12 +28,15 @@
         <ion-note>当前版本 {{env.mode == 'Development'?'测试版 ':''}}v{{env.version}}</ion-note>
     </div>
 
+    <p *ngIf="common.forceUpdateVersion" text-center><b style="color: red">您的APP版本過舊，必須更新才能繼續使用</b></p>
         
     <div text-center class="ibc-full-width" *ngIf="common.versionTooOld">
         <button style="max-width: 400px; margin-left: auto; margin-right: auto;" ion-button block (click)="common.goToStorePage()">
           更新至最新版{{common.newVersion}}
         </button>
-        <button color="light" style="max-width: 400px; margin-left: auto; margin-right: auto;" ion-button block (click)="goBack()">
+        <div text-left [innerHtml]="common.versionNotes">
+        </div>
+        <button *ngIf="!common.forceUpdateVersion" color="light" style="max-width: 400px; margin-left: auto; margin-right: auto;" ion-button block (click)="goBack()">
           忽略更新
         </button>        
     </div>

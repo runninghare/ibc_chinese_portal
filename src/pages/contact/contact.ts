@@ -12,6 +12,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { PopupComponent } from '../../components/popup/popup';
 import { CommonProvider } from '../../providers/common/common';
 import { IbcHttpProvider } from '../../providers/ibc-http/ibc-http';
+import { MinistrySkills } from '../../providers/ministry/ministry';
 import { Observable, Subscription } from 'rxjs';
 import * as moment from 'moment';
 
@@ -80,17 +81,9 @@ export class ContactPage implements OnDestroy {
           key: 'skills',
           caption: '事奉',
           type: TypeInputUI.MultiDropdown,
-          lookupSource: Observable.of([
-            {name: "傳道"},
-            {name: "主席"},
-            {name: "敬拜"},
-            {name: "司事"},
-            {name: "司琴"},
-            {name: "翻譯"},
-            {name: "影音"}
-          ]),
-          lookupCaption: 'name',
-          lookupValue: 'name'
+          lookupSource: Observable.of(MinistrySkills),
+          lookupCaption: 'caption',
+          lookupValue: 'key'
         },
         {
           key: 'email',
@@ -178,6 +171,13 @@ export class ContactPage implements OnDestroy {
     this.subscriptions.forEach(s => s.unsubscribe());
   }
 
+  getSkillCaption(key): string {
+    let found = MinistrySkills.filter(s => s.key == key)[0];
+    if (found) {
+      return found.caption;
+    }
+  }
+
   getItems(ev: any) {
       let val = `${ev.target.value || ''}`.toLowerCase();
 
@@ -187,7 +187,15 @@ export class ContactPage implements OnDestroy {
           if (!contact.skills) {
               contact.skills = [];
           }
-          return `${contact.name} ${contact.chinese_name} ${contact.email} ${contact.mobile} ${contact.skills.join(' ')}`.toLowerCase().indexOf(this.s2t.tranStr(val, true)) > -1;
+          let skillCaptions = [];
+
+          contact.skills.forEach(key => {
+            let caption = this.getSkillCaption(key);
+            if (caption) {
+              skillCaptions.push(caption);
+            }
+          });
+          return `${contact.name} ${contact.chinese_name} ${contact.email} ${contact.mobile} ${skillCaptions.join(' ')}`.toLowerCase().indexOf(this.s2t.tranStr(val, true)) > -1;
       });
   }
 
@@ -242,8 +250,15 @@ export class ContactPage implements OnDestroy {
       save: (data: any) => {
         console.log(JSON.stringify(data,null,2));
 
+        if (!data.username || !data.name) {
+          this.commonSvc.toastFailure(`错误: 用户ID和英文名不能为空！`);
+          return;
+        }
+
+        data.username = data.username.toLowerCase();
+
         /* Check whether username already exists */
-        if (this.allContacts.filter(c => c.username == data.username).length > 0) {
+        if (this.allContacts.filter(c => c.username && c.username.toLowerCase() == data.username).length > 0) {
           this.commonSvc.toastFailure(`${data.username}已被占用，请换一个username`);
           return;
         }
@@ -252,11 +267,11 @@ export class ContactPage implements OnDestroy {
 
         console.log(`lastId = ${lastId}`);
 
-        if (lastId && data && data.name) {
+        if (lastId) {
           let newId = lastId + 1;
           Promise.all([
             this.content.allContactsDB.child(newId).set({
-              username: data.username,
+              username: data.username.toLowerCase(),
               id: newId,
               name: data.name,
               chinese_name: data.chinese_name,

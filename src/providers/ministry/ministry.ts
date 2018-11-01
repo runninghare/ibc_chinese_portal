@@ -8,6 +8,34 @@ import * as moment from 'moment';
 import * as _ from 'lodash';
 
 export {IntMinistrySheet } from '../../providers/data-adaptor/data-adaptor';
+
+export const MinistryRoles = [
+        { key: 'leader', caption: '主席', optionGetter: 'leaderCandidates' },
+        { key: 'preacher', caption: '講員', optionGetter: 'preacherCandidates' },
+        { key: 'interpreter', caption: '傳譯', optionGetter: 'interpreterCandidates' },
+        { key: 'choir1', caption: '敬拜1', optionGetter: 'choirCandidates' },
+        { key: 'choir2', caption: '敬拜2', optionGetter: 'choirCandidates' },
+        { key: 'music1', caption: '司樂1', optionGetter: 'musicCandidates' },
+        { key: 'music2', caption: '司樂2', optionGetter: 'musicCandidates' },
+        { key: 'assistant1', caption: '司事1', optionGetter: 'assistantCandidates' },
+        { key: 'assistant2', caption: '司事2', optionGetter: 'assistantCandidates' },
+        { key: 'techanician', caption: '影音', optionGetter: 'techCandidates' },
+        { key: 'morningtea', caption: '茶點', optionGetter: 'morningteaCandidates' },
+        { key: 'communion1', caption: '襄禮1', optionGetter: 'communionCandidates' },
+        { key: 'communion2', caption: '襄禮2', optionGetter: 'communionCandidates' },
+    ];
+
+export const MinistrySkills = [
+        { key: 'leader', caption: '主席' },
+        { key: 'preacher', caption: '講員' },
+        { key: 'interpreter', caption: '傳譯' },
+        { key: 'choir', caption: '敬拜' },
+        { key: 'music', caption: '司樂' },
+        { key: 'assistant', caption: '司事' },
+        { key: 'techanician', caption: '影音' },
+        { key: 'morningtea', caption: '茶點' },
+        { key: 'communion', caption: '襄禮' }
+];    
 /*
   Generated class for the MinistryProvider provider.
 
@@ -26,19 +54,7 @@ export class MinistryProvider {
     //     return this.content.allContacts;
     // }
 
-    ministryRoles = [
-        { key: 'preacher', caption: '傳道', optionGetter: 'preacherCandidates' },
-        { key: 'interpreter', caption: '翻譯', optionGetter: 'interpreterCandidates' },
-        { key: 'leader', caption: '主席', optionGetter: 'leaderCandidates' },
-        { key: 'choir1', caption: '敬拜1', optionGetter: 'choirCandidates' },
-        { key: 'choir2', caption: '敬拜2', optionGetter: 'choirCandidates' },
-        { key: 'assistant1', caption: '司事1', optionGetter: 'assistantCandidates' },
-        { key: 'assistant2', caption: '司事2', optionGetter: 'assistantCandidates' },
-        { key: 'music', caption: '司琴', optionGetter: 'musicCandidates' },
-        { key: 'technician', caption: '影音', optionGetter: 'techCandidates' },
-        { key: 'communion1', caption: '主餐1', optionGetter: 'communionCandidates' },
-        { key: 'communion2', caption: '主餐2', optionGetter: 'communionCandidates' }
-    ];
+    ministryRoles = MinistryRoles;
 
     allContacts: IntContact[] = [];
 
@@ -97,36 +113,40 @@ export class MinistryProvider {
     }
 
     get leaderCandidates(): IntContact[] {
-        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('主席') > -1);
+        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('leader') > -1);
     }
 
     get preacherCandidates(): IntContact[] {
-        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('傳道') > -1);
+        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('preacher') > -1);
     }
 
     get choirCandidates(): IntContact[] {
-        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('敬拜') > -1);
+        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('choir') > -1);
     }
 
     get assistantCandidates(): IntContact[] {
-        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('司事') > -1);
+        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('assistant') > -1);
     }
 
     get musicCandidates(): IntContact[] {
-        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('司琴') > -1);
+        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('music') > -1);
     }
 
     get techCandidates(): IntContact[] {
-        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('影音') > -1);
+        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('techanician') > -1);
     }
 
     get interpreterCandidates(): IntContact[] {
-        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('翻譯') > -1);
+        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('interpreter') > -1);
     }
 
     get communionCandidates(): IntContact[] {
-        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('主餐') > -1);
+        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('communion') > -1);
     }
+
+    get morningteaCandidates(): IntContact[] {
+        return this.allContacts.filter(contact => contact.skills && contact.skills.indexOf('morningtea') > -1);
+    }    
 
     saveSheet(): Promise<any> {
         let ref = this.ibcFB.afDB.database.ref('ministries');

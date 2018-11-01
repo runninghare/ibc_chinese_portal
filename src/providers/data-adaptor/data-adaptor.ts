@@ -122,8 +122,10 @@ export interface IntMinistrySheet {
     choir2?: IntContact;
     assistant1?: IntContact;
     assistant2?: IntContact;
-    technician?: IntContact;
-    music?: IntContact;
+    techenician?: IntContact;
+    music1?: IntContact;
+    music2?: IntContact;
+    morningtea?: IntContact;
     confirm?: any;
 }
 
@@ -783,7 +785,15 @@ export class DataProvider {
                 },
                 {
                     key: 'album',
-                    caption: '专辑'
+                    caption: '專輯'
+                },
+                {
+                    key: 'composer',
+                    caption: '作曲'
+                },
+                {
+                    key: 'lyricWriter',
+                    caption: '作詞'
                 },
                 {
                     key: 'lyric',
@@ -792,7 +802,7 @@ export class DataProvider {
                 },
                 {
                     key: 'language',
-                    caption: '语言',
+                    caption: '語言',
                     type: TypeInputUI.Dropdown,
                     lookupSource: Observable.of([
                         {
@@ -811,12 +821,19 @@ export class DataProvider {
                     lookupCaption: 'cap',
                     lookupValue: 'val'
                 },
+                {
+                    key: 'note',
+                    caption: '備注',
+                    type: TypeInputUI.Textarea
+                }
             ],
             filterFunc: (val, item) => {
                 if (!isNaN(<any>val)) {
-                    return item.set == val;
+                  return item.set == val;
+                } else if (val.length < 5) {
+                  return this.s2t.tranStr(`${item.name} ${item.album} ${item.composer} ${item.lyricWriter}`,true).indexOf(this.s2t.tranStr(val, true)) > -1;
                 } else {
-                    return `${item.name}`.toLowerCase().indexOf(this.s2t.tranStr(val, true)) > -1;
+                  return this.s2t.tranStr(`${item.name} ${item.album} ${item.lyric}`||"",true).indexOf(this.s2t.tranStr(val, true)) > -1;
                 }
             },
             subtitleAs: (item, auxiliaryItems) => {
@@ -824,7 +841,7 @@ export class DataProvider {
                 if (index > -1) {
                     return '本週贊美詩歌'
                 } else {
-                    return null;
+                    return item.album;
                 }
             },
             mapFunc: (item) => {
@@ -834,13 +851,19 @@ export class DataProvider {
                     set: item.set,
                     thumbnail: 'https://img.youtube.com/vi/' + item.id + '/0.jpg',
                     redirect: 'song-page',
+                    album: item.album,
+                    composer: item.composer,
+                    lyricWriter: item.lyricWriter,
                     params: {
                         id: item.id,
                         album: item.album,
                         title: item.name,
                         set: item.set,
                         lyric: item.lyric,
-                        language: item.language
+                        language: item.language,
+                        composer: item.composer,
+                        lyricWriter: item.lyricWriter,
+                        note: item.note
                     }
                 }
             },

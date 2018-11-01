@@ -19,6 +19,7 @@ import { AdminSystemPage } from '../pages/admin-system/admin-system';
 import { IbcFirebaseProvider } from '../providers/ibc-firebase/ibc-firebase';
 
 import { S2tProvider } from '../providers/s2t/s2t';
+import { CommonProvider } from '../providers/common/common';
 import { DataProvider } from '../providers/data-adaptor/data-adaptor';
 
 declare var Wechat;
@@ -50,6 +51,7 @@ export class MyApp implements AfterViewInit {
     public splashScreen: SplashScreen, 
     public s2t: S2tProvider,
     public ibcFB: IbcFirebaseProvider,
+    public common: CommonProvider,
     public content: DataProvider,
   ) {
 

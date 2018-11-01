@@ -119,7 +119,7 @@ export class HomePage implements OnInit, AfterViewInit {
                 if (common.versionTooOld) {
                     this.navCtrl.push(AboutAppPage);
                 }
-            }, 5000);
+            });
         }
 
         this.ibcDeepLinkSvc.listen(this.navCtrl);

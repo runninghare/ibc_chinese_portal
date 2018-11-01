@@ -20,7 +20,17 @@
         <ion-note>Set {{activeSong?.set || set}}</ion-note>
     </div>
 
+     <div text-center fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="50px" class="ibc-full-width ibc-bottom-margin-10">
+        <div *ngIf="activeSong?.composer">作曲: {{activeSong?.composer}}</div>
+        <div *ngIf="activeSong?.lyricWriter">作詞: {{activeSong?.lyricWriter}}</div>
+    </div>   
+
     <youtube-video [youtubeId]="id"></youtube-video>  
+    
+    <ng-container *ngIf="activeSong?.note">
+      <p text-right>{{activeSong?.note}}</p>
+      <hr>
+    </ng-container>
 
     <pre text-center>{{activeSong?.lyric || lyric}}</pre>
 

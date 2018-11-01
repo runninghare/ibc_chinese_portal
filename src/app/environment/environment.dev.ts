@@ -1,11 +1,12 @@
 export const ENV = {
   mode: 'Development',
-  version: '0.2.4',
+  version: '0.2.7',
   // apiServer: 'http://192.168.0.160:3000',
   // apiServer: 'http://192.168.0.3:3000',
   // apiServer: 'http://localhost:3000',
   // apiServer: 'http://192.168.0.30:3000',
-  apiServer: 'http://192.168.0.21:3000',
+  // apiServer: 'http://192.168.0.21:3000',
+  apiServer: '',
   firebaseConfig: {   // DEV FireDB
     apiKey: "AIzaSyA-m-AkKYqeKusk0aXgdZax9n5MbRngyj0",
     authDomain: "ibc-app-94466.firebaseapp.com",

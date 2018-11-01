@@ -39,13 +39,21 @@ export class CommonProvider {
 
     newVersion: string;
 
+    forceUpdateVersion: boolean;
+
+    versionNotes: string;
+
     text: any = {};
 
     get versionTooOld(): boolean {
-        if (ENV.version && this.newVersion) {
+        return this.compareVersion(ENV.version, this.newVersion);
+    }
+
+    compareVersion(preVersion: string, curVersion: string): boolean {
+        if (preVersion && curVersion) {
             let pattern = new RegExp(/^(\d+)\.(\d+)\.(\d+)$/);
-            let oldPatternMatches = ENV.version.match(pattern);
-            let newPatternMatches = this.newVersion.match(pattern);
+            let oldPatternMatches = preVersion.match(pattern);
+            let newPatternMatches = curVersion.match(pattern);
 
             if (oldPatternMatches.length == 4 && newPatternMatches.length == 4) {
                 let oldMajor = parseInt(oldPatternMatches[1]);
@@ -248,9 +256,30 @@ export class CommonProvider {
     }
 
     resolve(): Promise<any> {
-        return this.ibcFB.afDB.database.ref('text').once('value').then(snapshot => {
-            let text = snapshot.val();
+        return Promise.all([
+            this.ibcFB.afDB.database.ref('apiServer').once('value'), 
+            this.ibcFB.afDB.database.ref('text').once('value'),
+            this.ibcFB.afDB.database.ref('version').once('value'),
+            this.ibcFB.afDB.database.ref('versionForceUpdate').once('value'),
+            this.ibcFB.afDB.database.ref('versionNotes').once('value')])
+        .then(res => {
+            let apiUrl = res[0].val();
+            ENV.apiServer = apiUrl;
+
+            let text = res[1].val();
             this.text = text;
+
+            this.newVersion = res[2].val();
+            let forceUpdateVersion = res[3].val();
+            console.log(forceUpdateVersion);
+            if (forceUpdateVersion) {
+                this.forceUpdateVersion = this.compareVersion(ENV.version, forceUpdateVersion);
+            }
+
+            let allNotes = res[4].val();
+            if (allNotes && this.newVersion) {
+                this.versionNotes = allNotes[this.newVersion.replace(/\./g,'_')];
+            }
         });
     }
 

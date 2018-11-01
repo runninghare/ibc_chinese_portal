@@ -10,6 +10,7 @@ import { PhotoProvider } from '../../providers/photo/photo';
 import { DataProvider, IntContact } from '../../providers/data-adaptor/data-adaptor';
 import { CommonProvider } from '../../providers/common/common';
 import { FileCacheProvider } from '../../providers/file-cache/file-cache';
+import { MinistrySkills } from '../../providers/ministry/ministry';
 import { ENV } from '@app/env';
 
 export class PasswordValidation {
@@ -77,20 +78,21 @@ export class UserProfilePage implements OnInit {
     submittingAuthForm: boolean = false;
     submittingUserForm: boolean = false;
 
+    skillOptions = MinistrySkills;
+
     skills = {
-        "傳道": false,
-        "主席": false,
-        "敬拜": false,
-        "司事": false,
-        "司琴": false,
-        "翻譯": false,
-        "影音": false,
-        "主餐": false
+        "preacher": false,
+        "leader": false,
+        "choir": false,
+        "assistant": false,
+        "music": false,
+        "interpreter": false,
+        "techanician": false,
+        "communion": false,
+        "morningtea": false
     };
 
-    get allSkills(): string[] {
-        return Object.keys(this.skills);
-    }
+    allSkills = MinistrySkills;
 
     constructor(
         public navCtrl: NavController,

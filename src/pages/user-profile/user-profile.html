@@ -148,8 +148,8 @@
   <form *ngIf="userForm" [@showAnimation]="showMinistrySkills?'visible':'invisible'">
     <p style="padding-left: 1rem">請選擇你願意參加下面那種事奉，然後保存</p>
     <ion-item *ngFor="let skill of allSkills">
-      <ion-label>{{skill}}</ion-label>
-      <ion-checkbox color="dark" [(ngModel)]="skills[skill]" (click)="userForm.markAsDirty()" [ngModelOptions]="{standalone: true}" [name]="skill"></ion-checkbox>
+      <ion-label>{{skill.caption}}</ion-label>
+      <ion-checkbox color="dark" [(ngModel)]="skills[skill.key]" (click)="userForm.markAsDirty()" [ngModelOptions]="{standalone: true}" [name]="skill"></ion-checkbox>
     </ion-item>
   </form>
 

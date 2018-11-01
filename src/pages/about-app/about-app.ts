@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, App, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, App, NavController, NavParams, ViewController } from 'ionic-angular';
 import { DataProvider } from '../../providers/data-adaptor/data-adaptor';
 import { CommonProvider } from '../../providers/common/common';
 import { HomePage } from '../../pages/home/home';
@@ -26,7 +26,7 @@ export class AboutAppPage {
         return this.app.getRootNav();
     }
 
-    constructor(public app: App, public navCtrl: NavController, public navParams: NavParams,
+    constructor(public app: App, public navCtrl: NavController, public viewCtrl: ViewController, public navParams: NavParams,
         public common: CommonProvider, public content: DataProvider) {
         // console.log('--- about app constructed! ---');
         // console.log(JSON.stringify(navParams));
@@ -43,6 +43,10 @@ export class AboutAppPage {
 
     ionViewDidLoad() {
         console.log('ionViewDidLoad AboutAppPage');
+    }
+
+    ionViewWillEnter() {
+        this.viewCtrl.showBackButton(!this.common.forceUpdateVersion);
     }
 
 }
