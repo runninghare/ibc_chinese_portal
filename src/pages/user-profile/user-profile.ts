@@ -18,7 +18,6 @@ export class PasswordValidation {
        let password = AC.get('password1').value; // to get value in input tag
        let confirmPassword = AC.get('password2').value; // to get value in input tag
         if(password != confirmPassword) {
-            console.log('false');
             AC.get('password2').setErrors( {MatchPassword: true} )
         } else {
             return null
@@ -105,11 +104,12 @@ export class UserProfilePage implements OnInit {
         public content: DataProvider,
         public cacheSvc: FileCacheProvider,
         public modalCtrl: ModalController,
-        public commonSvc: CommonProvider
+        public commonSvc: CommonProvider,
+        public viewCtrl: ViewController
     ) {
 
         this.authForm = fb.group({
-            username:     [null, Validators.required],
+            username:     [{value: null, disabled: true}, Validators.required],
             oldpassword:  [null, Validators.required],
             password1:    [null, Validators.required],
             password2:    [null, Validators.required],
@@ -131,7 +131,7 @@ export class UserProfilePage implements OnInit {
             state: [null],
             country: [null],
             postcode: [null],
-            wechat: [null],
+            wechat: [{value: null, disabled: true}],
             skills: [null],
             visited: [null],
             shareInfo: [null]
@@ -147,6 +147,7 @@ export class UserProfilePage implements OnInit {
             if (!user.visited) {
                 this.showAuthInfo = true;
                 this.showTaC = true;
+                this.viewCtrl.showBackButton(false);
             }
             if (!user.skills) {
                 user.skills = [];
@@ -162,14 +163,14 @@ export class UserProfilePage implements OnInit {
         if (val && !val.value) {
             this.commonSvc.confirmDialog(null, '你真要關閉聯繫方式共享嗎？這樣你也無法看到其他兄弟姊妹的聯繫方式了', () => {
                this.userForm.controls['shareInfo'].setValue(false);
-               this.content.myselfContactDB.update(this.userForm.value);
+               this.content.myselfContactDB.update(this.userForm.getRawValue());
             }, () => {
                this.userForm.controls['shareInfo'].setValue(true);
                val.value = <any>true;
             }, {negativeLabel: '公開', positiveLabel: '關閉'});
         } else {
             this.userForm.controls['shareInfo'].setValue(true);
-            this.content.myselfContactDB.update(this.userForm.value);
+            this.content.myselfContactDB.update(this.userForm.getRawValue());
         }
     }
 
@@ -192,20 +193,24 @@ export class UserProfilePage implements OnInit {
                 return;
             }
 
-            this.http.post(`${ENV.apiServer}/auth/changepassword`, this.authForm.value).subscribe(result => {
+            this.http.post(`${ENV.apiServer}/auth/changepassword`, this.authForm.getRawValue()).subscribe(result => {
 
-                this.content.myselfContactDB.child('visited').set(true).then(data => {
-                    let toast = this.toastCtrl.create({
-                        message: '您的密碼已成功修改，請務必保存',
-                        duration: 3000,
-                        position: 'top',
-                        cssClass: 'toast-success'
-                    });
+                let toast = this.toastCtrl.create({
+                    message: '您的密碼已成功修改，請務必保存',
+                    duration: 3000,
+                    position: 'top',
+                    cssClass: 'toast-success'
+                });
 
-                    toast.present();
-                    this.authForm.markAsPristine();
-                    this.submittingAuthForm = false;
-                }, console.error);
+                toast.present();
+                this.authForm.markAsPristine();
+                this.submittingAuthForm = false;
+
+                if (!this.content.myselfContact.visited) {
+                    this.content.myselfContactDB.child('visited').set(true).then(data => {
+                        this.navCtrl.pop();
+                    }, console.error);
+                }
 
             }, err => {
                 let body = err.json();
@@ -247,7 +252,7 @@ export class UserProfilePage implements OnInit {
                 cssClass: 'toast-danger'
             });
 
-            this.content.myselfContactDB.update(this.userForm.value).then(data => {
+            this.content.myselfContactDB.update(this.userForm.getRawValue()).then(data => {
 
                 success_toast.present();
                 this.userForm.markAsPristine();

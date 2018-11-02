@@ -46,7 +46,7 @@ export class AboutAppPage {
     }
 
     ionViewWillEnter() {
-        this.viewCtrl.showBackButton(!this.common.forceUpdateVersion);
+        this.viewCtrl.showBackButton(!this.common.versionTooOld);
     }
 
 }

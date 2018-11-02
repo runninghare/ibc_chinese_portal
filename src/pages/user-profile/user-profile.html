@@ -39,9 +39,11 @@
    
   <form [formGroup]="authForm" *ngIf="authForm" [@showAnimation]="showAuthInfo?'visible':'invisible'">
 
+        <p *ngIf="!content.myselfContact.visited" style="color: red" text-center>首次登入必須修改密碼, 然後點擊【保存】</p>
+
         <ion-item>
-            <ion-label floating>登錄用戶名</ion-label>
-            <ion-input disabled type="text" [formControl]="authForm.controls.username"></ion-input>
+            <ion-label floating>用戶名</ion-label>
+            <ion-input type="text" [formControl]="authForm.controls.username"></ion-input>
         </ion-item>
         <ion-note style="color: red" ion-item text-right *ngIf="submittingAuthForm && authForm.controls.username.errors?.required">用戶名不能為空</ion-note>        
 
@@ -105,7 +107,7 @@
 
         <ion-item *ngIf="ibcFB.wechatAuthInfo.openid">
             <ion-label floating>微信</ion-label>
-            <ion-input type="text" disabled [formControl]="userForm.controls.wechat"></ion-input>
+            <ion-input type="text" [formControl]="userForm.controls.wechat"></ion-input>
         </ion-item>
 
         <ion-item>

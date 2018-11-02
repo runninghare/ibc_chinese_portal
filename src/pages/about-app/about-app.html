@@ -31,6 +31,7 @@
     <p *ngIf="common.forceUpdateVersion" text-center><b style="color: red">您的APP版本過舊，必須更新才能繼續使用</b></p>
         
     <div text-center class="ibc-full-width" *ngIf="common.versionTooOld">
+        <p text-center>若在APP Store中未發現Update選項，<br />您需要刪除IBC APP並重新安裝</p>
         <button style="max-width: 400px; margin-left: auto; margin-right: auto;" ion-button block (click)="common.goToStorePage()">
           更新至最新版{{common.newVersion}}
         </button>

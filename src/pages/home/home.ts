@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, animate, state, trigger, style, transition } from '@angular/core';
+import { Component, AfterViewInit, animate, state, trigger, style, transition } from '@angular/core';
 import { IonicPage, App, NavController, Platform, PopoverController, AlertController } from 'ionic-angular';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { CommonProvider } from '../../providers/common/common';
@@ -27,7 +27,7 @@ import { AudioProvider } from '../../providers/audio/audio';
 import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
 import { IbcDeeplinkProvider } from '../../providers/ibc-deeplink/ibc-deeplink';
 import { Deeplinks } from '@ionic-native/deeplinks';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 // declare var cordova;
 
@@ -56,7 +56,7 @@ import { Observable } from 'rxjs';
         )      
     ]
 })
-export class HomePage implements OnInit, AfterViewInit {
+export class HomePage {
 
     showCustomLoginConfirm: boolean = false;
 
@@ -71,6 +71,8 @@ export class HomePage implements OnInit, AfterViewInit {
     authUser: firebase.User;
 
     bgClass: string;
+
+    userProfileSubscription: Subscription;
 
     constructor(
         public navCtrl: NavController,
@@ -96,11 +98,25 @@ export class HomePage implements OnInit, AfterViewInit {
         public ibcDeepLinkSvc: IbcDeeplinkProvider,
         public loadTrackerSvc: LoadTrackerProvider
     ) {
+    }
 
+    ionViewWillEnter() {
         window['rxjs'] = rxjs;
 
-        ibcFB.userProfile$.filter(auth => auth != null).subscribe(userProfile => {
+        this.bgClass = this.ibcStyle.randomBg;
+
+        this.userProfileSubscription = this.ibcFB.userProfile$.filter(auth => auth != null).subscribe(userProfile => {
             this.authUser = userProfile;
+
+            console.log('--- user profile updated! ---');
+            let subscription = this.content.currentUser$.subscribe(contact => {
+                // console.log('--- user here! ---');
+                // console.log(contact);
+                if (contact && !contact.visited) {
+                    this.navCtrl.push(UserProfilePage);
+                }
+                subscription.unsubscribe();
+            });
             // ibcFB.userProfile = userProfile;
 
             /* Set standard background for authenticated users */
@@ -114,15 +130,22 @@ export class HomePage implements OnInit, AfterViewInit {
             this.bgClass = this.ibcStyle.randomBg;
         });
 
-        if (!common.doNotRemindUpdating) {
+        if (!this.common.doNotRemindUpdating) {
             setTimeout(() => {
-                if (common.versionTooOld) {
+                if (this.common.versionTooOld) {
                     this.navCtrl.push(AboutAppPage);
                 }
             });
         }
 
         this.ibcDeepLinkSvc.listen(this.navCtrl);
+    }
+
+    ionViewWillLeave() {
+        console.log('--- leaving view ---');
+        if (this.userProfileSubscription) {
+            this.userProfileSubscription.unsubscribe();
+        }
     }
 
     aboutUs(): void {
@@ -226,20 +249,6 @@ export class HomePage implements OnInit, AfterViewInit {
 
     socialShare(): void {
         this.socialSharing['share']("Hello World!", null, null);
-    }
-
-    ngOnInit(): void {
-        this.bgClass = this.ibcStyle.randomBg;
-
-        let subscription = this.content.currentUser$.subscribe(contact => {
-            if (!contact.visited) {
-                this.navCtrl.push(UserProfilePage);
-                subscription.unsubscribe();
-            }
-        });
-    }
-
-    ngAfterViewInit(): void {
     }
 
 }
