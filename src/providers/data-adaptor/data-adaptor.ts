@@ -409,7 +409,7 @@ export class DataProvider {
             }
 
             this.myTasksDB = this.ibcFB.afDB.database.ref(`tasks/${contact.id}`);
-            this.myTasks$ = this.ibcFB.afDB.list<IntListItem>(`tasks/${contact.id}`).valueChanges().debounceTime(500);
+            this.myTasks$ = this.ibcFB.afDB.list<IntListItem>(`tasks/${contact.id}`).valueChanges();
             this.myTasksParams = {
                 title: '我的任務',
                 items$: this.myTasks$,
@@ -604,7 +604,7 @@ export class DataProvider {
         this.userAuthHandler();
 
         this.homeCardsDB = this.ibcFB.afDB.database.ref('homecards');
-        this.homeCards$ = this.ibcFB.afDB.list<IntHomeCard>('homecards').valueChanges().debounceTime(500);
+        this.homeCards$ = this.ibcFB.afDB.list<IntHomeCard>('homecards').valueChanges();
         this.homeCardsParams = {
             title: '首页卡片',
             items$: this.homeCards$,
@@ -737,7 +737,7 @@ export class DataProvider {
         // }        
 
         this.beliefUrlsDB = this.ibcFB.afDB.database.ref('beliefs');
-        this.beliefUrls$ = this.ibcFB.afDB.list<IntListItem>('beliefs').valueChanges().debounceTime(500);
+        this.beliefUrls$ = this.ibcFB.afDB.list<IntListItem>('beliefs').valueChanges();
         this.beliefUrlsParams = {
             title: '關於信仰',
             items$: this.beliefUrls$,
@@ -759,7 +759,7 @@ export class DataProvider {
         };
 
         this.songsDB = this.ibcFB.afDB.database.ref('songs');
-        this.songs$ = this.ibcFB.afDB.list<IntListItem>('songs').valueChanges().debounceTime(500);
+        this.songs$ = this.ibcFB.afDB.list<IntListItem>('songs').valueChanges().debounceTime(200);
         this.fullSongPageParams = {
             title: '贊美詩歌',
             items$: this.songs$,
@@ -918,7 +918,7 @@ export class DataProvider {
         };
 
         this.nextServiceSongsDB = this.ibcFB.afDB.database.ref('nextServiceSongs');
-        this.nextServiceSongs$ = Observable.combineLatest(this.songs$, this.ibcFB.afDB.list<IntListItem>('nextServiceSongs').valueChanges().debounceTime(500)).map(res => {
+        this.nextServiceSongs$ = Observable.combineLatest(this.songs$, this.ibcFB.afDB.list<IntListItem>('nextServiceSongs').valueChanges()).map(res => {
             let _songList = res[0];
             let _nextSongStrings = res[1];
             return _songList.filter(s => _nextSongStrings.filter(nss => nss == s.id).length > 0);
@@ -941,7 +941,7 @@ export class DataProvider {
         });
 
         this.sermonsDB = this.ibcFB.afDB.database.ref('sermons');
-        this.sermons$ = this.ibcFB.afDB.list<IntSermon>('sermons').valueChanges().debounceTime(500);
+        this.sermons$ = this.ibcFB.afDB.list<IntSermon>('sermons').valueChanges();
         this.sermonPageParams = {
             title: '教會講道',
             items$: this.sermons$,
@@ -1036,7 +1036,7 @@ export class DataProvider {
                 item.isNew = moment().isBefore(item.datetime);
             })
             return items;
-        }).debounceTime(500);
+        });
         this.activitiesParams = {
             title: '教會活動',
             items$: this.activities$,
@@ -1151,7 +1151,7 @@ export class DataProvider {
 
         /* User group management */
         this.groupManagementDB = this.ibcFB.afDB.database.ref('userGroups');
-        this.groupManagement$ = this.ibcFB.afDB.list<IntUserGroup>('userGroups').valueChanges().debounceTime(500);
+        this.groupManagement$ = this.ibcFB.afDB.list<IntUserGroup>('userGroups').valueChanges();
         this.groupManagementParams = {
             title: '群组管理',
             items$: this.groupManagement$,
@@ -1237,7 +1237,7 @@ export class DataProvider {
             this.urls = snapshot.val();
         });
 
-        this.urlPageAdjustments$ = this.ibcFB.afDB.list<IntUrlModifier>('urlPageAdjustments').valueChanges().debounceTime(500);
+        this.urlPageAdjustments$ = this.ibcFB.afDB.list<IntUrlModifier>('urlPageAdjustments').valueChanges();
         this.existingSubscriptions.push(this.urlPageAdjustments$.subscribe(res => {
             this.urlPageAdjustments = res;
         }, err => { }));
@@ -1255,10 +1255,10 @@ export class DataProvider {
         }, console.error);
 
         this.lastCountDB = this.ibcFB.afDB.database.ref('lastCounts');
-        this.lastCounts$ = this.ibcFB.afDB.object('lastCounts').valueChanges().debounceTime(500);
+        this.lastCounts$ = this.ibcFB.afDB.object('lastCounts').valueChanges();
 
         this.allStatusDB = this.ibcFB.afDB.database.ref('status');
-        this.allStatus$ = <Observable<any>>this.ibcFB.afDB.object('status').valueChanges().debounceTime(500);
+        this.allStatus$ = <Observable<any>>this.ibcFB.afDB.object('status').valueChanges();
 
         this.versionDB = this.ibcFB.afDB.database.ref('version');
     }

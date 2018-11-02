@@ -103,8 +103,6 @@ export class HomePage {
     ionViewWillEnter() {
         window['rxjs'] = rxjs;
 
-        this.bgClass = this.ibcStyle.randomBg;
-
         this.userProfileSubscription = this.ibcFB.userProfile$.filter(auth => auth != null).subscribe(userProfile => {
             this.authUser = userProfile;
 
@@ -141,8 +139,11 @@ export class HomePage {
         this.ibcDeepLinkSvc.listen(this.navCtrl);
     }
 
+    ionViewDidEnter() {
+        this.bgClass = this.ibcStyle.randomBg;
+    }
+
     ionViewWillLeave() {
-        console.log('--- leaving view ---');
         if (this.userProfileSubscription) {
             this.userProfileSubscription.unsubscribe();
         }

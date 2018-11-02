@@ -208,7 +208,10 @@ export class UserProfilePage implements OnInit {
 
                 if (!this.content.myselfContact.visited) {
                     this.content.myselfContactDB.child('visited').set(true).then(data => {
-                        this.navCtrl.pop();
+                        console.log('--- saving complete: set visited! ---');
+                        setTimeout(() => {
+                            this.navCtrl.pop();
+                        }, 500)
                     }, console.error);
                 }
 
