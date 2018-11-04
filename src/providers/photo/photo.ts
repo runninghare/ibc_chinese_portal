@@ -79,7 +79,9 @@ export class PhotoProvider {
         let cameraOptions: CameraOptions = {
             sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
             destinationType: this.camera.DestinationType.DATA_URL,
-            quality: 100,
+            // quality: 100,
+            targetWidth: 1024,
+            targetHeight: 768,            
             // targetWidth: 800,
             // targetHeight: 400,
             encodingType: this.camera.EncodingType.PNG,
@@ -120,7 +122,8 @@ export class PhotoProvider {
         sourceType: this.camera.PictureSourceType.SAVEDPHOTOALBUM,
         mediaType: this.camera.MediaType.ALLMEDIA,
         destinationType: this.camera.DestinationType.FILE_URI,
-        targetWidth: 720,
+        targetWidth: 1024,
+        targetHeight: 768,
         encodingType: this.camera.EncodingType.JPEG,
         correctOrientation: true
       })

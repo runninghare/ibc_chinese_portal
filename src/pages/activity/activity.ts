@@ -466,8 +466,9 @@ export class ActivityPage implements OnDestroy {
         cameraDirection: 1,
         sourceType: this.photoSvc.camera.PictureSourceType.PHOTOLIBRARY,
         destinationType: this.photoSvc.camera.DestinationType.DATA_URL,
-        quality: 100,
-        targetWidth: 800,
+        // quality: 100,
+        targetWidth: 1024,
+        targetHeight: 768,
         // targetHeight: 400,
         encodingType: this.photoSvc.camera.EncodingType.PNG,
         correctOrientation: true 
