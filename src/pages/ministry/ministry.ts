@@ -116,11 +116,16 @@ export class MinistryPage implements OnInit {
 
     setMinistry(sheet: IntMinistrySheet, roleKey: string, contactId: string) {
       /* Remove any existing role on the same day */
-      this.ministrySvc.ministryRoles.forEach(role => {
-        if (sheet[role.key] == contactId) {
-          sheet[role.key] = null;
-        }
-      });
+      /* 2018/11/04 This may not be true because some people can play multiple roles on the same day */
+      if (roleKey != 'communion1' && roleKey != 'communion2') {
+          this.ministrySvc.ministryRoles.forEach(role => {
+              if (role.key != 'communion1' && role.key != 'communion2') {
+                  if (sheet[role.key] == contactId) {
+                      sheet[role.key] = null;
+                  }
+              }
+          });
+      }
 
       /* Assign the new role to contactId */
       if (contactId == 'N/A') {
@@ -179,7 +184,8 @@ export class MinistryPage implements OnInit {
       if (sheetsDiffs.newItems.length > 0) {
         sheetsDiffs.newItems.forEach((sheet: IntMinistrySheet) => {
           this.ministrySvc.ministryRoles.forEach(role => {
-            if (sheet[role.key]) {
+            /* Communion ministry is special which often happens when people play other roles. */
+            if (sheet[role.key] && role.key != 'communion1' && role.key != 'communion2') {
               console.log(`=== Add ${role.caption} to ${sheet[role.key]}!`);
               this.sendAddNotification(sheet[role.key], sheet.date, role.key, role.caption);
             }
@@ -192,7 +198,7 @@ export class MinistryPage implements OnInit {
         /* We will ignore all obsolete sheets */
         sheetsDiffs.deletedItems.filter((sheet: IntMinistrySheet) => new Date(sheet.date).getTime() > new Date().getTime()).forEach((sheet: IntMinistrySheet) => {
           this.ministrySvc.ministryRoles.forEach(role => {
-            if (sheet[role.key]) {
+            if (sheet[role.key] && role.key != 'communion1' && role.key != 'communion2') {
               console.log(`=== Cancel ${role.caption} to ${sheet[role.key]}!`);
               this.sendCancelNotification(sheet[role.key], sheet.date, role.key, role.caption);
             }
@@ -205,7 +211,7 @@ export class MinistryPage implements OnInit {
           let oldSheet = item.oldItem;
           let newSheet = item.newItem;
           this.ministrySvc.ministryRoles.forEach(role => {
-            if (oldSheet[role.key] != newSheet[role.key]) {
+            if (oldSheet[role.key] != newSheet[role.key] && role.key != 'communion1' && role.key != 'communion2') {
               console.log(`Update member for ${newSheet.date} - ${role.caption}: ${oldSheet[role.key]} => ${newSheet[role.key]}`);
               this.sendCancelNotification(oldSheet[role.key], oldSheet.date, role.key, role.caption);
               this.sendAddNotification(newSheet[role.key], newSheet.date, role.key, role.caption);
