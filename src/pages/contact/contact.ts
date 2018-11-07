@@ -12,7 +12,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { PopupComponent } from '../../components/popup/popup';
 import { CommonProvider } from '../../providers/common/common';
 import { IbcHttpProvider } from '../../providers/ibc-http/ibc-http';
-import { MinistrySkills } from '../../providers/ministry/ministry';
+import { MinistryProvider } from '../../providers/ministry/ministry';
 import { Observable, Subscription } from 'rxjs';
 import * as moment from 'moment';
 
@@ -46,77 +46,15 @@ export class ContactPage implements OnDestroy {
 
   notifTracker: any;
 
-  templateForAdd: IntPopupTemplateItem[] = [
-        {
-          key: 'username',
-          caption: '用户ID (Unique)',
-          disabled: true
-        },
-        {
-          key: 'name',
-          caption: '英文名'
-        },
-        {
-          key: 'chinese_name',
-          caption: '中文名'
-        },
-        {
-          key: 'class',
-          caption: '联系人类型',
-          type: TypeInputUI.Dropdown,
-          lookupSource: Observable.of([
-              {
-                  val: null,
-                  cap: '个人'
-              },
-              {
-                  val: 'group',
-                  cap: '群'
-              },
-          ]),
-          lookupCaption: 'cap',
-          lookupValue: 'val',
-        },      
-        {
-          key: 'skills',
-          caption: '事奉',
-          type: TypeInputUI.MultiDropdown,
-          lookupSource: Observable.of(MinistrySkills),
-          lookupCaption: 'caption',
-          lookupValue: 'key'
-        },
-        {
-          key: 'email',
-          caption: '電子郵件'
-        },
-        {
-          key: 'mobile',
-          caption: '電話'
-        },
-        {
-          key: 'address1',
-          caption: '地址'
-        },
-        {
-          key: 'state',
-          caption: '省份',
-        },
-        {
-          key: 'postcode',
-          caption: '郵政編碼',
-        },
-        {
-          key: 'hidden',
-          caption: '隐藏',
-          type: TypeInputUI.Boolean
-        }
-      ];
+  templateForAdd: IntPopupTemplateItem[] = [];
 
   constructor(
     public navCtrl: NavController, public navParams: NavParams, public s2t: S2tProvider, 
     public cacheSvc: FileCacheProvider, public sanitizer: DomSanitizer, public ibcHttp: IbcHttpProvider,
     public content: DataProvider, public audioSvc: AudioProvider, public socialSharing: SocialSharing, 
-    public navLauncher: LaunchNavigator, public modalCtrl: ModalController, public commonSvc: CommonProvider) {
+    public navLauncher: LaunchNavigator, public modalCtrl: ModalController, public commonSvc: CommonProvider,
+    public ministrySvc: MinistryProvider
+    ) {
 
       this.onlyForFriends = this.navParams.get('myFriends');
       this.title = this.navParams.get('title');
@@ -159,6 +97,72 @@ export class ContactPage implements OnDestroy {
       this.subscriptions.push(this.content.lastCounts$.subscribe(lastCounts => {
         this.lastCounts = lastCounts;
       }, err => {}));
+
+      this.templateForAdd = [
+        {
+          key: 'username',
+          caption: '用户ID (Unique)',
+          disabled: true
+        },
+        {
+          key: 'name',
+          caption: '英文名'
+        },
+        {
+          key: 'chinese_name',
+          caption: '中文名'
+        },
+        {
+          key: 'class',
+          caption: '联系人类型',
+          type: TypeInputUI.Dropdown,
+          lookupSource: Observable.of([
+              {
+                  val: null,
+                  cap: '个人'
+              },
+              {
+                  val: 'group',
+                  cap: '群'
+              },
+          ]),
+          lookupCaption: 'cap',
+          lookupValue: 'val',
+        },      
+        {
+          key: 'skills',
+          caption: '事奉',
+          type: TypeInputUI.MultiDropdown,
+          lookupSource: Observable.of(this.ministrySvc.ministrySkills),
+          lookupCaption: 'caption',
+          lookupValue: 'key'
+        },
+        {
+          key: 'email',
+          caption: '電子郵件'
+        },
+        {
+          key: 'mobile',
+          caption: '電話'
+        },
+        {
+          key: 'address1',
+          caption: '地址'
+        },
+        {
+          key: 'state',
+          caption: '省份',
+        },
+        {
+          key: 'postcode',
+          caption: '郵政編碼',
+        },
+        {
+          key: 'hidden',
+          caption: '隐藏',
+          type: TypeInputUI.Boolean
+        }
+      ];
   }
 
   items: IntContact[];
@@ -172,7 +176,7 @@ export class ContactPage implements OnDestroy {
   }
 
   getSkillCaption(key): string {
-    let found = MinistrySkills.filter(s => s.key == key)[0];
+    let found = this.ministrySvc.ministrySkills.filter(s => s.key == key)[0];
     if (found) {
       return found.caption;
     }

@@ -83,7 +83,7 @@
             <ion-note color="primary" *ngIf="ministrySvc.readonly && ministrySvc.getContact(ministry[role.key]) as contact" [contact-link]="contact" item-end></ion-note>
             <ion-select [ngModel]="ministry[role.key]" (ngModelChange)="setMinistry(ministry, role.key, $event)" *ngIf="!ministrySvc.readonly">
               <ion-option [value]="null">N/A</ion-option>
-              <ion-option [value]="member.id" *ngFor="let member of ministrySvc[role.optionGetter]">{{member.name}} ({{member.chinese_name}})</ion-option>
+              <ion-option [value]="member.id" *ngFor="let member of ministrySvc.getCandidates(role)">{{member.name}} ({{member.chinese_name}})</ion-option>
             </ion-select>
             <ion-icon [style.visibility]="ministry[role.key] && ministry.confirm && ministry.confirm[ministry[role.key]]?'visible':'hidden'" name="checkmark" color="teal" item-right></ion-icon>
           </ion-item>   

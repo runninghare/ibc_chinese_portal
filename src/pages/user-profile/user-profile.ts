@@ -10,7 +10,7 @@ import { PhotoProvider } from '../../providers/photo/photo';
 import { DataProvider, IntContact } from '../../providers/data-adaptor/data-adaptor';
 import { CommonProvider } from '../../providers/common/common';
 import { FileCacheProvider } from '../../providers/file-cache/file-cache';
-import { MinistrySkills } from '../../providers/ministry/ministry';
+import { MinistryProvider } from '../../providers/ministry/ministry';
 import { ENV } from '@app/env';
 
 export class PasswordValidation {
@@ -77,21 +77,9 @@ export class UserProfilePage implements OnInit {
     submittingAuthForm: boolean = false;
     submittingUserForm: boolean = false;
 
-    skillOptions = MinistrySkills;
+    skills = [];
 
-    skills = {
-        "preacher": false,
-        "leader": false,
-        "choir": false,
-        "assistant": false,
-        "music": false,
-        "interpreter": false,
-        "techanician": false,
-        "communion": false,
-        "morningtea": false
-    };
-
-    allSkills = MinistrySkills;
+    allSkills = [];
 
     constructor(
         public navCtrl: NavController,
@@ -105,7 +93,8 @@ export class UserProfilePage implements OnInit {
         public cacheSvc: FileCacheProvider,
         public modalCtrl: ModalController,
         public commonSvc: CommonProvider,
-        public viewCtrl: ViewController
+        public viewCtrl: ViewController,
+        public ministrySvc: MinistryProvider
     ) {
 
         this.authForm = fb.group({
@@ -135,6 +124,13 @@ export class UserProfilePage implements OnInit {
             skills: [null],
             visited: [null],
             shareInfo: [null]
+        });
+
+        this.allSkills = this.ministrySvc.ministrySkills;
+        this.skills = this.allSkills.map(ms => {
+            let result: any = {};
+            result[ms.key] = false;
+            return result;
         });
     }
 
