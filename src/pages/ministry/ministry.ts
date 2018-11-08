@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { IonicPage, NavController, NavParams, Slides } from 'ionic-angular';
 import { MinistryProvider, IntMinistrySheet } from '../../providers/ministry/ministry';
 import { NotificationProvider } from '../../providers/notification/notification';
@@ -9,6 +9,7 @@ import { WechatProvider } from '../../providers/wechat/wechat';
 import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
 import * as moment from 'moment';
 import * as _ from 'lodash';
+import * as $ from 'jquery';
 
 /**
  * Generated class for the MinistryPage page.
@@ -75,6 +76,18 @@ export class MinistryPage implements OnInit {
         //         subscription.unsubscribe();
         //     }, console.error);
         // }
+
+        if (this.preloadedDate && this.preloadedDate.match(/\d{4}-\d{2}-\d{2}/)) {
+            this.ministrySvc.dataReady$.filter(res => res != null).subscribe(res => {
+                setTimeout(() => {
+                    let scrollContent = $('page-ministry .scroll-content');
+                    let listElem = $(`ion-list#ministry-${this.preloadedDate}`);
+                    let offset = listElem.offset().top - 50;
+                    scrollContent.animate({ scrollTop: offset });
+                }, 200);
+            })
+        }
+
     }
 
     share(): void {

@@ -24,8 +24,6 @@ import { DataProvider } from '../providers/data-adaptor/data-adaptor';
 
 declare var Wechat;
 
-// import * as $ from 'jquery';
-
 // enum AuthLevel {
 //   Anonymous,
 //   LoggedIn,
@@ -87,23 +85,24 @@ export class MyApp implements AfterViewInit {
     // });
 
     // used for an example of ngFor and navigation
-    this.pages = [
-      { title: '回到首頁', component: HomePage, needAuth: false },
-      { title: '教會講道', component: ListPage, needAuth: false, params: {type: 'sermonPageParams'} },
-      { title: '贊美詩歌', component: ListPage, needAuth: false, params: {type: 'fullSongPageParams'}},
-      // { title: '本月金句', component: MonthlyVersesPage, needAuth: false },
-      { title: '教會成員', component: ContactPage, needAuth: true },
-      { title: '恆常事工', component: MinistryPage, needAuth: true },
-      { title: '牧者分享', component: ListPage, needAuth: false, params: {type: 'beliefUrlsParams'} },
-      { title: '教會活動', component: ListPage, needAuth: false, params: {type: 'activitiesParams'} },
-      { title: '中文聖經', component: BiblePage, needAuth: false },
-      { title: '我的好友', component: ContactPage, needAuth: true, params: {myFriends: true, title: '我的好友'} },
-      { title: '我的任务', component: ListPage, needAuth: true, params: {type: 'myTasksParams'} },
-      { title: '關於我們', component: AboutPage, needAuth: false },
-      { title: '關於APP', component: AboutAppPage, needAuth: false },
-      { title: '群組管理', component: ListPage, needAuth: true, adminAuth: true, params: {type: 'groupManagementParams'} },
-      { title: '系统管理', component: AdminSystemPage, needAuth: true, adminAuth: true },
-    ];
+    // this.pages = [
+    //   { title: '回到首頁', component: 'home-page', needAuth: false },
+    //   { title: '教會講道', component: 'list-page', needAuth: false, params: {type: 'sermonPageParams'} },
+    //   { title: '贊美詩歌', component: 'list-page', needAuth: false, params: {type: 'fullSongPageParams'}},
+    //   // { title: '本月金句', component: MonthlyVersesPage, needAuth: false },
+    //   { title: '教會成員', component: 'contact-page', needAuth: true },
+    //   { title: '恆常事工', component: 'ministry-page', needAuth: true },
+    //   { title: '牧者分享', component: 'list-page', needAuth: false, params: {type: 'beliefUrlsParams'} },
+    //   { title: '教會活動', component: 'list-page', needAuth: false, params: {type: 'activitiesParams'} },
+    //   { title: '中文聖經', component: 'bible-page', needAuth: false },
+    //   { title: '我的好友', component: 'contact-page', needAuth: true, params: {myFriends: true, title: '我的好友'} },
+    //   { title: '我的任务', component: 'list-page', needAuth: true, params: {type: 'myTasksParams'} },
+    //   { title: '關於我們', component: 'about-page', needAuth: false },
+    //   { title: '關於APP', component: 'about-app-page', needAuth: false },
+    //   { title: '群組管理', component: 'list-page', needAuth: true, adminAuth: true, params: {type: 'groupManagementParams'} },
+    //   { title: '系统管理', component: 'admin-system-page', needAuth: true, adminAuth: true },
+    // ];
+    this.pages = this.common.text.chinese.sidemenu;
   }
 
   initializeApp() {

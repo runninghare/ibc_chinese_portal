@@ -65,7 +65,7 @@
 
     <ng-container>
       <ng-container *ngFor="let ministry of ministrySvc.ministrySheets; let i = index; let isFirst = first">
-        <ion-list>
+        <ion-list [attr.id]="'ministry-'+ministry.date">
 
           <div fxLayout="row" fxLayoutAlign="center center" style="padding: 0.5rem">
             <h3 class="ibc-h-padding-10" style="font-size: 1.8rem">{{ministry.date | date:'M月d日'}}</h3>

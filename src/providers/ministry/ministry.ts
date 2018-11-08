@@ -3,7 +3,7 @@ import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { CommonProvider } from '../../providers/common/common';
 import { ToastController } from 'ionic-angular';
 import { DataProvider, IntContact, IntMinistrySheet } from '../../providers/data-adaptor/data-adaptor';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject, BehaviorSubject } from 'rxjs';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 
@@ -62,6 +62,8 @@ export class MinistryProvider {
 
     subscription: Subscription;
 
+    dataReady$: Subject<IntMinistrySheet> = new BehaviorSubject<IntMinistrySheet>(null);
+
     get readonly(): boolean {
         return this.common.readonly;
     }
@@ -89,6 +91,7 @@ export class MinistryProvider {
             // console.log(this.originalMinistrySheets);
 
             this.allContacts = <any>res[1];
+            this.dataReady$.next(this.originalMinistrySheets);
             this.undo();
         }, console.error, () => {
             console.log('=== ministry Svc subscription ends!');
