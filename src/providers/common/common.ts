@@ -271,7 +271,6 @@ export class CommonProvider {
 
             this.newVersion = res[2].val();
             let forceUpdateVersion = res[3].val();
-            console.log(forceUpdateVersion);
             if (forceUpdateVersion) {
                 this.forceUpdateVersion = this.compareVersion(ENV.version, forceUpdateVersion);
             }

@@ -471,7 +471,6 @@ export class DataProvider {
         }
 
         this.existingSubscriptions.push(this.allContacts$.subscribe(contacts => {
-            console.log('--- update all contacts ---');
             this.allContacts = contacts;
             contacts.forEach(contact => {
                 if (contact.photoURL) {
@@ -674,6 +673,10 @@ export class DataProvider {
                             val: 'ministry-page',
                             cap: '侍奉人員頁面'
                         },
+                        {
+                            val: 'sermon-page',
+                            cap: '講道頁面'
+                        },                        
                         {
                             val: 'chat-page',
                             cap: '討論頁面'

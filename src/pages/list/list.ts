@@ -86,13 +86,9 @@ export class ListPage implements OnDestroy {
     public browser: BrowserProvider) {
     // If we navigated to this page, we will have an item available as a nav param
     let type = navParams.get('type');
-    console.log(type);
 
     if (type) {
       let params = this.params = typeof type == 'string' ? this.content[type] : typeof type == 'function' ? type() : type;
-
-      console.log('--- params ---');
-      console.log(params);
 
       if (params) {
         this.itemsDB = params['itemsDB'];
@@ -368,7 +364,6 @@ export class ListPage implements OnDestroy {
         // console.log(`--- number i = ${i} ---`);
 
         let k = this.listHasKeys && this.items[i].key || i;
-        console.log(`key = ${k}`);
 
         this.itemsDB.child(`${k}`).update(this.reverseMapFunc(item)).then(() => {
           this.commonSvc.toastSuccess('编辑成功');

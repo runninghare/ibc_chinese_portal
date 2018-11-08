@@ -19,6 +19,7 @@ import { ActivityPageModule } from '../pages/activity/activity.module';
 import { AboutPageModule } from '../pages/about/about.module';
 import { AdminSystemPageModule } from '../pages/admin-system/admin-system.module';
 import { AdminSmsPageModule } from '../pages/admin-sms/admin-sms.module';
+import { AdminNotifPageModule } from '../pages/admin-notif/admin-notif.module';
 import { IframePageModule } from '../pages/iframe/iframe.module';
 import { AboutAppPageModule } from '../pages/about-app/about-app.module';
 import { ChatPageModule } from '../pages/chat/chat.module';
@@ -132,6 +133,7 @@ export function initializer(commonSvc: CommonProvider) {
     MinistryPageModule,
     AdminSystemPageModule,
     AdminSmsPageModule,
+    AdminNotifPageModule,
     IframePageModule,
     ContactPageModule,
     SongPageModule,

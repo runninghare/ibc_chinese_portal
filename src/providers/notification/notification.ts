@@ -38,24 +38,32 @@ export class NotificationProvider {
     }
 
     addNotification(contactId: string, item: IntListItem) {
-        this.content.myTasksDB.parent.child(`${contactId}`).child(`${item.key}`).once('value', snapshot => {
-            let found = snapshot.val();
+        return new Promise((resolve, reject) => {
+            this.content.myTasksDB.parent.child(`${contactId}`).child(`${item.key}`).once('value', snapshot => {
+                let found = snapshot.val();
 
-            // console.log('--- found ---');
-            // console.log(found);
+                // console.log('--- found ---');
+                // console.log(found);
 
-            if (!found || found.value != item.value || found.answer != item.answer) {
-                // console.log(`${found && found.value} <=> ${item.value}`);
-                this.content.myTasksDB.parent.child(`${contactId}`).child(`${item.key}`).set(Object.assign({}, this.parseItemMustache(item), {
-                    isNew: true,
-                    createdDT: moment().format('YYYY-MM-DD HH:mm:ss'),
-                    sender: this.content.myselfContact.id,
-                    avatar: this.content.myselfContact.photoURL || null
-                })).then(() => {
-                    this.processSpecialTask(item);
-                }).catch(console.error);
-            }
-        });
+                if (!found || found.value != item.value || found.answer != item.answer) {
+                    // console.log(`${found && found.value} <=> ${item.value}`);
+                    this.content.myTasksDB.parent.child(`${contactId}`).child(`${item.key}`).set(Object.assign({}, this.parseItemMustache(item), {
+                        isNew: true,
+                        createdDT: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        sender: this.content.myselfContact.id,
+                        avatar: this.content.myselfContact.photoURL || null
+                    })).then(() => {
+                        this.processSpecialTask(item);
+                        resolve(true);
+                    }).catch(err => {
+                        console.error(err);
+                        reject(false);
+                    });
+                } else {
+                    resolve(true)
+                }
+            });
+        })
     }
 
     addMyNotification(item: IntListItem) {

@@ -31,7 +31,11 @@ export class AdminSystemPage {
   }
 
   goToSms() {
-      this.navCtrl.push(AdminSmsPage);
+    this.navCtrl.push('admin-sms-page');
+  }
+
+  goToInAppNotif() {
+    this.navCtrl.push('admin-notif-page');
   }
 
   updateBulletinAndPpt() {
