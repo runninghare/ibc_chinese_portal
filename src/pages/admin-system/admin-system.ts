@@ -37,7 +37,8 @@ export class AdminSystemPage {
   updateBulletinAndPpt() {
     this.ibcFB.afDB.database.ref(`updateCaches`).once('value', snapshot => {
       let caches = snapshot.val();
-      let latest = moment().format('YYYY-MM-DD');
+      // let latest = moment().format('YYYY-MM-DD HH:mm:ss');
+      let latest = moment().toString();
       Promise.all(caches.map((cache,index) => this.ibcFB.afDB.database.ref(`updateCaches/${index}/timestamp`).set(latest))).then(() => {
         this.common.toastSuccess('期刊PPT缓存更新成功！');
       }).catch(err => {

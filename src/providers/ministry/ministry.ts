@@ -62,7 +62,7 @@ export class MinistryProvider {
 
     subscription: Subscription;
 
-    dataReady$: Subject<IntMinistrySheet> = new BehaviorSubject<IntMinistrySheet>(null);
+    dataReady$: Subject<IntMinistrySheet[]> = new BehaviorSubject<IntMinistrySheet[]>(null);
 
     get readonly(): boolean {
         return this.common.readonly;

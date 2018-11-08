@@ -158,6 +158,9 @@ export class FileCacheProvider {
         this.file.resolveLocalFilesystemUrl(targetFile)
             .then(entry => {
                 entry.getMetadata(meta => {
+                    // console.log(`--- targetFile: ${targetFile} ---`);
+                    // console.log(`old time: ${meta.modificationTime}`);
+                    // console.log(`new time: ${timestamp}`);
                     if (meta.modificationTime.getTime() < timestamp.getTime()) {
                         console.log(`====== URL cache outofdate! Cleaning URL: ${entry.nativeURL}`);
                         let normalizedFileName = entry.nativeURL.split('/').pop();
