@@ -40,32 +40,35 @@ export class IbcMapComponent implements OnInit {
     ngOnInit(): void {
         // console.log(`The address is ${this.address}`);
 
-        if (this.common.isWeb && this.address) {
-            this.iframeUrl = `https://maps.google.com/maps?width=100&height=600&hl=en&q=${this.address}&ie=UTF8&t=&z=14&iwloc=B&output=embed`;
-            this.sanitizedUrl = this.common.sanitize(this.iframeUrl);
-            return;
-        } 
+        this.common.platform.ready().then(() => {
+            if (this.common.isWeb && this.address) {
+                this.iframeUrl = `https://maps.google.com/maps?width=100&height=600&hl=en&q=${this.address}&ie=UTF8&t=&z=14&iwloc=B&output=embed`;
+                this.sanitizedUrl = this.common.sanitize(this.iframeUrl);
+                return;
+            }
 
-        if (!this.lat || !this.lng) {
-            this.nativeGeocoder.forwardGeocode(this.address)
-                .then((coordinates: NativeGeocoderForwardResult) => {
-                    console.log('The coordinates are latitude=');
-                    console.log(JSON.stringify(coordinates, null, 2));
-                    if (coordinates && coordinates['length'] > 0) {
-                        this.lat = coordinates[0].latitude;
-                        this.lng = coordinates[0].longitude;
+            if (!this.lat || !this.lng) {
+                this.nativeGeocoder.forwardGeocode(this.address)
+                    .then((coordinates: NativeGeocoderForwardResult) => {
+                        console.log('The coordinates are latitude=');
+                        console.log(JSON.stringify(coordinates, null, 2));
+                        if (coordinates && coordinates['length'] > 0) {
+                            this.lat = coordinates[0].latitude;
+                            this.lng = coordinates[0].longitude;
 
-                        setTimeout(() => {
-                            this.loadMap();
-                        }, 500);
-                    }
-                })
-                .catch((error: any) => console.log(error));
-        } else {
-            setTimeout(() => {
-                this.loadMap();
-            }, 500);
-        }
+                            setTimeout(() => {
+                                this.loadMap();
+                            }, 500);
+                        }
+                    })
+                    .catch((error: any) => console.log(error));
+            } else {
+                setTimeout(() => {
+                    this.loadMap();
+                }, 500);
+            }
+        });
+
     }
 
     loadMap() {

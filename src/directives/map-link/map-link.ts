@@ -19,10 +19,16 @@ export class MapLinkDirective implements OnInit {
 
   @HostListener('click') click(): void {
       if (this.address) {
+        // console.log('--- link address ---');
         // console.log(this.address);
-        this.navControler.push(MapPage, {address: this.address, title: this.title});
-        // modal.present();        
-        // this.navControler.push(MapPage, {address: this.address, title: this.title});
+
+        // let selectModal = this.modalCtrl.create(MapPage, {address: this.address, title: this.title});
+        // selectModal.present();
+
+        setTimeout(() => {
+          this.navControler.push(MapPage, {address: this.address, title: this.title});
+        });
+
       }
   }
 

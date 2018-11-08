@@ -449,6 +449,14 @@ export class DataProvider {
                         caption: '链接页面'
                     },
                     {
+                        key: 'hyperlink',
+                        caption: '链接页面'
+                    },                    
+                    {
+                        key: 'thumbnail',
+                        caption: '链接页面'
+                    },   
+                    {
                         key: 'datetime',
                         caption: '日期时间',
                         type: TypeInputUI.Date

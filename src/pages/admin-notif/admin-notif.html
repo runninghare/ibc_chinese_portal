@@ -48,6 +48,14 @@
         </ion-item>
 
         <ion-item>
+            <ion-input placeholder="缩略图" [(ngModel)]="thumbnail" style="margin-top: 10px;"></ion-input>
+        </ion-item> 
+
+        <ion-item>
+            <ion-input placeholder="超链接" [(ngModel)]="hyperlink" style="margin-top: 10px;"></ion-input>
+        </ion-item>                 
+
+        <ion-item>
           <ion-select [(ngModel)]="redirect" placeholder="重定向頁面（高級）" (ionCancel)="redirect = null">
             <ion-option [value]="'list-page'">列表頁面</ion-option>
             <ion-option [value]="'song-page'">詩歌頁面</ion-option>

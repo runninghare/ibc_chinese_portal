@@ -147,8 +147,12 @@ export class ContactPage implements OnDestroy {
         },
         {
           key: 'address1',
-          caption: '地址'
+          caption: '地址1'
         },
+        {
+          key: 'address2',
+          caption: '地址2'
+        },        
         {
           key: 'state',
           caption: '省份',

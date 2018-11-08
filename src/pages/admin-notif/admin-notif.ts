@@ -38,6 +38,10 @@ export class AdminNotifPage {
 
     params: string;
 
+    hyperlink: string;
+
+    thumbnail: string;
+
     get stringMembers(): string {
         return this.memberRecipients.map(c => `${c.chinese_name} (${c.name})`).join(', ');
     }
@@ -94,7 +98,8 @@ export class AdminNotifPage {
     ionViewDidLoad() {
     }
 
-    sendAddNotification(contactId: string, title: string, content: string, redirect?: string, params?: any): void {
+    sendAddNotification(contactId: string, title: string, content: string, 
+        redirect?: string, params?: any, thumbnail?: string, hyperlink?: string): void {
         let datetimeCaption = moment().format("M月D日");
         let datetime = moment().format('YYYYMMDDHHmmss');
         let id = this.common.makeRandomString(10);
@@ -102,11 +107,13 @@ export class AdminNotifPage {
           datetime : datetimeCaption,
           isNew : true,
           key : `${datetime}-${id}`,
-          params,
+          params: params || {},
           value: id,
-          redirect,
+          redirect: redirect || null,
+          hyperlink: hyperlink || null,
+          thumbnail: thumbnail || null,
           sender : this.content.myselfContact.id,
-          subtitle : content,
+          subtitle : content || null,
           title : `[${datetimeCaption} 通知] ${title}`
         };
 
@@ -133,7 +140,7 @@ export class AdminNotifPage {
                         params = {};
                     }
                     let content = Mustache.render(template, contact);
-                    promises.push(this.sendAddNotification(contact.id, this.title, content || "", this.redirect || "home-page", params));
+                    promises.push(this.sendAddNotification(contact.id, this.title, content, this.redirect, params, this.thumbnail, this.hyperlink));
                 });
 
                 Promise.all(promises).then(res => {
