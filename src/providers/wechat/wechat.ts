@@ -105,6 +105,9 @@ export class WechatProvider {
             'Content-Type': 'application/json'
         });  
 
+        // console.log('======= calling weChatLinkSendApiRequest =========');
+        // console.log(`authUid = ${fbAuthUid}; code = ${code}`);
+
         return this.http.post(`${ENV.apiServer}/wechat/associate`, { code: code }, new RequestOptions({ headers })).do(() => {
             console.log('========= weChat successfully linked! ===========');
             this.linkingInProgress = false;

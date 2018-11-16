@@ -77,7 +77,7 @@ export class UserProfilePage implements OnInit {
     submittingAuthForm: boolean = false;
     submittingUserForm: boolean = false;
 
-    skills = [];
+    skills: any = {};
 
     allSkills = [];
 
@@ -127,11 +127,9 @@ export class UserProfilePage implements OnInit {
         });
 
         this.allSkills = this.ministrySvc.ministrySkills;
-        this.skills = this.allSkills.map(ms => {
-            let result: any = {};
-            result[ms.key] = false;
-            return result;
-        });
+        this.allSkills.forEach(ms => {
+            this.skills[ms.key] = false;
+        })
     }
 
     ngOnInit(): void {
@@ -148,8 +146,12 @@ export class UserProfilePage implements OnInit {
             if (!user.skills) {
                 user.skills = [];
             }
+            /* make sure we only add existing ministry keys */
             user.skills.forEach(k => {
-                this.skills[k] = true;
+                let existingKey = this.allSkills.filter(ms => ms.key == k)[0];
+                if (existingKey) {
+                    this.skills[k] = true;
+                }
             });
             this.userForm.patchValue(user);
         }, err => {});

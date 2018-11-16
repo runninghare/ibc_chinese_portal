@@ -56,26 +56,29 @@ export class IbcDeeplinkProvider {
                             let queryString = data.queryString;
                             console.log(JSON.stringify(data));
 
-                            let wechatMatch = queryString.match(/code=(\w+)&state=\w+&lang=\w+&country=\w+/);
-                            if (this.wechat.linkingInProgress && wechatMatch) {
-                                let code = wechatMatch[1];
-                                this.ibcFB.linkWeChatSendApiRequest(code);
-                            } else if (this.wechat.LoggingInProgress && wechatMatch) {
-                                console.log('--- send request to login in! ---');
-                                let code = wechatMatch[1];
-                                this.ibcFB.loginWeChatSendApiRequest(code);
-                            } else {
-                                //////////////////////////////////////////////////
-                                /* Generic Path Redirection Handling
-                                   path is the page name; queryParams is an object of params to inject.
-                                   e.g.
-                                   navCtrl.push('activity-page', {itemIndex: 0, itemId: 2})
-                                 */
-                                //////////////////////////////////////////////////
-                                // location.href = `#${data.path}`;
-                                // navCtrl.push(data.path.replace(/^\/+/,''));
-                                let queryParams = this.common.parseURLParameters(data.queryString);
-                                navCtrl.push(data.path.replace(/^\/+/,''), queryParams);
+                            if (data.host == '/oauth') {
+                                console.log('======= processing wechat info =========');
+                                let wechatMatch = queryString.match(/code=(\w+)/);
+                                if (this.wechat.linkingInProgress && wechatMatch) {
+                                    let code = wechatMatch[1];
+                                    this.ibcFB.linkWeChatSendApiRequest(code);
+                                } else if (this.wechat.LoggingInProgress && wechatMatch) {
+                                    console.log('--- send request to login in! ---');
+                                    let code = wechatMatch[1];
+                                    this.ibcFB.loginWeChatSendApiRequest(code);
+                                } else {
+                                    //////////////////////////////////////////////////
+                                    /* Generic Path Redirection Handling
+                                       path is the page name; queryParams is an object of params to inject.
+                                       e.g.
+                                       navCtrl.push('activity-page', {itemIndex: 0, itemId: 2})
+                                     */
+                                    //////////////////////////////////////////////////
+                                    // location.href = `#${data.path}`;
+                                    // navCtrl.push(data.path.replace(/^\/+/,''));
+                                    let queryParams = this.common.parseURLParameters(data.queryString);
+                                    navCtrl.push(data.path.replace(/^\/+/,''), queryParams);
+                                }
                             }
                         }
                     }, nomatch => {

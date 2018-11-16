@@ -48,7 +48,7 @@
             </ion-thumbnail>
             <ion-icon *ngIf="!item.thumbnail && !item.avatar && !defaultAvatarImg && !defaultThumbnailImg" name="share-alt" item-left></ion-icon>
             <div class="ibc-full-height ibc-full-width">
-              <div class="ibc-bottom-margin-5">{{item.title || titleAs(item, auxiliaryItems)}}</div>
+              <div class="ibc-bottom-margin-5 ibc-allow-wrap">{{item.title || titleAs(item, auxiliaryItems)}}</div>
               <ion-note wrap style="color: #808080; font-size: 1.5rem" *ngIf="item.subtitle || subtitleAs">{{item.subtitle || subtitleAs(item, auxiliaryItems)}}</ion-note>
             </div>
           </button>
