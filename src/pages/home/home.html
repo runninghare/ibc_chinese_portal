@@ -119,7 +119,7 @@
             <ion-badge *ngIf="badgeCountIsNumber(card.badgeCount) && card.badgeCount > 0" color="danger" class="ibc-badge">{{card.badgeCount}}</ion-badge>
             <ion-badge *ngIf="card.isNew" color="danger" class="ibc-badge">New!</ion-badge>
             <div class="ibc-full-height ibc-full-width">
-              <div><strong>{{card.title}}</strong></div>
+              <div class="ibc-allow-wrap"><strong>{{card.title}}</strong></div>
               <br>
               <ion-note wrap>{{card.subtitle}}</ion-note>
             </div>
