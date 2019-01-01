@@ -130,15 +130,16 @@ export class MinistryPage implements OnInit {
     setMinistry(sheet: IntMinistrySheet, roleKey: string, contactId: string) {
       /* Remove any existing role on the same day */
       /* 2018/11/04 This may not be true because some people can play multiple roles on the same day */
-      if (roleKey != 'communion1' && roleKey != 'communion2') {
-          this.ministrySvc.ministryRoles.forEach(role => {
-              if (role.key != 'communion1' && role.key != 'communion2') {
-                  if (sheet[role.key] == contactId) {
-                      sheet[role.key] = null;
-                  }
-              }
-          });
-      }
+      /* 2019/1/1 Disable this same day ministry check */
+      // if (roleKey != 'communion1' && roleKey != 'communion2') {
+      //     this.ministrySvc.ministryRoles.forEach(role => {
+      //         if (role.key != 'communion1' && role.key != 'communion2') {
+      //             if (sheet[role.key] == contactId) {
+      //                 sheet[role.key] = null;
+      //             }
+      //         }
+      //     });
+      // }
 
       /* Assign the new role to contactId */
       if (contactId == 'N/A') {

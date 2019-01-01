@@ -1,6 +1,6 @@
 export const ENV = {
   mode: 'Development',
-  version: '0.2.14',
+  version: '0.2.15',
   // apiServer: 'http://192.168.0.160:3000',
   // apiServer: 'http://192.168.0.3:3000',
   // apiServer: 'http://localhost:3000',

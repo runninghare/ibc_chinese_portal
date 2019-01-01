@@ -1,6 +1,6 @@
 export const ENV = {
   mode: 'Production',
-  version: '0.2.14',
+  version: '0.2.15',
   // apiServer: 'http://35.201.19.92',
   apiServer: '',
   firebaseConfig: {
