@@ -9,7 +9,7 @@
     <ion-row>
       <ion-col col-3 *ngFor="let i of chapters;">
         <div>
-          <a (click)="chapterTapped($event, {bookId: book?.SN, book: book?.FullName, chapter: i})">
+          <a (click)="chapterTapped($event, {bookId: book?.SN, book: book?.FullName, chapter: i})" style="cursor: pointer">
             <div style="font-size: 1.8rem" *ngIf="!bibleSvc.useEnglish">第{{i}}章</div>
             <div style="font-size: 1.8rem" *ngIf="bibleSvc.useEnglish">{{i}}</div>
           </a>

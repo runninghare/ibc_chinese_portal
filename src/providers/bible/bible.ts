@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { SQLite } from 'ionic-native';
 import { S2tProvider } from '../s2t/s2t';
+import { CommonProvider } from '../../providers/common/common';
+import { IbcHttpProvider } from '../../providers/ibc-http/ibc-http';
 
 export interface IntBibleBook {
     SN: number;
@@ -56,47 +58,82 @@ export class BibleProvider {
     }
 
     getBooks(): Promise<IntBibleBook[]> {
-        return this.getDB().then(() => {
-            return this.storage.executeSql("SELECT * from BibleID", []).then(data => {
-                let rows = data.rows;
+        if (this.commonSvc.isWeb) {
+            return this.http.get('bible/summary').then(rows => {
                 for (let i = 0; i < rows.length; i++) {
                     // console.log(JSON.stringify(rows.item(i)));
-                    let book: IntBibleBook = rows.item(i);
+                    let book: IntBibleBook = rows[i];
                     // book.ShortName = this.s2t.tranStr(book.ShortName, true);
                     // book.FullName = this.s2t.tranStr(book.FullName, true);
                     this.books.push(book);
                 }
-                this.storage.close();
+                // console.log(this.books);
                 return this.books;
             }, err => {
                 console.error("Can't connect to SQLite!");
-                this.storage.close();
                 return [];
             });
-        });
+        } else {
+            return this.getDB().then(() => {
+                return this.storage.executeSql("SELECT * from BibleID", []).then(data => {
+                    let rows = data.rows;
+                    for (let i = 0; i < rows.length; i++) {
+                        // console.log(JSON.stringify(rows.item(i)));
+                        let book: IntBibleBook = rows.item(i);
+                        // book.ShortName = this.s2t.tranStr(book.ShortName, true);
+                        // book.FullName = this.s2t.tranStr(book.FullName, true);
+                        this.books.push(book);
+                    }
+                    this.storage.close();
+                    return this.books;
+                }, err => {
+                    console.error("Can't connect to SQLite!");
+                    this.storage.close();
+                    return [];
+                });
+            });
+        }
     }
 
     getAChapter(volumnSN: number, chapterSN: number): Promise<IntBibleVerse[]> {
-        return this.getDB().then(() => {
-            let verses: IntBibleVerse[] = [];
-            return this.storage.executeSql(`SELECT * from Bible where VolumeSN = ${volumnSN} and ChapterSN = ${chapterSN}`, []).then((data) => {
-                        // console.log("Data received: ", data);
-                        let rows = data.rows;
-                        for (let i = 0; i < rows.length; i++) {
-                            // console.log(JSON.stringify(rows.item(i)));
-                            let verse: IntBibleVerse = rows.item(i);
-                            // verse.Chinese = this.s2t.tranStr(verse.Chinese, true);
-                            verse.English = verse.English && verse.English.replace(/\\/g,'');
-                            verses.push(verse);
-                        }
-                        this.storage.close();
-                        return verses;
-                    }, (error) => {
-                        console.error("Unable to execute sql", JSON.stringify(error));
-                        this.storage.close();
-                        return null;
-                    });
-        });
+        if (this.commonSvc.isWeb) {
+            return this.http.get(`bible?VolumeSN=${volumnSN}&ChapterSN=${chapterSN}`).then(rows => {
+                    let verses: IntBibleVerse[] = [];
+                    // console.log("Data received: ", data);
+                    for (let i = 0; i < rows.length; i++) {
+                        // console.log(JSON.stringify(rows.item(i)));
+                        let verse: IntBibleVerse = rows[i];
+                        // verse.Chinese = this.s2t.tranStr(verse.Chinese, true);
+                        verse.English = verse.English && verse.English.replace(/\\/g, '');
+                        verses.push(verse);
+                    }
+                    return verses;
+                }, (error) => {
+                    console.error("Unable to execute sql", JSON.stringify(error));
+                    return null;
+                });
+        } else {
+            return this.getDB().then(() => {
+                let verses: IntBibleVerse[] = [];
+                return this.storage.executeSql(`SELECT * from Bible where VolumeSN = ${volumnSN} and ChapterSN = ${chapterSN}`, []).then((data) => {
+                    // console.log("Data received: ", data);
+                    let rows = data.rows;
+                    for (let i = 0; i < rows.length; i++) {
+                        // console.log(JSON.stringify(rows.item(i)));
+                        let verse: IntBibleVerse = rows.item(i);
+                        // verse.Chinese = this.s2t.tranStr(verse.Chinese, true);
+                        verse.English = verse.English && verse.English.replace(/\\/g, '');
+                        verses.push(verse);
+                    }
+                    this.storage.close();
+                    return verses;
+                }, (error) => {
+                    console.error("Unable to execute sql", JSON.stringify(error));
+                    this.storage.close();
+                    return null;
+                });
+            });
+        }
     }
 
     getVerse() {
@@ -112,9 +149,7 @@ export class BibleProvider {
         return this.s2t.tranStr(text, true);
     }
 
-    constructor(public s2t: S2tProvider) {
-        console.log('Hello BibleProvider Provider');
-
+    constructor(public s2t: S2tProvider, public commonSvc: CommonProvider, public http: IbcHttpProvider) {
         this.storage = new SQLite();
     }
 

@@ -10,7 +10,7 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { AudioProvider } from '../../providers/audio/audio';
 import { IbcEditorComponent } from '../../components/editor/editor';
 import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
-import { IbcHttpProvider } from '../../providers/ibc-http/ibc-http'
+import { IbcHttpProvider } from '../../providers/ibc-http/ibc-http';
 import * as moment from 'moment';
 import { ENV } from '@app/env';
 import { Subscription } from 'rxjs';
