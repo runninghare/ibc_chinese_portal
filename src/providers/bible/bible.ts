@@ -5,31 +5,31 @@ import { CommonProvider } from '../../providers/common/common';
 import { IbcHttpProvider } from '../../providers/ibc-http/ibc-http';
 
 export interface IntBibleBook {
-    SN: number;
-    KindSN: number;
-    ChapterNumber: number;
-    NewOrOld: number;
-    PinYin: string;
-    ShortName: string;
-    FullName: string;
-    EnglishName: string;
+    SN?: number;
+    KindSN?: number;
+    ChapterNumber?: number;
+    NewOrOld?: number;
+    PinYin?: string;
+    ShortName?: string;
+    FullName?: string;
+    EnglishName?: string;
 }
 
 export interface IntBibleChapter {
-    bookId: number;
-    book: string;
-    chapter: number;
+    bookId?: number;
+    book?: string;
+    chapter?: number;
 }
 
-export interface IntBibleVerse {
-  ID: number;
-  VolumeSN: number;
-  ChapterSN: number;
-  VerseSN: number;
-  Chinese: string;
-  English: string;
-  SoundBegin: number;
-  SoundEnd: number; 
+export interface IntBibleVerse extends IntBibleBook {
+  ID?: number;
+  VolumeSN?: number;
+  ChapterSN?: number;
+  VerseSN?: number;
+  Chinese?: string;
+  English?: string;
+  SoundBegin?: number;
+  SoundEnd?: number; 
 }
 
 /*

@@ -49,24 +49,18 @@ export class BiblePage {
 
         this.referenced = this.navParams.get('referenced');
 
-        if (this.platform.is('mobileweb')) {
-            this.books = [
-                { SN: 1, KindSN: 1, ChapterNumber: 50, NewOrOld: 0, PinYin: 'CSJ', ShortName: '創', FullName: '創世紀', EnglishName: 'Genesis' },
-                { SN: 2, KindSN: 1, ChapterNumber: 40, NewOrOld: 0, PinYin: 'CAJ', ShortName: '出', FullName: '出埃及記', EnglishName: 'Exodus' }
-            ]
-        } else {
-            this.platform.ready().then(() => {
-                this.bibleSvc.getBooks().then(books => {
-                    this.books = books;
-                }).catch(err => {
-                });
+        this.platform.ready().then(() => {
+            this.bibleSvc.getBooks().then(books => {
+                this.books = books;
+            }).catch(err => {
             });
-        }
+        });
 
     }
 
     bookTapped(event, item): void {
-        this.navCtrl.push(BibleBookPage, {
+        this.navCtrl.push('bible-book-page', {
+            bookNumber: item.SN,
             item: item,
             referenced: this.referenced
         });

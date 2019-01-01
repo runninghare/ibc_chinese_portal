@@ -4,10 +4,10 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding no-bounce>
-  <ion-list>
+<ion-content padding no-bounce id="bible-chapter-content">
+  <ion-list class="ibc-allow-text-select">
     <ng-container *ngFor="let verse of verses">
-      <div ion-item>
+      <div ion-item [class.ibc-highlight]="verse?.VerseSN == navParams?.data?.verseNumber">
         <div item-left style="width: 25px">{{verse?.VerseSN}}</div>
         <div class="item-note" item-left>
           {{bibleSvc.useTraditional ? bibleSvc.s2tConvert(verse?.Chinese) : verse?.Chinese}}

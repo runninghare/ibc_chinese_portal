@@ -12,6 +12,11 @@ import { BibleChapterPage } from './bible-chapter';
  * Ionic pages and navigation.
  */
 
+@IonicPage({
+    name: 'bible-book-page',
+    segment: 'bible/:bookNumber',
+    defaultHistory: ['bible-page']
+})
 @Component({
     selector: 'page-bible-book',
     templateUrl: 'bible-book.html',
@@ -34,9 +39,25 @@ export class BibleBookPage {
 
         if (navParams.data) {
             this.book = navParams.data.item;
-            for (let i = 1; i <= this.book.ChapterNumber; i++) {
-                this.chapters.push(i);
+
+            if (this.book) {
+                for (let i = 1; i <= this.book.ChapterNumber; i++) {
+                    this.chapters.push(i);
+                }
+            } else {
+                this.bibleSvc.getBooks().then(books => {
+                    if (navParams.data.bookNumber) {
+                        this.book = books.filter(b => b.SN == navParams.data.bookNumber)[0];
+
+                        if (this.book) {
+                            for (let i = 1; i <= this.book.ChapterNumber; i++) {
+                                this.chapters.push(i);
+                            }
+                        }
+                    }
+                });
             }
+
         }
 
         // console.log(JSON.stringify(navParams));
@@ -82,8 +103,11 @@ export class BibleBookPage {
     }
 
     chapterTapped(event, item): void {
-        this.navCtrl.push(BibleChapterPage, {
+        this.navCtrl.push('bible-chapter-page', {
             item,
+            bookNumber: item.bookId,
+            chapterNumber: item.chapter,
+            verseNumber: 0,
             referenced: this.referenced
         });
     }

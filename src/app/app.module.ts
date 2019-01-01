@@ -26,6 +26,8 @@ import { ChatPageModule } from '../pages/chat/chat.module';
 import { MapPageModule } from '../pages/map/map.module';
 import { SongPageModule } from '../pages/song/song.module';
 import { BiblePageModule } from '../pages/bible/bible.module';
+import { BibleBookPageModule } from '../pages/bible/bible-book.module';
+import { BibleChapterPageModule } from '../pages/bible/bible-chapter.module';
 import { MonthlyVersesPageModule } from '../pages/monthly-verses/monthly-verses.module';
 import { SermonPageModule } from '../pages/sermon/sermon.module';
 
@@ -125,6 +127,8 @@ export function initializer(commonSvc: CommonProvider) {
     AboutAppPageModule,
     ActivityPageModule,
     BiblePageModule,
+    BibleBookPageModule,
+    BibleChapterPageModule,
     MonthlyVersesPageModule,
     SermonPageModule,
     ChatPageModule,

@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { BiblePage } from './bible';
+import { BibleBookPage } from './bible-book';
 import { SharedModule } from '../../app/shared.module';
 
 @NgModule({
     declarations: [
-        BiblePage
+        BibleBookPage
     ],
     imports: [
         SharedModule,
-        IonicPageModule.forChild(BiblePage)
+        IonicPageModule.forChild(BibleBookPage)
     ],
     exports: [
-        BiblePage
+        BibleBookPage
     ],
     entryComponents: [
-        BiblePage
+        BibleBookPage
     ],
 })
-export class BiblePageModule {}
+export class BibleBookPageModule {}
