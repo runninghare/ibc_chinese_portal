@@ -1,0 +1,20 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">Back</button>
+    </ion-buttons>
+    <ion-title><ion-icon name="search"></ion-icon> 搜索聖經</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <ion-searchbar></ion-searchbar>
+    <button ion-button color="primary" (click)="apply()">
+      確定
+    </button>
+  </div>
+</ion-content>

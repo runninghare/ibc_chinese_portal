@@ -1,9 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, Navbar } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Navbar, ModalController } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 import { SQLite } from 'ionic-native';
 import { BibleProvider, IntBibleChapter, IntBibleVerse } from '../../providers/bible/bible';
 import { BiblePage } from './bible';
+import { BibleSearchComponent } from '../../components/bible-search/bible-search';
 
 /**
  * Generated class for the BiblePage page.
@@ -38,6 +39,7 @@ export class BibleChapterPage {
         public navParams: NavParams, 
         public platform: Platform, 
         public bibleSvc: BibleProvider,
+        public modalCtrl: ModalController
        ) {
 
         // console.log(JSON.stringify`(navParams));
@@ -111,6 +113,11 @@ export class BibleChapterPage {
             // console.log(highlightElem);
             contentElem.scrollTop = highlightElem['offsetTop'];
         }
+    }
+
+    search(): void {
+        let popupModal = this.modalCtrl.create(BibleSearchComponent);
+        popupModal.present();
     }
 
 }

@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { BibleSearchComponent } from './bible-search/bible-search';
 // import { SharedModule } from '../app/shared.module';
 // import { PopupComponent } from '../components/popup/popup';
 // import { LoadTrackerComponent } from '../components/load-tracker/load-tracker';
@@ -12,6 +13,7 @@ import { NgModule } from '@angular/core';
 
 @NgModule({
 	declarations: [
+        // BibleSearchComponent
         // PopupComponent,
         // LoadTrackerComponent,
         // IbcMapComponent,
@@ -24,6 +26,7 @@ import { NgModule } from '@angular/core';
     ],
 	// imports: [SharedModule],
 	exports: [
+        // BibleSearchComponent
         // PopupComponent,
         // LoadTrackerComponent,
         // IbcMapComponent,

@@ -31,6 +31,7 @@ import { BrowserComponent } from '../components/browser/browser';
 import { PhotoEditComponent } from '../components/photo-edit/photo-edit';
 import { HeaderPopOverComponent } from '../components/header-pop-over/header';
 import { CommentComponent } from '../components/comment/comment';
+import { BibleSearchComponent } from '../components/bible-search/bible-search';
 
 import {ENV} from '@app/env';
 
@@ -45,7 +46,8 @@ import {ENV} from '@app/env';
     BrowserComponent,
     PhotoEditComponent,
     HeaderPopOverComponent,
-    CommentComponent    
+    CommentComponent,
+    BibleSearchComponent
   ],
   imports: [
     CommonModule,
@@ -86,7 +88,8 @@ import {ENV} from '@app/env';
     BrowserComponent,
     PhotoEditComponent,
     HeaderPopOverComponent,
-    CommentComponent    
+    CommentComponent,
+    BibleSearchComponent    
   ],
   entryComponents: [
     ModalSelectAvatar,
@@ -98,7 +101,8 @@ import {ENV} from '@app/env';
     BrowserComponent,
     PhotoEditComponent,
     HeaderPopOverComponent,
-    CommentComponent    
+    CommentComponent,
+    BibleSearchComponent    
   ]
 })
 export class SharedModule {}
