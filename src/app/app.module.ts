@@ -28,6 +28,7 @@ import { SongPageModule } from '../pages/song/song.module';
 import { BiblePageModule } from '../pages/bible/bible.module';
 import { BibleBookPageModule } from '../pages/bible/bible-book.module';
 import { BibleChapterPageModule } from '../pages/bible/bible-chapter.module';
+import { BibleSearchPageModule } from '../pages/bible/bible-search.module';
 import { MonthlyVersesPageModule } from '../pages/monthly-verses/monthly-verses.module';
 import { SermonPageModule } from '../pages/sermon/sermon.module';
 
@@ -129,6 +130,7 @@ export function initializer(commonSvc: CommonProvider) {
     BiblePageModule,
     BibleBookPageModule,
     BibleChapterPageModule,
+    BibleSearchPageModule,
     MonthlyVersesPageModule,
     SermonPageModule,
     ChatPageModule,

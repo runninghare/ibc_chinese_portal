@@ -145,6 +145,26 @@ export class BibleProvider {
         })
     }
 
+    search(keyword: string): Promise<{count: number, verses: IntBibleVerse[]}> {
+        // let searchKey = keyword;
+        let searchKey = this.s2t.tranStr(keyword, false);
+        if (this.commonSvc.isWeb) {
+            return this.http.post(`bible/search`, {keyword: searchKey}).then(verses => {
+                verses.forEach(verse => {
+                    verse.English = verse.English && verse.English.replace(/\\/g, '');
+                });
+                return { count: verses.length, verses: verses.sort((a: IntBibleVerse,b: IntBibleVerse) => 
+                    a.SN < b.SN ? -1 : 
+                    a.SN > b.SN ? 1 : 
+                    a.ChapterSN < b.ChapterSN ? -1 : 
+                    a.ChapterSN > b.ChapterSN ? 1 :
+                    a.VerseSN < b.VerseSN ? -1 : 
+                    a.VerseSN > b.VerseSN ? 1 :
+                    0) };
+            });
+        }
+    }
+
     s2tConvert(text: string): string {
         return this.s2t.tranStr(text, true);
     }

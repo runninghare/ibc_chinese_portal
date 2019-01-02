@@ -1,0 +1,44 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title><ion-icon name="search"></ion-icon> 搜索聖經</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <ion-searchbar [(ngModel)]="searchKey"></ion-searchbar>
+    <button ion-button color="primary" (click)="search()">
+      確定
+    </button>
+  </div>
+
+  <ion-list class="ibc-allow-text-select">
+    <div *ngIf="count != null" text-left style="margin-left: 20px">{{count}} verses matched</div>
+    <ng-container *ngFor="let verse of verses; let i = index">
+        <h3 text-center [hidden]="i > 0 && verse.SN == verses[i-1].SN">{{verse?.FullName}}</h3>
+        <div ion-item (click)="navigate(verse)" style="cursor: pointer">
+          <div item-left style="width: 40px">{{verse?.ChapterSN}}:{{verse?.VerseSN}}</div>
+          <div class="ibc-allow-wrap">
+            <div class="item-note">
+              {{bibleSvc.useTraditional ? bibleSvc.s2tConvert(verse?.Chinese) : verse?.Chinese}}
+            </div>
+            <div class="item-note" *ngIf="bibleSvc.useEnglish">
+              {{verse?.English}}
+            </div>
+          </div>          
+        </div>        
+    </ng-container>
+  </ion-list>  
+
+  <ion-fab right bottom>
+    <button ion-fab color="primary"><ion-icon name="arrow-dropup"></ion-icon></button>
+    <ion-fab-list side="top">
+      <button ion-fab color="teal-1" (click)="bibleSvc.useEnglish = false; bibleSvc.useTraditional = false">简</button>
+      <button ion-fab color="teal" (click)="bibleSvc.useEnglish = false; bibleSvc.useTraditional = true">繁</button>
+      <button ion-fab color="dark" (click)="bibleSvc.useEnglish = !bibleSvc.useEnglish">Eng</button>
+    </ion-fab-list>  
+  </ion-fab>   
+</ion-content>

@@ -4,7 +4,6 @@ import { Platform } from 'ionic-angular';
 import { SQLite } from 'ionic-native';
 import { BibleProvider, IntBibleChapter, IntBibleVerse } from '../../providers/bible/bible';
 import { BiblePage } from './bible';
-import { BibleSearchComponent } from '../../components/bible-search/bible-search';
 
 /**
  * Generated class for the BiblePage page.
@@ -106,18 +105,22 @@ export class BibleChapterPage {
     }
 
     scrollToHighlight(): void {
-        let contentElem = document.querySelector('#bible-chapter-content .scroll-content');
-        let highlightElem = document.querySelector('#bible-chapter-content .ibc-highlight');
-        if (contentElem && highlightElem) {
+        let contentElem = document.querySelectorAll('#bible-chapter-content .scroll-content')[document.querySelectorAll('#bible-chapter-content .scroll-content').length-1];
+        // let highlightElem = contentElem.querySelectorAll('#bible-chapter-content .ibc-highlight');
+        if (contentElem) {
+            let highlightElem = contentElem.querySelector('.ibc-highlight');
             // console.log(contentElem);
             // console.log(highlightElem);
-            contentElem.scrollTop = highlightElem['offsetTop'];
+            if (highlightElem) {
+                contentElem.scrollTop = highlightElem['offsetTop'];
+            }
         }
     }
 
     search(): void {
-        let popupModal = this.modalCtrl.create(BibleSearchComponent);
-        popupModal.present();
+        this.navCtrl.push('bible-search-page');
+        // let popupModal = this.modalCtrl.create(BibleSearchComponent);
+        // popupModal.present();
     }
 
 }

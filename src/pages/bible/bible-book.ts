@@ -112,6 +112,12 @@ export class BibleBookPage {
         });
     }
 
+    search(): void {
+        this.navCtrl.push('bible-search-page');
+        // let popupModal = this.modalCtrl.create(BibleSearchComponent);
+        // popupModal.present();
+    }    
+
     ionViewDidLoad() {
         console.log('ionViewDidLoad BiblePageBook');
     }
