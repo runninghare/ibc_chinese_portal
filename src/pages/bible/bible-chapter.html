@@ -12,7 +12,7 @@
         <div class="item-note">
           {{bibleSvc.useTraditional ? bibleSvc.s2tConvert(verse?.Chinese) : verse?.Chinese}}
         </div>
-        <div class="item-note" *ngIf="bibleSvc.useEnglish">
+        <div class="item-note ibc-top-margin-10" *ngIf="bibleSvc.useEnglish">
           {{verse?.English}}
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { IonicPage, ViewController, NavController } from 'ionic-angular';
 import { BibleProvider, IntBibleChapter, IntBibleVerse } from '../../providers/bible/bible';
 
@@ -13,7 +13,8 @@ import { BibleProvider, IntBibleChapter, IntBibleVerse } from '../../providers/b
 })
 @Component({
   selector: 'bible-search',
-  templateUrl: 'bible-search.html'
+  templateUrl: 'bible-search.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BibleSearchPage {
 
@@ -21,9 +22,13 @@ export class BibleSearchPage {
 
   count: number;
 
+  get searchIsEnglish(): boolean {
+    return this.searchKey && !!this.searchKey.match(/[A-Za-z]/);
+  }
+
   verses: IntBibleVerse[] = [];
 
-  constructor(public navCtrl: NavController, public viewCtrl: ViewController, public bibleSvc: BibleProvider) {
+  constructor(public navCtrl: NavController, public viewCtrl: ViewController, public bibleSvc: BibleProvider, public zone: NgZone, public cdRef: ChangeDetectorRef) {
   }
 
   selectionEmptyAll(): void {
@@ -42,6 +47,7 @@ export class BibleSearchPage {
       this.bibleSvc.search(this.searchKey).then(data => {
           this.verses = data.verses;
           this.count = data.count;
+          this.cdRef.markForCheck();
       });
   }
 

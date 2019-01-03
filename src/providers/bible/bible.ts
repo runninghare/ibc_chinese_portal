@@ -95,9 +95,9 @@ export class BibleProvider {
         }
     }
 
-    getAChapter(volumnSN: number, chapterSN: number): Promise<IntBibleVerse[]> {
+    getAChapter(volumeSN: number, chapterSN: number): Promise<IntBibleVerse[]> {
         if (this.commonSvc.isWeb) {
-            return this.http.get(`bible?VolumeSN=${volumnSN}&ChapterSN=${chapterSN}`).then(rows => {
+            return this.http.get(`bible?VolumeSN=${volumeSN}&ChapterSN=${chapterSN}`).then(rows => {
                     let verses: IntBibleVerse[] = [];
                     // console.log("Data received: ", data);
                     for (let i = 0; i < rows.length; i++) {
@@ -115,7 +115,7 @@ export class BibleProvider {
         } else {
             return this.getDB().then(() => {
                 let verses: IntBibleVerse[] = [];
-                return this.storage.executeSql(`SELECT * from Bible where VolumeSN = ${volumnSN} and ChapterSN = ${chapterSN}`, []).then((data) => {
+                return this.storage.executeSql(`SELECT * from Bible join BibleID on Bible.VolumeSN = BibleID.SN where VolumeSN = ${volumeSN} and ChapterSN = ${chapterSN}`, []).then((data) => {
                     // console.log("Data received: ", data);
                     let rows = data.rows;
                     for (let i = 0; i < rows.length; i++) {
@@ -148,6 +148,9 @@ export class BibleProvider {
     search(keyword: string): Promise<{count: number, verses: IntBibleVerse[]}> {
         // let searchKey = keyword;
         let searchKey = this.s2t.tranStr(keyword, false);
+        if (searchKey) {
+            searchKey = searchKey.replace(/^\s*|\s*$/, '');
+        }
         if (this.commonSvc.isWeb) {
             return this.http.post(`bible/search`, {keyword: searchKey}).then(verses => {
                 verses.forEach(verse => {
@@ -161,6 +164,39 @@ export class BibleProvider {
                     a.VerseSN < b.VerseSN ? -1 : 
                     a.VerseSN > b.VerseSN ? 1 :
                     0) };
+            });
+        } else {
+            return this.getDB().then(() => {
+                return this.storage.executeSql(
+                    `SELECT * from Bible join BibleID on Bible.VolumeSN == BibleID.SN where Bible.English like '%${searchKey}%' or Bible.Chinese like '%${searchKey}%'`, [])
+                    .then((data) => {
+                        let verses = [];
+                        console.log("Data received: ", data);
+                        let rows = data.rows;
+                        for (let i = 0; i < rows.length; i++) {
+                            // console.log(JSON.stringify(rows.item(i)));
+                            let verse: IntBibleVerse = rows.item(i);
+                            // verse.Chinese = this.s2t.tranStr(verse.Chinese, true);
+                            verse.English = verse.English && verse.English.replace(/\\/g, '');
+                            verses.push(verse);
+                        }
+                        this.storage.close();
+                        return {
+                            count: verses.length,
+                            verses: verses.sort((a: IntBibleVerse, b: IntBibleVerse) =>
+                                a.SN < b.SN ? -1 :
+                                    a.SN > b.SN ? 1 :
+                                        a.ChapterSN < b.ChapterSN ? -1 :
+                                            a.ChapterSN > b.ChapterSN ? 1 :
+                                                a.VerseSN < b.VerseSN ? -1 :
+                                                    a.VerseSN > b.VerseSN ? 1 :
+                                                        0)
+                        };
+                    }, (error) => {
+                        console.error("Unable to execute sql", JSON.stringify(error));
+                        this.storage.close();
+                        return null;
+                    })
             });
         }
     }

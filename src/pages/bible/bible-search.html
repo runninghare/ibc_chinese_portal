@@ -16,18 +16,15 @@
   </div>
 
   <ion-list class="ibc-allow-text-select">
-    <div *ngIf="count != null" text-left style="margin-left: 20px">{{count}} verses matched</div>
-    <ng-container *ngFor="let verse of verses; let i = index">
-        <h3 text-center [hidden]="i > 0 && verse.SN == verses[i-1].SN">{{verse?.FullName}}</h3>
+    <div *ngIf="count != null" text-left style="margin-left: 20px">{{count}} verses matched{{count > 100 ? ', but only first 100 are displayed' : ''}}</div>
+    <ng-container *ngFor="let verse of verses | slice:0:100; let i = index">
+        <h3 text-center [hidden]="i > 0 && verse.SN == verses[i-1].SN">{{bibleSvc.useTraditional ? bibleSvc.s2tConvert(verse?.FullName) : verse?.FullName}}</h3>
         <div ion-item (click)="navigate(verse)" style="cursor: pointer">
-          <div item-left style="width: 40px">{{verse?.ChapterSN}}:{{verse?.VerseSN}}</div>
+          <div item-left style="width: 45px">{{verse?.ChapterSN}}:{{verse?.VerseSN}}</div>
           <div class="ibc-allow-wrap">
-            <div class="item-note">
-              {{bibleSvc.useTraditional ? bibleSvc.s2tConvert(verse?.Chinese) : verse?.Chinese}}
-            </div>
-            <div class="item-note" *ngIf="bibleSvc.useEnglish">
-              {{verse?.English}}
-            </div>
+            <div class="item-note" *ngIf="!searchIsEnglish && !bibleSvc.useTraditional" [innerHtml]="verse?.Chinese | highlight:searchKey"></div>
+            <div class="item-note" *ngIf="!searchIsEnglish && bibleSvc.useTraditional" [innerHtml]="bibleSvc.s2tConvert(verse?.Chinese) | highlight:searchKey:true"></div>
+            <div class="item-note" *ngIf="bibleSvc.useEnglish || searchIsEnglish" [innerHtml]="verse?.English | highlight:searchKey"></div>
           </div>          
         </div>        
     </ng-container>

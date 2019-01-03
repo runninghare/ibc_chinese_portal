@@ -11,6 +11,7 @@ import { ModalSelectAvatar } from '../pages/user-profile/user-profile';
 import { CommonDirectivesModule } from '../directives/directives.module';
 import { MonthlyVersesPageModule } from '../pages/monthly-verses/monthly-verses.module';
 import { ComponentsModule } from '../components/components.module';
+import { PipesModule } from '../pipes/pipes.module';
 
 import { IonicImageLoader } from 'ionic-image-loader';
 
@@ -62,7 +63,8 @@ import {ENV} from '@app/env';
     AngularFirestoreModule,
     ImageCropperModule,
     CommonDirectivesModule,
-    ComponentsModule
+    ComponentsModule,
+    PipesModule
   ],
   exports: [
     ModalSelectAvatar,
@@ -71,6 +73,7 @@ import {ENV} from '@app/env';
     IonicModule,
     HttpClientModule,
     FlexLayoutModule,
+    PipesModule,
     MonthlyVersesPageModule,
     HttpModule,
     AngularFireDatabaseModule,
