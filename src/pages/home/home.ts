@@ -105,18 +105,10 @@ export class HomePage {
     ionViewWillEnter() {
         window['rxjs'] = rxjs;
 
-        if (this.common.showDailyVerse) {
-            let dailyVerseSubscription = this.content.dailyVerses$.subscribe(verses => {
-                dailyVerseSubscription.unsubscribe();
-
-                let today = moment().format('YYYY-MM-DD');
-                let found = verses.filter(v => v.datetime == today)[0];
-                if (found) {
-                    console.log(`Will show daily verse: ${found.datetime}`);
-                    this.common.showDailyVerse = false;
-                    this.navCtrl.push('daily-verse-page', {date: found.datetime});
-                }
-            });
+        if (this.common.dailyVerseDate && (this.common.doNotRemindUpdating || !this.common.versionTooOld)) {
+            let date = this.common.dailyVerseDate;
+            this.common.dailyVerseDate = null;
+            this.navCtrl.push('daily-verse-page', {date});
         } 
 
         this.userProfileSubscription = this.ibcFB.userProfile$.filter(auth => auth != null).subscribe(userProfile => {

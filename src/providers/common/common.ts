@@ -24,7 +24,7 @@ export interface IntArrayChanges {
 @Injectable()
 export class CommonProvider {
 
-    showDailyVerse: boolean = true;
+    dailyVerseDate: string;
 
     constructor(public http: HttpClient, public toastCtrl: ToastController, public sanitizer: DomSanitizer,
         public platform: Platform, public ibcFB: IbcFirebaseProvider, public alertCtrl: AlertController) {
@@ -263,7 +263,8 @@ export class CommonProvider {
             this.ibcFB.afDB.database.ref('text').once('value'),
             this.ibcFB.afDB.database.ref('version').once('value'),
             this.ibcFB.afDB.database.ref('versionForceUpdate').once('value'),
-            this.ibcFB.afDB.database.ref('versionNotes').once('value')])
+            this.ibcFB.afDB.database.ref('versionNotes').once('value'),
+            this.ibcFB.afDB.database.ref('dailyVerses').once('value')])
         .then(res => {
             let apiUrl = res[0].val();
             ENV.apiServer = apiUrl;
@@ -280,6 +281,15 @@ export class CommonProvider {
             let allNotes = res[4].val();
             if (allNotes && this.newVersion) {
                 this.versionNotes = allNotes[this.newVersion.replace(/\./g,'_')];
+            }
+
+            let verses = res[5].val() || [];
+
+            let today = moment().format('YYYY-MM-DD');
+            let found = verses.filter(v => v.datetime == today)[0];
+            if (found) {
+                this.dailyVerseDate = found.datetime;
+                // this.navCtrl.push('daily-verse-page', { date: found.datetime });
             }
         });
     }
