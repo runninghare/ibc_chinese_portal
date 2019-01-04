@@ -12,10 +12,7 @@
 
 </ion-header>
 
-<div class="ibc-overlay">
-</div>
-
-<ion-content padding style="background-repeat: no-repeat; background-size: cover; color: #FFC107; z-index: 1" [style.background-image]="bgImageUrl">
+<ion-content padding style="background-repeat: no-repeat; background-size: cover; color: #FFC107;" [ngStyle]="{'background-image': bgImageUrl}">
 
     <div class="ibc-full-height ibc-allow-text-select" fxLayout="column" fxLayoutAlign="center center">
 

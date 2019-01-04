@@ -75,8 +75,6 @@ export class HomePage {
 
     userProfileSubscription: Subscription;
 
-    dailyVerse: IntDailyVerse;
-
     constructor(
         public navCtrl: NavController,
         public navParams: NavParams,
@@ -107,11 +105,19 @@ export class HomePage {
     ionViewWillEnter() {
         window['rxjs'] = rxjs;
 
-        this.dailyVerse = this.navParams.get('dailyVerse');
+        if (this.common.showDailyVerse) {
+            let dailyVerseSubscription = this.content.dailyVerses$.subscribe(verses => {
+                dailyVerseSubscription.unsubscribe();
 
-        if (this.dailyVerse) {
-            this.navCtrl.push('daily-verse-page', {date: this.dailyVerse.datetime});
-        }
+                let today = moment().format('YYYY-MM-DD');
+                let found = verses.filter(v => v.datetime == today)[0];
+                if (found) {
+                    console.log(`Will show daily verse: ${found.datetime}`);
+                    this.common.showDailyVerse = false;
+                    this.navCtrl.push('daily-verse-page', {date: found.datetime});
+                }
+            });
+        } 
 
         this.userProfileSubscription = this.ibcFB.userProfile$.filter(auth => auth != null).subscribe(userProfile => {
             this.authUser = userProfile;

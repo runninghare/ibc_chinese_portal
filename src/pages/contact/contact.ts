@@ -369,7 +369,7 @@ export class ContactPage implements OnDestroy {
 
   contactClick(item: IntContact) {
     // this.audioSvc.play('startChatting');
-    this.navCtrl.push(ChatPage, {partnerId: item.id});
+    this.navCtrl.push('chat-page', {partnerId: item.id});
   }
 
   geoNavigate(item: IntContact) {

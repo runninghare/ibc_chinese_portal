@@ -24,6 +24,8 @@ export interface IntArrayChanges {
 @Injectable()
 export class CommonProvider {
 
+    showDailyVerse: boolean = true;
+
     constructor(public http: HttpClient, public toastCtrl: ToastController, public sanitizer: DomSanitizer,
         public platform: Platform, public ibcFB: IbcFirebaseProvider, public alertCtrl: AlertController) {
 

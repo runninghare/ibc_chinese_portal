@@ -38,7 +38,7 @@ declare var Wechat;
 export class MyApp implements AfterViewInit {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any;
+  rootPage: any = HomePage;
 
   storage: SQLite;
 
@@ -54,7 +54,7 @@ export class MyApp implements AfterViewInit {
     public content: DataProvider,
   ) {
 
-    this.initializeApp();
+      this.initializeApp();  
 
     // this.platform.ready().then(() => {
 
@@ -107,26 +107,12 @@ export class MyApp implements AfterViewInit {
   }
 
   initializeApp() {
-    this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-    let dailyVerseSubscription = this.content.dailyVerses$.subscribe(verses => {
-        dailyVerseSubscription.unsubscribe();
-        
-        let today = moment().format('YYYY-MM-DD');
-        let found = verses.filter(v => v.datetime == today)[0];
-        if (found) {
-            console.log('---- verse found! ---');
-            this.nav.setRoot('home-page', {dailyVerse: found});
-            // this.nav.setRoot('daily-verse-page', {date: found.datetime});
-        } else {
-            this.nav.setRoot('home-page');
-        }
-    })
-
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
-    });
+      this.platform.ready().then(() => {
+          // Okay, so the platform is ready and our plugins are available.
+          // Here you can do any higher level native things you might need.
+          this.statusBar.styleDefault();
+          this.splashScreen.hide();
+      });
   }
 
   ngAfterViewInit(): void {

@@ -51,10 +51,10 @@ export class DailyVersePage {
   fetchBibleVerse(bookSN, chapterSN, verseSN): void {
 
       if (this.currentVerse.thumbnail && !this.currentVerse.thumbnail.match(/IBC.ico$/)) {
-          this.bgImageUrl = `url(${this.currentVerse.thumbnail})`;
+          this.bgImageUrl = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(${this.currentVerse.thumbnail})`;
           // this.bgImageUrl = 'url(https://pi.tedcdn.com/r/talkstar-assets.s3.amazonaws.com/production/playlists/playlist_14/are_you_there_god.jpg?quality=89&w=800)';
       } else {
-          this.bgImageUrl = `url(assets/img/${this.randomBg}.jpg)`;
+          this.bgImageUrl = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(assets/img/${this.randomBg}.jpg)`;
       }
 
       this.bibleSvc.getAChapter(bookSN, chapterSN).then(verses => {
