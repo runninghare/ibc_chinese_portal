@@ -13,6 +13,7 @@ import { Platform } from 'ionic-angular';
 import { UserProfilePage } from '../../pages/user-profile/user-profile';
 import { WechatProvider } from '../../providers/wechat/wechat';
 import { CommonProvider } from '../../providers/common/common';
+import { BibleProvider } from '../../providers/bible/bible';
 import { ListPage } from '../../pages/list/list';
 import { Observable, Subscription, Subject, BehaviorSubject } from 'rxjs';
 
@@ -198,6 +199,7 @@ export interface IntListPageParams {
     orderByFunc?(a: any, b: any): number;
     groupOrderByFunc?(a: any, b: any): number;
     additionalSlideButton?: IntAuxiliaryButton;
+    preAddCallback?(item: any, keyOrIndex: any): Promise<any>;
     postAddCallback?(item: any, keyOrIndex: any): Promise<any>;
     postDeleteCallback?(item: any, keyOrIndex: any): Promise<any>;
     defaultAvatarImg?: string;
@@ -235,6 +237,13 @@ export interface IntSermon extends IntSummaryData {
     type?: 'video' | 'audio';
     description?: string;
     chatId?: any;
+}
+
+export interface IntDailyVerse extends IntListItem {
+    bookSN: number;
+    chapterSN: number;
+    verseSN: number;
+    chatId?: string|number;
 }
 
 export interface IntMessage {
@@ -298,6 +307,10 @@ export class DataProvider {
     nextServiceSongsDB: firebase.database.Reference;
     nextServiceSongs$: Observable<IntListItem[]>;
     nextSongPageParams: IntListPageParams;
+
+    dailyVersesDB: firebase.database.Reference;
+    dailyVerses$: Observable<IntDailyVerse[]>;
+    dailyVersesPageParams: IntListPageParams;    
 
     sermonsDB: firebase.database.Reference;
     sermons$: Observable<IntSermon[]>;
@@ -581,7 +594,8 @@ export class DataProvider {
     };
 
     constructor(public http: HttpClient, public ibcFB: IbcFirebaseProvider, public badge: Badge, public wechat: WechatProvider, public platform: Platform,
-        public s2t: S2tProvider, public videoSvc: VideoProvider, public cacheSvc: FileCacheProvider, public modalCtrl: ModalController, public commonSvc: CommonProvider) {
+        public s2t: S2tProvider, public videoSvc: VideoProvider, public cacheSvc: FileCacheProvider, public modalCtrl: ModalController, public commonSvc: CommonProvider,
+        public bibleSvc: BibleProvider) {
 
         window['ENV'] = ENV;
         console.log(`======= RUNNING MODE: ${ENV.mode} ========`);
@@ -849,6 +863,8 @@ export class DataProvider {
                 }
             },
             subtitleAs: (item, auxiliaryItems) => {
+                if (!auxiliaryItems) return item.album;
+
                 let index = auxiliaryItems.indexOf(item.id);
                 if (index > -1) {
                     return '本週贊美詩歌'
@@ -886,6 +902,7 @@ export class DataProvider {
             additionalSlideButton: {
                 getAuxiliaryDB: () => this.nextServiceSongsDB,
                 exists: (item, auxiliaryItems) => {
+                    if (!auxiliaryItems) return false;
                     let index = auxiliaryItems.indexOf(item.id);
                     if (index > -1) {
                         return true
@@ -894,6 +911,7 @@ export class DataProvider {
                     }
                 },
                 getColor: (item, auxiliaryItems) => {
+                    if (!auxiliaryItems) return 'teal-1';
                     let index = auxiliaryItems.indexOf(item.id);
                     if (index > -1) {
                         return 'danger'
@@ -902,6 +920,7 @@ export class DataProvider {
                     }
                 },
                 getTitle: (item, auxiliaryItems) => {
+                    if (!auxiliaryItems) return '添加为本周赞美';
                     let index = auxiliaryItems.indexOf(item.id);
                     if (index > -1) {
                         return '删除本周赞美'
@@ -910,6 +929,7 @@ export class DataProvider {
                     }
                 },
                 click: (item, auxiliaryItems) => {
+                    if (!auxiliaryItems) return;
                     let index = auxiliaryItems.indexOf(item.id);
                     if (index > -1) {
                         auxiliaryItems.splice(index, 1);
@@ -1008,6 +1028,85 @@ export class DataProvider {
             postAddCallback: this.createAddChatIdFunc('Sermon', this.sermonsDB),
             postDeleteCallback: this.createRemoveChatIdFunc
         };
+
+        this.dailyVersesDB = this.ibcFB.afDB.database.ref('dailyVerses');
+        this.dailyVerses$ = this.ibcFB.afDB.list<IntDailyVerse>('dailyVerses').valueChanges();
+        this.dailyVersesPageParams = {
+            title: '每日金句',
+            items$: this.dailyVerses$,
+            itemsDB: this.dailyVersesDB,
+            templateForAdd: [
+                {
+                    key: 'datetime',
+                    caption: '日期',
+                    type: TypeInputUI.Date
+                },            
+                {
+                    key: 'bookSN',
+                    caption: '選擇聖經Book',
+                    type: TypeInputUI.Dropdown,
+                    lookupSource: Observable.from(this.bibleSvc.getBooks()),
+                    lookupCaption: 'FullName',
+                    lookupValue: 'SN'
+                }, 
+                {
+                    key: 'chapterSN',
+                    caption: '章(Chapter)',
+                    type: TypeInputUI.Number
+                },  
+                {
+                    key: 'verseSN',
+                    caption: '節(Verse)',
+                    type: TypeInputUI.Number
+                },
+                {
+                    key: 'subtitle',
+                    caption: '經文(自動顯示)',
+                    disabled: true,
+                    type: TypeInputUI.Text
+                },           
+                {
+                    key: 'description',
+                    caption: '備注',
+                    type: TypeInputUI.Textarea
+                },
+                {
+                    key: 'chatId',
+                    caption: '讨论区ID',
+                    type: TypeInputUI.Text
+                },                
+                {
+                    key: 'thumbnail',
+                    caption: '縮略圖',
+                    default: 'http://ibc.medocs.com.au/img/IBC.ico'
+                }
+            ],
+            filterFunc: (val, item) => {
+                return this.s2t.tranStr(`${item.title} ${item.subtitle}`||"",true).indexOf(this.s2t.tranStr(val, true)) > -1;
+            },
+            mapFunc: (item) => {
+                return {
+                    id: item.id,
+                    title: moment(item.datetime).format('M月D日'),
+                    subtitle: item.subtitle,
+                    datetime: item.datetime,
+                    thumbnail: item.thumbnail,
+                    redirect: 'daily-verse-page',
+                    params: {date: item.datetime}
+                }
+            },            
+            orderByFunc: (a, b) => a.datetime > b.datetime ? -1 : 1,
+            preAddCallback: (item: IntDailyVerse, keyOrIndex: any) => {
+                console.log(JSON.stringify(item));
+                return this.bibleSvc.getAChapter(item.bookSN, item.chapterSN).then(verses => {
+                    let verse = verses.filter(v => v.VerseSN == item.verseSN)[0];
+                    if (verse) {
+                        item.subtitle = `${verse.ShortName}${verse.ChapterSN}:${verse.VerseSN} - ${verse.Chinese}`
+                    }
+                    return item;
+                });
+            }
+        };        
 
         this.allContactsDB = this.ibcFB.afDB.database.ref('contacts');
         this.allContacts$ = this.ibcFB.afDB.list<IntContact>('contacts').valueChanges().catch(err => Observable.of(null)).map(contacts => {

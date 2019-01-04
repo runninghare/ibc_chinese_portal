@@ -6,22 +6,30 @@
 
 <ion-content padding no-bounce id="bible-chapter-content">
   <ion-list class="ibc-allow-text-select">
-    <div ion-item *ngFor="let verse of verses" [class.ibc-highlight]="verse?.VerseSN == navParams?.data?.verseNumber">
-      <div item-left style="width: 25px">{{verse?.VerseSN}}</div>
-      <div class="ibc-allow-wrap">
-        <div class="item-note">
-          {{bibleSvc.useTraditional ? bibleSvc.s2tConvert(verse?.Chinese) : verse?.Chinese}}
-        </div>
-        <div class="item-note ibc-top-margin-10" *ngIf="bibleSvc.useEnglish">
-          {{verse?.English}}
+    <ion-item-sliding *ngFor="let verse of verses" [class.ibc-highlight]="verse?.VerseSN == navParams?.data?.verseNumber">
+      <div ion-item [class.ibc-highlight]="verse?.VerseSN == navParams?.data?.verseNumber">
+        <div item-left style="width: 25px">{{verse?.VerseSN}}</div>
+        <div class="ibc-allow-wrap">
+          <div class="item-note">
+            {{bibleSvc.useTraditional ? bibleSvc.s2tConvert(verse?.Chinese) : verse?.Chinese}}
+          </div>
+          <div class="item-note ibc-top-margin-10" *ngIf="bibleSvc.useEnglish">
+            {{verse?.English}}
+          </div>
         </div>
       </div>
-    </div>
+      <ion-item-options side="right" *ngIf="content.allowWechat">
+        <a ion-button color="green" (click)="share(verse?.VerseSN)">
+           分享
+        </a>
+      </ion-item-options>      
+    </ion-item-sliding>
   </ion-list>
 
   <ion-fab right bottom>
     <button ion-fab color="primary"><ion-icon name="arrow-dropup"></ion-icon></button>
     <ion-fab-list side="top">
+      <button ion-fab color="green" (click)="share()" *ngIf="content.allowWechat">分享</button>
       <button ion-fab color="teal-1" (click)="bibleSvc.useEnglish = false; bibleSvc.useTraditional = false">简</button>
       <button ion-fab color="teal" (click)="bibleSvc.useEnglish = false; bibleSvc.useTraditional = true">繁</button>
       <button ion-fab color="dark" (click)="bibleSvc.useEnglish = !bibleSvc.useEnglish">Eng</button>
@@ -30,5 +38,7 @@
     </ion-fab-list>  
   </ion-fab>   
 </ion-content>
+
+<load-tracker></load-tracker>
 
 

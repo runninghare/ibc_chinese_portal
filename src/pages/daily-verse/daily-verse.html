@@ -1,0 +1,54 @@
+<!--
+  Generated template for the DailyVersePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+     <h4 ion-text text-center style="color: white"><p>每日金句 {{date}}</p></h4>
+  </ion-navbar>
+
+</ion-header>
+
+<div class="ibc-overlay">
+</div>
+
+<ion-content padding style="background-repeat: no-repeat; background-size: cover; color: #FFC107; z-index: 1" [style.background-image]="bgImageUrl">
+
+    <div class="ibc-full-height ibc-allow-text-select" fxLayout="column" fxLayoutAlign="center center">
+
+      <div class="ibc-full-width" fxLayout="column" fxLayoutAlign="center center">
+
+        <h4>{{currentBibleVerse?.Chinese}}</h4>
+        <h4>{{currentBibleVerse?.English}}</h4>
+
+        <a style="font-size: 2rem; cursor: pointer" (click)="navigate()">{{currentBibleVerse?.FullName}} {{currentBibleVerse?.ChapterSN}}:{{currentBibleVerse?.VerseSN}}</a>
+
+        <div class="ibc-full-width ibc-top-margin-20" *ngIf="currentVerse?.description" style="color: white">
+             <div ion-text class="ibc-bottom-margin-10"><b>牧者分享:</b></div>
+             <div ion-text>{{currentVerse?.description}}</div>
+        </div>
+      </div>
+
+      <div fxFlex></div>
+
+      <div class="ibc-full-width" fxLayout="column" fxLayoutAlign="center start">
+        <ion-buttons class="ibc-top-margin-20 ibc-full-width">
+          <button ion-button icon-start color="dark" (click)="prev()">
+            <ion-icon name="arrow-back"></ion-icon>
+          </button>
+          <div fxFlex></div>
+          <button ion-button (click)="back()">返回首页</button>
+          <button ion-button color="teal" *ngIf="common?.isLoggedIn && currentVerse?.chatId" (click)="chat()">讨论经文</button>
+          <div fxFlex></div>
+          <button ion-button icon-end color="dark" (click)="next()">
+            <ion-icon name="arrow-forward"></ion-icon>
+          </button>          
+        </ion-buttons>        
+      </div>
+
+    </div>
+
+</ion-content>

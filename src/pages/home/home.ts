@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, animate, state, trigger, style, transition } from '@angular/core';
-import { IonicPage, App, NavController, Platform, PopoverController, AlertController } from 'ionic-angular';
+import { IonicPage, App, NavController, NavParams, Platform, PopoverController, AlertController } from 'ionic-angular';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { CommonProvider } from '../../providers/common/common';
 import { BrowserProvider } from '../../providers/browser/browser';
@@ -18,7 +18,7 @@ import { PhotoProvider } from '../../providers/photo/photo';
 import { FileCacheProvider } from '../../providers/file-cache/file-cache';
 // import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { StatusBar } from '@ionic-native/status-bar';
-import { DataProvider, IntHomeCard } from '../../providers/data-adaptor/data-adaptor';
+import { DataProvider, IntHomeCard, IntDailyVerse } from '../../providers/data-adaptor/data-adaptor';
 import { WechatProvider } from '../../providers/wechat/wechat';
 import { FileOpener } from '@ionic-native/file-opener';
 import { File } from '@ionic-native/file';
@@ -28,6 +28,7 @@ import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
 import { IbcDeeplinkProvider } from '../../providers/ibc-deeplink/ibc-deeplink';
 import { Deeplinks } from '@ionic-native/deeplinks';
 import { Observable, Subscription } from 'rxjs';
+import * as moment from 'moment';
 
 // declare var cordova;
 
@@ -74,8 +75,11 @@ export class HomePage {
 
     userProfileSubscription: Subscription;
 
+    dailyVerse: IntDailyVerse;
+
     constructor(
         public navCtrl: NavController,
+        public navParams: NavParams,
         public ibcFB: IbcFirebaseProvider,
         public platform: Platform,
         public toastCtrl: ToastController,
@@ -102,6 +106,12 @@ export class HomePage {
 
     ionViewWillEnter() {
         window['rxjs'] = rxjs;
+
+        this.dailyVerse = this.navParams.get('dailyVerse');
+
+        if (this.dailyVerse) {
+            this.navCtrl.push('daily-verse-page', {date: this.dailyVerse.datetime});
+        }
 
         this.userProfileSubscription = this.ibcFB.userProfile$.filter(auth => auth != null).subscribe(userProfile => {
             this.authUser = userProfile;

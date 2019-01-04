@@ -4,6 +4,8 @@ import { Platform } from 'ionic-angular';
 import { SQLite } from 'ionic-native';
 import { BibleProvider, IntBibleChapter, IntBibleVerse } from '../../providers/bible/bible';
 import { BiblePage } from './bible';
+import { WechatProvider } from '../../providers/wechat/wechat';
+import { DataProvider } from '../../providers/data-adaptor/data-adaptor';
 
 /**
  * Generated class for the BiblePage page.
@@ -38,7 +40,9 @@ export class BibleChapterPage {
         public navParams: NavParams, 
         public platform: Platform, 
         public bibleSvc: BibleProvider,
-        public modalCtrl: ModalController
+        public modalCtrl: ModalController,
+        public content: DataProvider,
+        public wechat: WechatProvider
        ) {
 
         // console.log(JSON.stringify`(navParams));
@@ -106,6 +110,7 @@ export class BibleChapterPage {
 
     scrollToHighlight(): void {
         let contentElem = document.querySelectorAll('#bible-chapter-content .scroll-content')[document.querySelectorAll('#bible-chapter-content .scroll-content').length-1];
+        console.log('---- scrolling ---');
         // let highlightElem = contentElem.querySelectorAll('#bible-chapter-content .ibc-highlight');
         if (contentElem) {
             let highlightElem = contentElem.querySelector('.ibc-highlight');
@@ -121,6 +126,25 @@ export class BibleChapterPage {
         this.navCtrl.push('bible-search-page');
         // let popupModal = this.modalCtrl.create(BibleSearchComponent);
         // popupModal.present();
+    }
+
+    share(verseSN?: number): void {
+        let bookId = this.chapterMeta.bookId;
+        let chapterId = this.chapterMeta.chapter;
+        let verseId = this.navParams.data.verseNumber || verseSN || 0;
+
+        let url = `http://ibc.medocs.com.au/app/#/bible/${bookId}/${chapterId}/${verseId}`;
+
+        let title = `经文分享：${this.chapterMeta.book} `;
+
+        if (verseId) {
+            title += `${chapterId}:${verseId}`;
+        } else {
+            title += `第${chapterId}章`;
+        }
+
+        this.wechat.weChatShareLink(url, title, verseId ? this.verses[verseId-1].Chinese : this.verses[0].Chinese,
+            `http://ibc.medocs.com.au/img/IBC.ico`);
     }
 
 }

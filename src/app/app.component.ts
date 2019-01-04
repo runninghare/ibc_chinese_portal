@@ -21,6 +21,7 @@ import { IbcFirebaseProvider } from '../providers/ibc-firebase/ibc-firebase';
 import { S2tProvider } from '../providers/s2t/s2t';
 import { CommonProvider } from '../providers/common/common';
 import { DataProvider } from '../providers/data-adaptor/data-adaptor';
+import * as moment from 'moment';
 
 declare var Wechat;
 
@@ -37,7 +38,7 @@ declare var Wechat;
 export class MyApp implements AfterViewInit {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = HomePage;
+  rootPage: any;
 
   storage: SQLite;
 
@@ -109,6 +110,20 @@ export class MyApp implements AfterViewInit {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
+    let dailyVerseSubscription = this.content.dailyVerses$.subscribe(verses => {
+        dailyVerseSubscription.unsubscribe();
+        
+        let today = moment().format('YYYY-MM-DD');
+        let found = verses.filter(v => v.datetime == today)[0];
+        if (found) {
+            console.log('---- verse found! ---');
+            this.nav.setRoot('home-page', {dailyVerse: found});
+            // this.nav.setRoot('daily-verse-page', {date: found.datetime});
+        } else {
+            this.nav.setRoot('home-page');
+        }
+    })
+
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });

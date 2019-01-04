@@ -43,6 +43,7 @@ export class ListPage implements OnDestroy {
   additionalSlideButton: IntAuxiliaryButton;
   auxiliaryItems: any[] = [];
   postAddCallback: (item: any, keyOrIndex: any) => Promise<any>;
+  preAddCallback: (item: any, keyOrIndex: any) => Promise<any>;
   postDeleteCallback: (item: any, keyOrIndex: any) => Promise<any>;
   defaultAvatarImg: string;
   defaultThumbnailImg: string;
@@ -101,6 +102,7 @@ export class ListPage implements OnDestroy {
         this.listHasKeys = params['listHasKeys'];
         this.fullPermission = params['fullPermission'];
         this.postAddCallback = params['postAddCallback'];
+        this.preAddCallback = params['preAddCallback'];
         this.postDeleteCallback = params['postDeleteCallback'];
         this.additionalSlideButton = params['additionalSlideButton'];
         this.defaultAvatarImg = params['defaultAvatarImg'];
@@ -301,20 +303,31 @@ export class ListPage implements OnDestroy {
             data.key = data.key || this.commonSvc.makeRandomString(8);
             data.isNew = true;
 
-            this.itemsDB.child(data.key).set(data).then(() => {
-              if (this.postAddCallback) {
-                this.postAddCallback(data, data.key).then(() => {
+            let exec = () => {
+              this.itemsDB.child(data.key).set(data).then(() => {
+                if (this.postAddCallback) {
+                  this.postAddCallback(data, data.key).then(() => {
+                    this.commonSvc.toastSuccess('添加成功');
+                  })
+                } else {
                   this.commonSvc.toastSuccess('添加成功');
-                })
-              } else {
-                this.commonSvc.toastSuccess('添加成功');
-              }
-              popupModal.dismiss();
-            }).catch(err => {
-              this.commonSvc.toastFailure('添加失败', err);
-              this.items.pop();
-              popupModal.dismiss();
-            });
+                }
+                popupModal.dismiss();
+              }).catch(err => {
+                this.commonSvc.toastFailure('添加失败', err);
+                this.items.pop();
+                popupModal.dismiss();
+              });              
+            };
+
+            if (this.preAddCallback) {
+              this.preAddCallback(data, data.key).then(() => {
+                exec();
+              })
+            } else {
+              exec();
+            }
+
           } else {
             data.id = data.id || this.commonSvc.makeRandomString(8);
             data.isNew = true;
@@ -323,20 +336,31 @@ export class ListPage implements OnDestroy {
 
             let itemsToSave = this.items.map(item => this.reverseMapFunc(item));
 
-            this.itemsDB.set(itemsToSave).then(() => {
-              if (this.postAddCallback) {
-                this.postAddCallback(data, this.items.length - 1).then(result => {
+            let exec = () => {
+              this.itemsDB.set(itemsToSave).then(() => {
+                if (this.postAddCallback) {
+                  this.postAddCallback(data, this.items.length - 1).then(result => {
+                    this.commonSvc.toastSuccess('添加成功');
+                  })
+                } else {
                   this.commonSvc.toastSuccess('添加成功');
-                })
-              } else {
-                this.commonSvc.toastSuccess('添加成功');
-              }
-              popupModal.dismiss();
-            }).catch(err => {
-              this.commonSvc.toastFailure('添加失败', err);
-              this.items.pop();
-              popupModal.dismiss();
-            })
+                }
+                popupModal.dismiss();
+              }).catch(err => {
+                this.commonSvc.toastFailure('添加失败', err);
+                this.items.pop();
+                popupModal.dismiss();
+              })
+            };
+
+            if (this.preAddCallback) {
+              this.preAddCallback(data, data.key).then(() => {
+                exec();
+              })
+            } else {
+              exec();
+            }
+
           }
 
         }
@@ -365,14 +389,24 @@ export class ListPage implements OnDestroy {
 
         let k = this.listHasKeys && this.items[i].key || i;
 
-        this.itemsDB.child(`${k}`).update(this.reverseMapFunc(item)).then(() => {
-          this.commonSvc.toastSuccess('编辑成功');
-          popupModal.dismiss();
-        }, err => {
-          this.commonSvc.toastFailure('编辑失败', err);
-          this.items.pop();
-          popupModal.dismiss();
-        });
+        let exec = () => {
+          this.itemsDB.child(`${k}`).update(this.reverseMapFunc(item)).then(() => {
+            this.commonSvc.toastSuccess('编辑成功');
+            popupModal.dismiss();
+          }, err => {
+            this.commonSvc.toastFailure('编辑失败', err);
+            this.items.pop();
+            popupModal.dismiss();
+          });
+        };
+
+        if (this.preAddCallback) {
+          this.preAddCallback(item, k).then(() => {
+            exec();
+          })
+        } else {
+          exec();
+        }
 
       }
     });

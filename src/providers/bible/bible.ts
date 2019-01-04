@@ -59,6 +59,7 @@ export class BibleProvider {
 
     getBooks(): Promise<IntBibleBook[]> {
         if (this.commonSvc.isWeb) {
+            this.books = [];
             return this.http.get('bible/summary').then(rows => {
                 for (let i = 0; i < rows.length; i++) {
                     // console.log(JSON.stringify(rows.item(i)));
@@ -75,6 +76,7 @@ export class BibleProvider {
             });
         } else {
             return this.getDB().then(() => {
+                this.books = [];
                 return this.storage.executeSql("SELECT * from BibleID", []).then(data => {
                     let rows = data.rows;
                     for (let i = 0; i < rows.length; i++) {
@@ -105,6 +107,7 @@ export class BibleProvider {
                         let verse: IntBibleVerse = rows[i];
                         // verse.Chinese = this.s2t.tranStr(verse.Chinese, true);
                         verse.English = verse.English && verse.English.replace(/\\/g, '');
+                        verse.English = verse.English && verse.English.replace(/\{[^{}]*\}/g, '');
                         verses.push(verse);
                     }
                     return verses;
@@ -123,6 +126,7 @@ export class BibleProvider {
                         let verse: IntBibleVerse = rows.item(i);
                         // verse.Chinese = this.s2t.tranStr(verse.Chinese, true);
                         verse.English = verse.English && verse.English.replace(/\\/g, '');
+                        verse.English = verse.English && verse.English.replace(/\{[^{}]*\}/g, '');
                         verses.push(verse);
                     }
                     this.storage.close();
@@ -178,6 +182,7 @@ export class BibleProvider {
                             let verse: IntBibleVerse = rows.item(i);
                             // verse.Chinese = this.s2t.tranStr(verse.Chinese, true);
                             verse.English = verse.English && verse.English.replace(/\\/g, '');
+                            verse.English = verse.English && verse.English.replace(/\{[^{}]*\}/g, '');
                             verses.push(verse);
                         }
                         this.storage.close();

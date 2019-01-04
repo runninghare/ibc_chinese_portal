@@ -31,6 +31,7 @@ import { BibleChapterPageModule } from '../pages/bible/bible-chapter.module';
 import { BibleSearchPageModule } from '../pages/bible/bible-search.module';
 import { MonthlyVersesPageModule } from '../pages/monthly-verses/monthly-verses.module';
 import { SermonPageModule } from '../pages/sermon/sermon.module';
+import { DailyVersePageModule } from '../pages/daily-verse/daily-verse.module';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -143,7 +144,8 @@ export function initializer(commonSvc: CommonProvider) {
     IframePageModule,
     ContactPageModule,
     SongPageModule,
-    UserProfilePageModule
+    UserProfilePageModule,
+    DailyVersePageModule
   ],
   bootstrap: [IonicApp],
   providers: [
