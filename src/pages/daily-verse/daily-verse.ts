@@ -57,10 +57,10 @@ export class DailyVersePage {
           this.bgImageUrl = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(assets/img/${this.randomBg}.jpg)`;
       }
 
-      this.bibleSvc.getAChapter(bookSN, chapterSN).then(verses => {
-          if (!verses) return;
-          this.currentBibleVerse = verses.filter(v => v.VerseSN == verseSN)[0];
-      })
+      this.bibleSvc.getAVerse(bookSN, chapterSN, verseSN).then(verse => {
+          if (!verse) return;
+          this.currentBibleVerse = verse;
+      });
   }
 
   prev(): void {

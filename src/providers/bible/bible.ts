@@ -86,16 +86,77 @@ export class BibleProvider {
                         // book.FullName = this.s2t.tranStr(book.FullName, true);
                         this.books.push(book);
                     }
-                    this.storage.close();
+                    // this.storage.close();
                     return this.books;
                 }, err => {
                     console.error("Can't connect to SQLite!");
-                    this.storage.close();
+                    // this.storage.close();
                     return [];
                 });
             });
         }
     }
+
+    getAVerse(volumeSN: number, chapterSN: number, verseSN: number): Promise<IntBibleVerse> {
+        if (this.commonSvc.isWeb) {
+            return this.http.get(`bible?VolumeSN=${volumeSN}&ChapterSN=${chapterSN}&VerseSN=${verseSN}`).then(rows => {
+                    if (rows && rows.length > 0) {
+                        let verse: IntBibleVerse = rows[0];
+                        // verse.Chinese = this.s2t.tranStr(verse.Chinese, true);
+                        verse.English = verse.English && verse.English.replace(/\\/g, '');
+                        verse.English = verse.English && verse.English.replace(/\{[^{}]*\}/g, '');
+                        return verse;
+                    } else {
+                        throw('Error: cannot find the verse');
+                    }
+                }, (error) => {
+                    console.error("Unable to execute sql", JSON.stringify(error));
+                    return null;
+                });
+        } else {
+            return this.getDB().then(() => {
+                  return Promise.all([
+                      this.storage.executeSql(`SELECT * from Bible where VolumeSN = ${volumeSN} and ChapterSN = ${chapterSN} and VerseSN = ${verseSN}`, []),
+                      this.storage.executeSql(`SELECT * from BibleID where SN = ${volumeSN}`, [])
+                      ]).then(res => {
+                          let rows1 = res[0].rows;
+                          let rows2 = res[1].rows;
+
+                          if (rows1.length > 0 && rows2.length > 0) {
+                              let verse = rows1.item(0);
+                              verse.English = verse.English && verse.English.replace(/\\/g, '');
+                              verse.English = verse.English && verse.English.replace(/\{[^{}]*\}/g, '');
+                              verse = Object.assign({}, verse, rows2.item(0));
+                              // this.storage.close();
+                              return verse;
+                          } else {
+                              throw('Error: cannot find the verse');
+                          }
+                      }, error => {
+                          console.error("Unable to execute sql", JSON.stringify(error));
+                          // this.storage.close();
+                      });
+/*                return this.storage.executeSql(`SELECT * from Bible join BibleID on Bible.VolumeSN = BibleID.SN where VolumeSN = ${volumeSN} and ChapterSN = ${chapterSN}`, []).then((data) => {
+                    // console.log("Data received: ", data);
+                    let rows = data.rows;
+                    for (let i = 0; i < rows.length; i++) {
+                        // console.log(JSON.stringify(rows.item(i)));
+                        let verse: IntBibleVerse = rows.item(i);
+                        // verse.Chinese = this.s2t.tranStr(verse.Chinese, true);
+                        verse.English = verse.English && verse.English.replace(/\\/g, '');
+                        verse.English = verse.English && verse.English.replace(/\{[^{}]*\}/g, '');
+                        verses.push(verse);
+                    }
+                    this.storage.close();
+                    return verses;
+                }, (error) => {
+                    console.error("Unable to execute sql", JSON.stringify(error));
+                    this.storage.close();
+                    return null;
+                });*/
+            });
+        }
+    }    
 
     getAChapter(volumeSN: number, chapterSN: number): Promise<IntBibleVerse[]> {
         if (this.commonSvc.isWeb) {
@@ -118,7 +179,7 @@ export class BibleProvider {
         } else {
             return this.getDB().then(() => {
                 let verses: IntBibleVerse[] = [];
-                return this.storage.executeSql(`SELECT * from Bible join BibleID on Bible.VolumeSN = BibleID.SN where VolumeSN = ${volumeSN} and ChapterSN = ${chapterSN}`, []).then((data) => {
+                return this.storage.executeSql(`SELECT * from Bible join BibleID on Bible.VolumeSN = BibleID.SN where Bible.VolumeSN = ${volumeSN} and ChapterSN = ${chapterSN}`, []).then((data) => {
                     // console.log("Data received: ", data);
                     let rows = data.rows;
                     for (let i = 0; i < rows.length; i++) {
@@ -129,11 +190,11 @@ export class BibleProvider {
                         verse.English = verse.English && verse.English.replace(/\{[^{}]*\}/g, '');
                         verses.push(verse);
                     }
-                    this.storage.close();
+                    // this.storage.close();
                     return verses;
                 }, (error) => {
                     console.error("Unable to execute sql", JSON.stringify(error));
-                    this.storage.close();
+                    // this.storage.close();
                     return null;
                 });
             });
@@ -185,7 +246,7 @@ export class BibleProvider {
                             verse.English = verse.English && verse.English.replace(/\{[^{}]*\}/g, '');
                             verses.push(verse);
                         }
-                        this.storage.close();
+                        // this.storage.close();
                         return {
                             count: verses.length,
                             verses: verses.sort((a: IntBibleVerse, b: IntBibleVerse) =>
@@ -199,7 +260,7 @@ export class BibleProvider {
                         };
                     }, (error) => {
                         console.error("Unable to execute sql", JSON.stringify(error));
-                        this.storage.close();
+                        // this.storage.close();
                         return null;
                     })
             });

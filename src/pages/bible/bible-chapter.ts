@@ -110,7 +110,6 @@ export class BibleChapterPage {
 
     scrollToHighlight(): void {
         let contentElem = document.querySelectorAll('#bible-chapter-content .scroll-content')[document.querySelectorAll('#bible-chapter-content .scroll-content').length-1];
-        console.log('---- scrolling ---');
         // let highlightElem = contentElem.querySelectorAll('#bible-chapter-content .ibc-highlight');
         if (contentElem) {
             let highlightElem = contentElem.querySelector('.ibc-highlight');

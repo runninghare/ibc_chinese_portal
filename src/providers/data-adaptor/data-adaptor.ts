@@ -1098,8 +1098,7 @@ export class DataProvider {
             orderByFunc: (a, b) => a.datetime > b.datetime ? -1 : 1,
             preAddCallback: (item: IntDailyVerse, keyOrIndex: any) => {
                 console.log(JSON.stringify(item));
-                return this.bibleSvc.getAChapter(item.bookSN, item.chapterSN).then(verses => {
-                    let verse = verses.filter(v => v.VerseSN == item.verseSN)[0];
+                return this.bibleSvc.getAVerse(item.bookSN, item.chapterSN, item.verseSN).then(verse => {
                     if (verse) {
                         item.subtitle = `${verse.ShortName}${verse.ChapterSN}:${verse.VerseSN} - ${verse.Chinese}`
                     }
