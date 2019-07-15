@@ -71,7 +71,7 @@ export class BibleProvider {
                 // console.log(this.books);
                 return this.books;
             }, err => {
-                console.error("Can't connect to SQLite!");
+                console.error("Can't connect to Bible via http!");
                 return [];
             });
         } else {
@@ -90,6 +90,7 @@ export class BibleProvider {
                     return this.books;
                 }, err => {
                     console.error("Can't connect to SQLite!");
+                    console.log(JSON.stringify(err, null, 2));
                     // this.storage.close();
                     return [];
                 });
