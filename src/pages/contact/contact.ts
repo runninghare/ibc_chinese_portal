@@ -166,7 +166,7 @@ export class ContactPage implements OnDestroy {
           caption: '生日',
           type: TypeInputUI.Date,
           subType1: 'MM月DD日',  // storage/display format
-          subType2: 'MM-DD' // picker format
+          subType2: 'YYYY-MM-DD' // picker format
         },
         {
           key: 'hidden',
