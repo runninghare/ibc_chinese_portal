@@ -43,7 +43,7 @@
         <ng-container *ngIf="contact?.hidden">
           <p ion-note class="ibc-allow-wrap">本條目被隱藏，僅管理員可見</p>
         </ng-container>
-        <ng-container *ngIf="contact?.shareInfo && content.myselfContact.shareInfo">
+        <ng-container *ngIf="content.ibcFB.access_level >= 3 || contact?.shareInfo && content.myselfContact.shareInfo">
           <p ion-note *ngIf="hasEmail(content?.myselfContact) && hasEmail(contact)" class="ibc-allow-wrap">電郵 {{contact.email}}</p>
           <p ion-note *ngIf="content?.myselfContact?.mobile && contact.mobile" class="ibc-allow-wrap">電話 {{contact.mobile}}</p>
           <!-- <p ion-note>生日 {{contact.dob | date:'M月d日'}}</p> -->
