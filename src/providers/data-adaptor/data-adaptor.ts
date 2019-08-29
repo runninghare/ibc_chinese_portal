@@ -157,6 +157,8 @@ export interface IntPopupTemplateItem {
     caption?: string;
     key?: string;
     type?: TypeInputUI;
+    subType1?: string;
+    subType2?: string;
     lookupSource?: Observable<any[]> | string;
     lookupCaption?: string;
     lookupValue?: any;

@@ -162,6 +162,13 @@ export class ContactPage implements OnDestroy {
           caption: '郵政編碼',
         },
         {
+          key: 'dob',
+          caption: '生日',
+          type: TypeInputUI.Date,
+          subType1: 'MM月DD日',  // storage/display format
+          subType2: 'MM-DD' // picker format
+        },
+        {
           key: 'hidden',
           caption: '隐藏',
           type: TypeInputUI.Boolean
@@ -203,7 +210,7 @@ export class ContactPage implements OnDestroy {
               skillCaptions.push(caption);
             }
           });
-          return `${contact.name} ${contact.chinese_name} ${contact.email} ${contact.mobile} ${skillCaptions.join(' ')}`.toLowerCase().indexOf(this.s2t.tranStr(val, true)) > -1;
+          return `${contact.name} ${contact.chinese_name} ${contact.email} ${contact.mobile} ${contact.dob} ${skillCaptions.join(' ')}`.toLowerCase().indexOf(this.s2t.tranStr(val, true)) > -1;
       });
   }
 

@@ -41,7 +41,7 @@
         <h2 class="ibc-allow-wrap">{{contact.name}} {{contact.chinese_name}} {{contact.class == 'group' ? '（群）' : ''}}</h2>
         <p ion-note *ngIf="contact.skills?.length > 0" class="ibc-allow-wrap">事奉 <ion-badge *ngFor="let skill of contact.skills" style="margin-right: 5px">{{getSkillCaption(skill)}}</ion-badge></p>
         <ng-container *ngIf="contact?.hidden">
-          <p ion-note class="ibc-allow-wrap">本條目被隱藏，僅管理員可見</p>         
+          <p ion-note class="ibc-allow-wrap">本條目被隱藏，僅管理員可見</p>
         </ng-container>
         <ng-container *ngIf="contact?.shareInfo && content.myselfContact.shareInfo">
           <p ion-note *ngIf="hasEmail(content?.myselfContact) && hasEmail(contact)" class="ibc-allow-wrap">電郵 {{contact.email}}</p>
