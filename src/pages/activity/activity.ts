@@ -14,6 +14,9 @@ import { IbcHttpProvider } from '../../providers/ibc-http/ibc-http';
 import { PopupComponent } from '../../components/popup/popup';
 import { VideoProvider } from '../../providers/video/video';
 import { WechatProvider } from '../../providers/wechat/wechat';
+
+import { MediaDownloaderComponent } from '../../components/media-downloader/media-downloader';
+
 import * as moment from 'moment';
 
 /**
@@ -307,7 +310,9 @@ export class ActivityPage implements OnDestroy {
   }
 
   openLink(url?: string): void {
-      this.browser.openPage(url);
+    let selectCtrl = this.modalCtrl.create(MediaDownloaderComponent);
+    selectCtrl.present();
+      // this.browser.openPage(url);
   }
 
   removePhoto(photo: string): void {

@@ -76,6 +76,7 @@ export class BibleProvider {
             });
         } else {
             return this.getDB().then(() => {
+                console.log('--- DB loaded ---');
                 this.books = [];
                 return this.storage.executeSql("SELECT * from BibleID", []).then(data => {
                     let rows = data.rows;
@@ -274,6 +275,15 @@ export class BibleProvider {
 
     constructor(public s2t: S2tProvider, public commonSvc: CommonProvider, public http: IbcHttpProvider) {
         this.storage = new SQLite();
+
+//         var db = null;
+
+// document.addEventListener('deviceready', function() {
+//   db = window.sqlitePlugin.openDatabase({
+//     name: 'my.db',
+//     location: 'default',
+//   });
+// });
     }
 
 }

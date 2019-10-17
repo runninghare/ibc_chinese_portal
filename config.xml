@@ -108,59 +108,16 @@
             <string>Allow to scan member's pass</string>
         </config-file>
     </platform>
-    <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
-    <plugin name="cordova-plugin-whitelist" spec="~1.3.1" />
-    <plugin name="cordova-plugin-device" spec="~1.1.4" />
-    <plugin name="cordova-plugin-splashscreen" spec="~4.0.1" />
-    <plugin name="cordova-plugin-dbcopy" spec="https://github.com/an-rahulpandey/cordova-plugin-dbcopy" />
-    <plugin name="cordova-sqlite-ext" spec="https://github.com/litehelpers/cordova-sqlite-ext" />
-    <plugin name="uk.co.workingedge.cordova.plugin.sqliteporter" spec="~1.0.0" />
     <plugin name="cordova-plugin-googleplus" spec="~5.1.1">
         <variable name="REVERSED_CLIENT_ID" value="com.googleusercontent.apps.1050330285156-qjmu6e9cn4b2guroul33hidjualkf6qg" />
     </plugin>
-    <plugin name="cordova-plugin-ionic-webview" spec="^1.1.11" />
-    <plugin name="cordova-plugin-ios-camera-permissions" spec="~1.2.0">
-        <variable name="CAMERA_USAGE_DESCRIPTION" value="ibc usage message" />
-        <variable name="MICROPHONE_USAGE_DESCRIPTION" value="ibc microphone usage message here" />
-        <variable name="PHOTOLIBRARY_ADD_USAGE_DESCRIPTION" value="ibc photo library usage message here" />
-        <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="ibc photo library usage message here" />
-    </plugin>
-    <plugin name="cordova-plugin-camera" spec="~2.4.1">
-        <variable name="CAMERA_USAGE_DESCRIPTION" value=" " />
-        <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value=" " />
-    </plugin>
-    <plugin name="cordova-plugin-crop" spec="~0.3.1" />
-    <plugin name="cordova-plugin-x-socialsharing" spec="~5.3.1" />
-    <plugin name="cordova-plugin-statusbar" spec="~2.2.2" />
     <plugin name="cordova-plugin-youtube-video-player" spec="https://github.com/Remco75/CordovaYoutubeVideoPlayer" />
-    <plugin name="cordova-plugin-nativeaudio" spec="~3.0.9" />
-    <plugin name="uk.co.workingedge.phonegap.plugin.launchnavigator" spec="~4.1.5">
-        <variable name="LOCATION_USAGE_DESCRIPTION" value="This app requires access to your location for navigation purposes" />
-    </plugin>
     <plugin name="cordova-plugin-file-opener2" spec="~2.0.19" />
-    <plugin name="cordova-plugin-badge" spec="~0.8.7" />
-    <plugin name="cordova-plugin-googlemaps" spec="~2.2.9">
-        <variable name="API_KEY_FOR_ANDROID" value="AIzaSyCrALuWJrUU5jUPyy5FFx37bjYDxZe5Bq4" />
-        <variable name="API_KEY_FOR_IOS" value="AIzaSyDzNL7Twh6Hd6hBnGOZ61BW2mdIiMkyK5Q" />
-        <variable name="LOCATION_WHEN_IN_USE_DESCRIPTION" value="This app wants to get your location while this app runs only." />
-        <variable name="LOCATION_ALWAYS_USAGE_DESCRIPTION" value="This app wants to get your location always, even this app runs in background." />
-        <variable name="PLAY_SERVICES_VERSION" value="15.0.1" />
-        <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.1.1" />
-    </plugin>
-    <plugin name="cordova-plugin-nativegeocoder" spec="~3.1.1">
-        <variable name="LOCATION_WHEN_IN_USE_DESCRIPTION" value="Use geocoder service" />
-    </plugin>
     <plugin name="cordova-android-support-gradle-release" spec="~1.4.2" />
-    <plugin name="cordova-plugin-code-push" spec="^1.11.10" />
-    <plugin name="cordova-plugin-file-transfer" spec="^1.6.3" />
     <plugin name="cordova-plugin-zip" spec="^3.1.0" />
-    <plugin name="cordova-plugin-file" spec="^4.3.3" />
     <plugin name="cordova-plugin-appversion" spec="^1.0.0" />
     <plugin name="cordova-plugin-wechat" spec="^2.1.0">
         <variable name="WECHATAPPID" value="wx89037f9e4c83dc79" />
-    </plugin>
-    <plugin name="cordova-android-play-services-gradle-release" spec="^1.4.3">
-        <variable name="PLAY_SERVICES_VERSION" value="12.0.0" />
     </plugin>
     <plugin name="cordova-plugin-in-app-youtube" spec="https://github.com/davidefavia/cordova-plugin-in-app-youtube" />
     <plugin name="cordova-plugin-customurlscheme" spec="^4.3.0">
@@ -190,7 +147,112 @@
     <allow-navigation href="http://192.168.99.1:8100" />
     <allow-navigation href="http://192.168.0.30:8100" />
     <allow-navigation href="http://192.168.0.123:8100" />
+    <plugin name="cordova-plugin-androidx-adapter" spec="^1.1.0" />
+    <plugin name="cordova-plugin-code-push" spec="^1.12.0" />
+    <plugin name="cordova-plugin-nativegeocoder" spec="^3.2.2">
+        <variable name="LOCATION_WHEN_IN_USE_DESCRIPTION" value="Use geocoder service" />
+    </plugin>
+    <plugin name="cordova-plugin-file" spec="^4.3.3" />
+    <plugin name="cordova-plugin-file-transfer" spec="^1.6.3" />
+    <plugin name="cordova-plugin-androidx" spec="^1.0.2" />
+    <preference name="GOOGLE_MAPS_ANDROID_API_KEY" value="AIzaSyCrALuWJrUU5jUPyy5FFx37bjYDxZe5Bq4" />
+    <preference name="GOOGLE_MAPS_IOS_API_KEY" value="AIzaSyDzNL7Twh6Hd6hBnGOZ61BW2mdIiMkyK5Q" />
+    <plugin name="cordova-android-play-services-gradle-release" spec="^4.0.0">
+        <variable name="PLAY_SERVICES_VERSION" value="17.0.0" />
+        <variable name="PLAY-SERVICES-ADS" value="18.0.0" />
+        <variable name="PLAY-SERVICES-ADS-IDENTIFIER" value="17.0.0" />
+        <variable name="PLAY-SERVICES-ADS-LITE" value="18.0.0" />
+        <variable name="PLAY-SERVICES-AFS-NATIVE" value="17.0.0" />
+        <variable name="PLAY-SERVICES-ANALYTICS" value="17.0.0" />
+        <variable name="PLAY-SERVICES-ANALYTICS-IMPL" value="17.0.0" />
+        <variable name="PLAY-SERVICES-APPINVITE" value="18.0.0" />
+        <variable name="PLAY-SERVICES-AUDIENCE" value="17.0.0" />
+        <variable name="PLAY-SERVICES-AUTH" value="17.0.0" />
+        <variable name="PLAY-SERVICES-AUTH-API-PHONE" value="17.0.0" />
+        <variable name="PLAY-SERVICES-AWARENESS" value="17.0.0" />
+        <variable name="PLAY-SERVICES-BASE" value="17.0.0" />
+        <variable name="PLAY-SERVICES-BASEMENT" value="17.0.0" />
+        <variable name="PLAY-SERVICES-CAST" value="17.0.0" />
+        <variable name="PLAY-SERVICES-CAST-FRAMEWORK" value="17.0.0" />
+        <variable name="PLAY-SERVICES-CLEARCUT" value="17.0.0" />
+        <variable name="PLAY-SERVICES-CRONET" value="17.0.0" />
+        <variable name="PLAY-SERVICES-DRIVE" value="17.0.0" />
+        <variable name="PLAY-SERVICES-FIDO" value="18.0.0" />
+        <variable name="PLAY-SERVICES-FITNESS" value="17.0.0" />
+        <variable name="PLAY-SERVICES-FLAGS" value="17.0.0" />
+        <variable name="PLAY-SERVICES-GAMES" value="18.0.0" />
+        <variable name="PLAY-SERVICES-GASS" value="18.0.0" />
+        <variable name="PLAY-SERVICES-GCM" value="17.0.0" />
+        <variable name="PLAY-SERVICES-IDENTITY" value="17.0.0" />
+        <variable name="PLAY-SERVICES-IID" value="17.0.0" />
+        <variable name="PLAY-SERVICES-INSTANTAPPS" value="17.0.0" />
+        <variable name="PLAY-SERVICES-LOCATION" value="17.0.0" />
+        <variable name="PLAY-SERVICES-MAPS" value="17.0.0" />
+        <variable name="PLAY-SERVICES-MEASUREMENT" value="17.0.0" />
+        <variable name="PLAY-SERVICES-MEASUREMENT-API" value="17.0.0" />
+        <variable name="PLAY-SERVICES-MEASUREMENT-IMPL" value="17.0.0" />
+        <variable name="PLAY-SERVICES-MEASUREMENT-SDK" value="17.0.0" />
+        <variable name="PLAY-SERVICES-MEASUREMENT-SDK-API" value="17.0.0" />
+        <variable name="PLAY-SERVICES-NEARBY" value="17.0.0" />
+        <variable name="PLAY-SERVICES-OSS-LICENSES" value="17.0.0" />
+        <variable name="PLAY-SERVICES-PANORAMA" value="17.0.0" />
+        <variable name="PLAY-SERVICES-PHENOTYPE" value="17.0.0" />
+        <variable name="PLAY-SERVICES-PLACES" value="17.0.0" />
+        <variable name="PLAY-SERVICES-PLACES-PLACEREPORT" value="17.0.0" />
+        <variable name="PLAY-SERVICES-PLUS" value="17.0.0" />
+        <variable name="PLAY-SERVICES-SAFETYNET" value="17.0.0" />
+        <variable name="PLAY-SERVICES-STATS" value="17.0.0" />
+        <variable name="PLAY-SERVICES-TAGMANAGER" value="17.0.0" />
+        <variable name="PLAY-SERVICES-TAGMANAGER-API" value="17.0.0" />
+        <variable name="PLAY-SERVICES-TAGMANAGER-V4-IMPL" value="17.0.0" />
+        <variable name="PLAY-SERVICES-TASKS" value="17.0.0" />
+        <variable name="PLAY-SERVICES-VISION" value="18.0.0" />
+        <variable name="PLAY-SERVICES-VISION-COMMON" value="18.0.0" />
+        <variable name="PLAY-SERVICES-VISION-IMAGE-LABEL" value="18.0.0" />
+        <variable name="PLAY-SERVICES-WALLET" value="17.0.0" />
+        <variable name="PLAY-SERVICES-WEARABLE" value="17.0.0" />
+    </plugin>
+    <plugin name="uk.co.workingedge.cordova.plugin.sqliteporter" spec="^1.1.1" />
+    <plugin name="cordova-plugin-googlemaps" spec="^2.2.9">
+        <variable name="API_KEY_FOR_ANDROID" value="AIzaSyCrALuWJrUU5jUPyy5FFx37bjYDxZe5Bq4" />
+        <variable name="API_KEY_FOR_IOS" value="AIzaSyDzNL7Twh6Hd6hBnGOZ61BW2mdIiMkyK5Q" />
+        <variable name="LOCATION_WHEN_IN_USE_DESCRIPTION" value="This app wants to get your location while this app runs only." />
+        <variable name="LOCATION_ALWAYS_USAGE_DESCRIPTION" value="This app wants to get your location always, even this app runs in background." />
+        <variable name="PLAY_SERVICES_VERSION" value="17.0.0" />
+        <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.1.1" />
+    </plugin>
+    <plugin name="cordova-plugin-camera" spec="4.1.0">
+        <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
+    </plugin>
+    <plugin name="cordova-plugin-crop" spec="0.4.0" />
+    <plugin name="cordova-plugin-x-socialsharing" spec="5.6.1">
+        <variable name="ANDROID_SUPPORT_V4_VERSION" value="24.1.1+" />
+        <variable name="PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION" value="This app requires photo library access to function properly." />
+        <variable name="PHOTO_LIBRARY_USAGE_DESCRIPTION" value="This app requires photo library access to function properly." />
+    </plugin>
+    <plugin name="cordova-plugin-badge" spec="~0.8.7" />
+    <plugin name="cordova-plugin-ios-camera-permissions" spec="1.2.0">
+        <variable name="CAMERA_USAGE_DESCRIPTION" value="This app needs camera access" />
+        <variable name="MICROPHONE_USAGE_DESCRIPTION" value="This app needs microphone access" />
+        <variable name="PHOTOLIBRARY_ADD_USAGE_DESCRIPTION" value="This app needs write-access to photo library" />
+        <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="This app needs read/write-access photo library access" />
+    </plugin>
+    <plugin name="cordova-plugin-dbcopy" spec="2.1.2" />
+    <plugin name="cordova-plugin-nativeaudio" spec="3.0.9" />
+    <plugin name="uk.co.workingedge.phonegap.plugin.launchnavigator" spec="~4.1.5">
+        <variable name="LOCATION_USAGE_DESCRIPTION" value="This app requires access to your location for navigation purposes" />
+    </plugin>
+    <plugin name="cordova-plugin-inappbrowser" spec="3.1.0" />
     <engine name="browser" spec="5.0.3" />
-    <engine name="android" spec="6.4.0" />
-    <engine name="ios" spec="4.5.5" />
+    <engine name="ios" spec="5.0.0" />
+    <engine name="android" spec="8.0.0" />
+    <plugin name="cordova-sqlite-ext" spec="^3.0.1" />
+    <plugin name="cordova-plugin-whitelist" spec="1.3.4" />
+    <plugin name="cordova-plugin-statusbar" spec="2.4.3" />
+    <plugin name="cordova-plugin-device" spec="^2.0.3" />
+    <plugin name="cordova-plugin-splashscreen" spec="5.0.3" />
+    <plugin name="cordova-plugin-ionic-webview" spec="4.1.2">
+        <variable name="ANDROID_SUPPORT_ANNOTATIONS_VERSION" value="27.+" />
+    </plugin>
+    <plugin name="cordova-plugin-ionic-keyboard" spec="2.2.0" />
 </widget>

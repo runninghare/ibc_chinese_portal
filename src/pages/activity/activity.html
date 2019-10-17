@@ -98,6 +98,7 @@
             <ion-item-divider></ion-item-divider>            
         </ng-container>
         <h3 text-center >相片</h3>
+
         <ion-item-sliding *ngFor="let photo of activity?.pictures" class="ibc-v-margin-5">
             <img [src]="photo" ion-item (click)="openLink(photo)"/>
             <ion-item-options side="right" *ngIf="commonSvc.isMember">
@@ -105,7 +106,8 @@
                 删除
               </a>
             </ion-item-options>
-        </ion-item-sliding> 
+        </ion-item-sliding>
+         
     </ion-list>
 <!--     <div>
         <div *ngFor="let photo of activity?.pictures" style="align-items: start">
