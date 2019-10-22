@@ -220,13 +220,18 @@ export interface IntActParticipant {
     comment: any;
 }
 
+export interface IntIBCImage {
+  thumbnail: string;
+  detail: string;
+}
+
 export interface IntActivity extends IntSummaryData {
     key?: string;
     past?: boolean;
     summary?: string;
     description?: string;
     participants?: IntActParticipant[];
-    pictures?: string[];
+    pictures?: (IntIBCImage|string)[];
     videos?: { title?: string, youtubeId?: string }[];
     question?: string;
     questionKey?: string;

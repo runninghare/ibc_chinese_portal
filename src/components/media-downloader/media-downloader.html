@@ -1,4 +1,26 @@
-<!-- Generated template for the MediaDownloaderComponent component -->
-<div>
-  {{text}}
-</div>
+<ion-header>
+
+  <ion-navbar>
+    <ion-buttons start>
+      <button ion-button (click)="back()">Close</button>
+    </ion-buttons>
+    <ion-title>像片瀏覽</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<load-tracker></load-tracker>
+
+<ion-content>
+
+  <img [src]="imageUrl" (click)="openPage()">
+
+  <button ion-button block color="teal" (click)="download()">
+    下載
+  </button>
+
+  <button *ngIf="content.ibcFB.access_level >= 3" ion-button block color="danger" (click)="remove()">
+    刪除
+  </button> 
+
+</ion-content>

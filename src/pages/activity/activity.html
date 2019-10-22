@@ -99,14 +99,14 @@
         </ng-container>
         <h3 text-center >相片</h3>
 
-        <ion-item-sliding *ngFor="let photo of activity?.pictures" class="ibc-v-margin-5">
-            <img [src]="photo" ion-item (click)="openLink(photo)"/>
-            <ion-item-options side="right" *ngIf="commonSvc.isMember">
+        <ion-item *ngFor="let photo of activity?.pictures" class="ibc-v-margin-5">
+            <img [src]="photo?.thumbnail || photo" ion-item (click)="openLink(photo?.detail || photo)" class="act-image"/>
+<!--             <ion-item-options side="right" *ngIf="commonSvc.isMember">
               <a ion-button color="danger" (click)="removePhoto(photo)">
                 删除
               </a>
-            </ion-item-options>
-        </ion-item-sliding>
+            </ion-item-options> -->
+        </ion-item>
          
     </ion-list>
 <!--     <div>

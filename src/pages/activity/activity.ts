@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
 import { BrowserProvider } from '../../providers/browser/browser';
 import { CommonProvider } from '../../providers/common/common';
-import { database, DataProvider, IntListItem, IntContact, IntActivity, IntPopupTemplateItem, TypeInputUI} from '../../providers/data-adaptor/data-adaptor';
+import { database, DataProvider, IntListItem, IntContact, IntActivity, IntIBCImage, IntPopupTemplateItem, TypeInputUI} from '../../providers/data-adaptor/data-adaptor';
 import { AudioProvider } from '../../providers/audio/audio';
 import { NotificationProvider } from '../../providers/notification/notification';
 import { Observable, Subscription } from 'rxjs';
@@ -19,6 +19,7 @@ import { MediaDownloaderComponent } from '../../components/media-downloader/medi
 
 import * as moment from 'moment';
 
+
 /**
  * Generated class for the ActivityPage page.
  *
@@ -32,7 +33,15 @@ import * as moment from 'moment';
 })
 @Component({
   selector: 'page-activity',
-  templateUrl: 'activity.html'
+  templateUrl: 'activity.html',
+  styles: [
+    `.act-image {
+      padding-left: 0px;
+      background: url('assets/img/loading.gif') no-repeat;
+      min-height: 300px;
+      background-position: center;    
+    }`
+  ]
 })
 export class ActivityPage implements OnDestroy {
 
@@ -310,12 +319,12 @@ export class ActivityPage implements OnDestroy {
   }
 
   openLink(url?: string): void {
-    let selectCtrl = this.modalCtrl.create(MediaDownloaderComponent);
+    let selectCtrl = this.modalCtrl.create(MediaDownloaderComponent, {imageUrl: url, removeFunc: this.removePhoto.bind(this, url)});
     selectCtrl.present();
       // this.browser.openPage(url);
   }
 
-  removePhoto(photo: string): void {
+  removePhoto(photo: string|IntIBCImage, callback?: Function): void {
     if (!photo || !this.activity.pictures) return;
 
     let index = this.activity.pictures.indexOf(photo);
@@ -323,14 +332,16 @@ export class ActivityPage implements OnDestroy {
       this.activity.pictures.splice(index,1);
       this.activityDB.child(`pictures`).set(this.activity.pictures).then(() => {
         this.commonSvc.toastSuccess('相片已成功删除');
+        callback && callback();
       }).catch(err => {
         console.log(this.activity.pictures);
         this.commonSvc.toastFailure('删除失败', err => {console.error(JSON.stringify(err, null, 2))});
+        callback && callback();
       });
     });
   }
 
-  addPhoto(url: string|string[]): void {
+  addPhoto(url: string|IntIBCImage[]): void {
     if (url) {
 
       if (!this.activity.pictures) {
@@ -398,9 +409,12 @@ export class ActivityPage implements OnDestroy {
   uploadPhoto(): void {
     if (this.commonSvc.isWeb) {
       let itemToEdit = {
+        url: 'http://ibc.medocs.com.au/photos/thumbnails.php?dir=20190914&size=200',
         type: 'single',
-        pattern: "20180922/.*\\.JPG",
-        baseUrl: "http://ibc.medocs.com.au/photos/"
+        pattern: "20190914/.*\\.JPG",
+        detailURLRegex: "photo.php\\?fn=show&sizeh=300&sizew=0&file=\\./",
+        detailURLTarget: "",
+        baseUrl: "http://ibc.medocs.com.au/photos/photo.php?fn=show&sizeh=300&sizew=0&file=./"
       };
 
       let popupModal = this.modalCtrl.create(PopupComponent, {
@@ -433,6 +447,16 @@ export class ActivityPage implements OnDestroy {
                   hidden: (item) => item.type != 'multiple'
               },
               {
+                  key: 'detailURLRegex',
+                  caption: '大圖URL替換正則表達式',
+                  hidden: (item) => item.type != 'multiple'
+              },
+              {
+                  key: 'detailURLTarget',
+                  caption: '大圖URL替換目標表達式',
+                  hidden: (item) => item.type != 'multiple'
+              },      
+              {
                   key: 'baseUrl',
                   caption: 'Base URL',
                   hidden: (item) => item.type != 'multiple'
@@ -441,24 +465,35 @@ export class ActivityPage implements OnDestroy {
         item: itemToEdit,
         cancel: () => popupModal.dismiss(),
         save: (item) => {
-          if (item.url) {
-            if (item.type == 'multiple') {
-                  this.ibcHttp.post('jsdom/images', item).then(result => {
-                    if (result && result.images) {
-                      this.addPhoto(result.images);
-                    }
+            if (item.url) {
+                if (item.type == 'multiple') {
+                    console.log(item);
+                    this.ibcHttp.post('jsdom/images', item).then(result => {
+                        if (result && result.images) {
+
+                            let images: IntIBCImage[] = result.images;
+
+                            if (item.detailURLRegex) {
+                                let regex = new RegExp(item.detailURLRegex);
+                                images = result.images.map(image => {
+                                    return {
+                                        thumbnail: image,
+                                        detail: image.replace(regex, item.detailURLTarget)
+                                    }
+                                });
+                            }
+                            // console.log(images);
+                            this.addPhoto(images);
+                        }
+                        popupModal.dismiss();
+                    }).catch(err => {
+                        popupModal.dismiss();
+                    });
+                } else if (item.type == 'single') {
+                    this.addPhoto(item.url);
                     popupModal.dismiss();
-                  }).catch(err => {
-                    popupModal.dismiss();
-                  });
-              // this.http.post(, {
-              //   url: item.url
-              // })
-            } else if (item.type == 'single') {
-              this.addPhoto(item.url);
-              popupModal.dismiss();
+                }
             }
-          }
         }
       });
       popupModal.present();
