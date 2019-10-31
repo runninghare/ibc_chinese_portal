@@ -13,14 +13,18 @@
 
 <ion-content>
 
-  <img [src]="imageUrl" (click)="openPage()">
+    <ion-list>
+        <ion-item class="ibc-v-margin-5">
+            <img ion-item class="act-image" [src]="imageUrl" (click)="openPage()">
+        </ion-item>
+    </ion-list>
 
-  <button ion-button block color="teal" (click)="download()">
-    下載
-  </button>
+    <button ion-button block color="teal" (click)="download()">
+        下載
+    </button>
 
-  <button *ngIf="content.ibcFB.access_level >= 3" ion-button block color="danger" (click)="remove()">
-    刪除
-  </button> 
+    <button *ngIf="content.ibcFB.access_level >= 3" ion-button block color="danger" (click)="remove()">
+        刪除
+    </button> 
 
 </ion-content>

@@ -38,8 +38,9 @@ import * as moment from 'moment';
     `.act-image {
       padding-left: 0px;
       background: url('assets/img/loading.gif') no-repeat;
-      min-height: 300px;
-      background-position: center;    
+      background-size: cover;   
+      min-height: 100px;
+      background-position: center center;    
     }`
   ]
 })

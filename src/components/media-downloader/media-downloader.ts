@@ -23,6 +23,7 @@ export class MediaDownloaderComponent {
   constructor(public navParams: NavParams, public viewCtrl: ViewController, public commonSvc: CommonProvider, public content: DataProvider, public browser: BrowserProvider, public loadTrackerSvc: LoadTrackerProvider) {
       this.imageUrl = navParams.get('imageUrl');
       this.removeFunc = navParams.get('removeFunc');
+      // console.log(this.imageUrl);
   }
 
   download() {

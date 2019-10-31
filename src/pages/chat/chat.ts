@@ -105,15 +105,17 @@ export class ChatPage implements OnInit, OnDestroy {
                 this.partner = this.navParams.get('contact');
             }
 
-            console.log('Your chatting partner is:');
-            console.log(this.partner);
-
             if (this.partner) {
                 this.subscription = this.content.currentUser$.flatMap(auth => {
 
                     let body = { receiver_id: this.partner.id };
 
                     this.activate();
+
+                    // console.log('Your chatting partner is:');
+                    // console.log(this.partner.chinese_name);
+                    // console.log(this.content.myselfContact.photoURL);
+                    // console.log(this.cacheSvc.cachingMap[this.content.myselfContact.photoURL].target);                    
 
                     /* Clear all Unread Notifications */
                     this.content.allStatusDB
@@ -184,6 +186,7 @@ export class ChatPage implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+
         /* Make sure set chat_active to false when the app is no longer in use */
         this.commonSvc.platform.pause.subscribe(e => {
             console.log('=== quit chatting! ===');

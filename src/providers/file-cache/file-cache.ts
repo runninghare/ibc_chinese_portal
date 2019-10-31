@@ -88,7 +88,7 @@ export class FileCacheProvider {
 
     createCache(source: string, entry: Entry, type?: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            if (type == 'image' && this.platform.is('ios')) {
+            if (type == 'image') {
                 let normalizedFileName = entry.nativeURL.split('/').pop();
                 let path = entry.nativeURL.substring(0, entry.nativeURL.lastIndexOf("/") + 1);
                 
@@ -117,14 +117,15 @@ export class FileCacheProvider {
             } else {
                 entry.getMetadata(meta => {
                     this.cachingMap[source] = {
-                        target: entry.toInternalURL(),
+                        target: this.platform.is('android') ? entry.nativeURL : entry.toInternalURL(),
                         timestamp: meta.modificationTime
                     };
-                    // if (this.platform.is('android')) {
-                    //     resolve(entry.nativeURL);
-                    // } else {
+
+                    if (this.platform.is('android')) {
+                        resolve(entry.nativeURL);
+                    } else {
                         resolve(entry.toInternalURL());
-                    // }
+                    }
                 });
             }
         });
