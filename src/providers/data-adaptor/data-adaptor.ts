@@ -381,19 +381,43 @@ export class DataProvider {
             /* Update access_level of ibcFB */
             this.ibcFB.afDB.database.ref('roles/superuser').once('value').then(val => {
                 console.log("You are a superuser!");
-                this.ibcFB.access_level = 3;
+                this.maxAccessLevel = 3;
+
+                if (this.normalUserMode) {
+                    this.setAsNormalUser();
+                } else {
+                    this.setAsMaxLevelUser();
+                }
             })
                 .catch(err => this.ibcFB.afDB.database.ref('roles/admin').once('value').then(val => {
                     console.log("You are an admin!");
-                    this.ibcFB.access_level = 2;
+                    this.maxAccessLevel = 2;
+
+                    if (this.normalUserMode) {
+                        this.setAsNormalUser();
+                    } else {
+                        this.setAsMaxLevelUser();
+                    }
                 }))
                 .catch(err => this.ibcFB.afDB.database.ref('roles/internal').once('value').then(val => {
                     console.log("You are an internal user!");
-                    this.ibcFB.access_level = 1;
+                    this.maxAccessLevel = 1;
+
+                    if (this.normalUserMode) {
+                        this.setAsNormalUser();
+                    } else {
+                        this.setAsMaxLevelUser();
+                    }
                 }))
                 .catch(err => {
                     console.log('--- no access_level ---');
-                    this.ibcFB.access_level = 0;
+                    this.maxAccessLevel = 0;
+
+                    if (this.normalUserMode) {
+                        this.setAsNormalUser();
+                    } else {
+                        this.setAsMaxLevelUser();
+                    }
                 });
 
             return this.ibcFB.afDB.object<IntUserMapValue>(`userMap/${authUser.uid}`).valueChanges().flatMap(res => {
@@ -446,14 +470,19 @@ export class DataProvider {
                     // let newB = !b.isNew || 0;
                     // let readA = a.read || 0;
                     // let readB = b.read || 0;
-                    let timeA = a.datetime || "2100-01-01";
-                    let timeB = b.datetime || "2100-01-01";
-                    let createdTimeA = a.createdDT || '2000-01-01 00:00:00';
-                    let createdTimeB = b.createdDT || '2000-01-01 00:00:00';
                     // return newA < newB ? -1 : newA > newB ? 1 : 
                     //        readA < readB ? -1 : readA > readB ? 1 : 
-                    return timeA < timeB ? -1 : timeA > timeB ? 1 :
-                        createdTimeA < createdTimeB ? 1 : createdTimeA > createdTimeB ? -1 : 0
+
+                    // let timeA = a.datetime || "2100-01-01";
+                    // let timeB = b.datetime || "2100-01-01";
+                    // let createdTimeA = a.createdDT || '2000-01-01 00:00:00';
+                    // let createdTimeB = b.createdDT || '2000-01-01 00:00:00';
+                    // return timeA < timeB ? -1 : timeA > timeB ? 1 :
+                    //     createdTimeA < createdTimeB ? 1 : createdTimeA > createdTimeB ? -1 : 0
+
+                    let createdTimeA = a.createdDT || '2000-01-01 00:00:00';
+                    let createdTimeB = b.createdDT || '2000-01-01 00:00:00';
+                    return createdTimeA < createdTimeB ? 1 : createdTimeA > createdTimeB ? -1 : 0                        
                 },
                 templateForAdd: [
                     {
@@ -564,7 +593,21 @@ export class DataProvider {
         this.allContacts = [];
         this.myselfContact = null;
         this.ibcFB.access_level = 0;
+        this.maxAccessLevel = 0;
     }
+
+    setAsNormalUser(): void {
+        this.ibcFB.access_level = 1;
+        this.normalUserMode = true;
+    }
+
+    setAsMaxLevelUser(): void {
+        this.ibcFB.access_level = this.maxAccessLevel;
+        this.normalUserMode = false;
+    }
+
+    maxAccessLevel: number;
+    normalUserMode: boolean = false;
 
     allowWechat: boolean = false;
 

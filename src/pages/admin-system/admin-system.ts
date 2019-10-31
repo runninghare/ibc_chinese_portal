@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AdminSmsPage } from '../../pages/admin-sms/admin-sms';
 import { ListPage } from '../../pages/list/list';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
+import { DataProvider } from '../../providers/data-adaptor/data-adaptor';
 import { CommonProvider } from '../../providers/common/common';
 import * as moment from 'moment';
 
@@ -23,7 +24,7 @@ import * as moment from 'moment';
 export class AdminSystemPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, 
-    public common: CommonProvider, public ibcFB: IbcFirebaseProvider) {
+    public common: CommonProvider, public ibcFB: IbcFirebaseProvider, public content: DataProvider) {
   }
 
   ionViewDidLoad() {
@@ -53,6 +54,11 @@ export class AdminSystemPage {
 
   goToHomeCardManagement() {
     this.navCtrl.push(ListPage, {type: 'homeCardsParams'})
+  }
+
+  asNormalUser(): void {
+    this.content.setAsNormalUser();
+    this.common.toastSuccess('已把您设定为普通用户，测试用。请退出并重启App以恢复管理员身份', 5000);
   }
 
 }
