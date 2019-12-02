@@ -257,6 +257,8 @@ export class CommonProvider {
         return result;
     }
 
+    exchangeRates: {[a: string]: number};
+
     resolve(): Promise<any> {
         return Promise.all([
             this.ibcFB.afDB.database.ref('apiServer').once('value'), 
@@ -264,7 +266,8 @@ export class CommonProvider {
             this.ibcFB.afDB.database.ref('version').once('value'),
             this.ibcFB.afDB.database.ref('versionForceUpdate').once('value'),
             this.ibcFB.afDB.database.ref('versionNotes').once('value'),
-            this.ibcFB.afDB.database.ref('dailyVerses').once('value')])
+            this.ibcFB.afDB.database.ref('dailyVerses').once('value'),
+            this.ibcFB.afDB.database.ref('exchangeRates').once('value')])
         .then(res => {
             let apiUrl = res[0].val();
             ENV.apiServer = apiUrl;
@@ -291,6 +294,8 @@ export class CommonProvider {
                 this.dailyVerseDate = found.datetime;
                 // this.navCtrl.push('daily-verse-page', { date: found.datetime });
             }
+
+            this.exchangeRates = res[6].val() || {};
         });
     }
 

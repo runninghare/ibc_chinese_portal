@@ -150,7 +150,8 @@ export enum TypeInputUI {
     Date = 'date',
     Location = 'location',
     Dropdown = 'dropdown',
-    MultiDropdown = 'multi-dropdown'
+    MultiDropdown = 'multi-dropdown',
+    ContactIds = 'contact-ids'
 }
 
 export interface IntPopupTemplateItem {
@@ -274,6 +275,21 @@ export interface IntUserStatus {
     chat_active: boolean;
 }
 
+export interface IntAccounting {
+    id?: string;
+    datetime?: string;
+    adults?: number;
+    children?: number;
+    countedBy?: string[]; /* Contact Id */
+    middleman?: string[]; /* Contact Id */
+    recipient?: string[]; /* Contact Id */
+    preacher?:  string[]; /* Contact Id */
+    offering?: number;
+    cny?: number;
+    expense?: number;
+    notes?: string;
+}
+
 export { database } from 'firebase/app';
 
 /*
@@ -339,6 +355,10 @@ export class DataProvider {
 
     ministriesDB: firebase.database.Reference;
     ministries$: Observable<IntMinistrySheet[]>;
+
+    accountingDB: firebase.database.Reference;
+    accounting$: Observable<IntAccounting[]>;
+    accountingParams: IntListPageParams;
 
     existingSubscriptions: Subscription[] = [];
 
@@ -1403,6 +1423,101 @@ export class DataProvider {
 
         this.ministriesDB = this.ibcFB.afDB.database.ref('ministries');
         this.ministries$ = this.ibcFB.afDB.list<IntMinistrySheet>('ministries').valueChanges().debounceTime(500);
+
+        this.accountingDB = this.ibcFB.afDB.database.ref('accounting');
+        this.accounting$ = this.ibcFB.afDB.list<IntAccounting>('accounting').valueChanges().debounceTime(500);
+
+        // datetime?: string;
+        // adults?: number;
+        // children?: number;
+        // countedBy?: (number|string)[]; /* Contact Id */
+        // middleman?: (number|string)[]; /* Contact Id */
+        // recipient?: number|string; /* Contact Id */
+        // offering?: number;
+        // cny?: number;
+        // expense?: number;
+        // notes?: number;
+
+        this.accountingParams = {
+            title: '財務管理',
+            items$: this.accounting$,
+            itemsDB: this.accountingDB,
+            defaultAvatarImg: 'assets/icon/dollar-icon.png',
+            // groupBy: 'past',
+            // groupOrderByFunc: (a,b) => (a?1:0) < (b?1:0) ? -1 : 1,
+            orderByFunc: (a, b) => a.datetime > b.datetime ? -1 : 1,
+            templateForAdd: [
+                {
+                    key: 'datetime',
+                    caption: '日期',
+                    type: TypeInputUI.Date
+                },
+                {
+                    key: 'adults',
+                    caption: '大人',
+                    type: TypeInputUI.Number
+                },
+                {
+                    key: 'children',
+                    caption: '小孩',
+                    type: TypeInputUI.Number
+                },
+                {
+                    key: 'offering',
+                    caption: '收入',
+                    type: TypeInputUI.Number,
+                    default: 0
+                },
+                {
+                    key: 'expense',
+                    caption: '支出',
+                    type: TypeInputUI.Number,
+                    default: 0
+                },
+                {
+                    key: 'cny',
+                    caption: '中文現金',
+                    type: TypeInputUI.Number,
+                    default: 0
+                },
+                {
+                    key: 'preacher',
+                    caption: '讲道',
+                    type: TypeInputUI.ContactIds
+                },
+                {
+                    key: 'countedBy',
+                    caption: '经手人',
+                    type: TypeInputUI.ContactIds
+                },
+                {
+                    key: 'middleman',
+                    caption: '中间人',
+                    type: TypeInputUI.ContactIds
+                },
+                {
+                    key: 'recipient',
+                    caption: '接手人',
+                    type: TypeInputUI.ContactIds
+                },
+                {
+                    key: 'notes',
+                    caption: '備注',
+                    type: TypeInputUI.Textarea
+                }
+            ],
+            mapFunc: (item) => {
+                return {
+                    id: item.id,
+                    title: `${moment(item.datetime).format('YYYY年M月D日 - dddd')} (${item.adults || 0}大${item.children || 0}小)`,
+                    subtitle: `$${item.offering - item.expense}(結餘) = $${item.offering}(收入) - $${item.expense}(支出) ${item.cny?'[¥'+item.cny+'(中文现金)]':''}`,
+                    datetime: item.datetime,
+                    thumbnail: item.thumbnail,
+                    redirect: 'accounting-page',
+                    params: {id: item.id}
+                }
+            }
+        };
 
         this.threadDB = this.ibcFB.afDB.database.ref('threads');
         this.fileCache$ = this.ibcFB.afDB.list<IntCache>('updateCaches').valueChanges().debounceTime(500);

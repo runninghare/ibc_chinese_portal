@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ModalController, NavParams} from 'ionic-angular';
-import { IntPopupTemplateItem, IntSummaryData } from '../../providers/data-adaptor/data-adaptor';
+import { DataProvider, IntPopupTemplateItem, IntSummaryData, IntContact } from '../../providers/data-adaptor/data-adaptor';
+import { ListPage } from '../../pages/list/list';
 
 /**
  * Generated class for the PopupComponent component.
@@ -24,7 +25,17 @@ export class PopupComponent {
   itemToEdit: any;
   itemKeys: string[];
 
-  keys: string[] = []
+  keys: string[] = [];
+
+  /*
+  
+  A workaround for ionic's ion-input bug with type=number.
+  Ionic always emit a string type, e.g. "200" instead of 200:
+  https://github.com/ionic-team/ionic/issues/7121
+   */
+  public convertToNumber(event):number { 
+    return +event; 
+  }
 
   // hasKey(k: string): boolean {
   //     return this.definition[k] !== undefined;
@@ -73,7 +84,37 @@ export class PopupComponent {
     // });
   }
 
-  constructor(public modalCtrl: ModalController, public navParams: NavParams) {
+  selectMembers(item?: any, prop?: string): void {
+    let ids = (item && prop && item[prop]) ? item[prop] : [];
+
+    let memberRecipients = this.content.allContacts.filter(c => ids.indexOf(c.id) > -1);
+
+    let modal = this.modalCtrl.create(ListPage, {
+      type: Object.assign({}, this.content.contactsParams, {
+        preselectedItemKeys: memberRecipients.map(c => c.username)
+      })
+    });
+    modal.present();
+
+    modal.onDidDismiss(data => {
+      console.log(data);
+      if (data && Array.isArray(data) && item && prop) {
+        item[prop] = data.map(d => d.id);
+      }
+    });
+  }
+
+  getMembers(item?: any, prop?: string) {
+    if (!item || !prop || !item[prop]) {
+      return null;
+    }
+
+    let contacts = this.content.allContacts.filter(c => item[prop].indexOf(c.id) > -1).map(c => `${c.chinese_name} (${c.name})`);
+
+    return contacts.join(', ');
+  }
+
+  constructor(public modalCtrl: ModalController, public navParams: NavParams, public content: DataProvider) {
     this.pageTitle = navParams.get('title');
 
     /* Initialization */

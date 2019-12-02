@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AdminSmsPage } from '../../pages/admin-sms/admin-sms';
 import { ListPage } from '../../pages/list/list';
+import { AccountingPage } from '../../pages/accounting/accounting';
 import { IbcFirebaseProvider } from '../../providers/ibc-firebase/ibc-firebase';
 import { DataProvider } from '../../providers/data-adaptor/data-adaptor';
 import { CommonProvider } from '../../providers/common/common';
@@ -55,6 +56,10 @@ export class AdminSystemPage {
   goToHomeCardManagement() {
     this.navCtrl.push(ListPage, {type: 'homeCardsParams'})
   }
+
+  goToAccountingManagement() {
+    this.navCtrl.push(ListPage, {type: 'accountingParams'});
+  }  
 
   asNormalUser(): void {
     this.content.setAsNormalUser();

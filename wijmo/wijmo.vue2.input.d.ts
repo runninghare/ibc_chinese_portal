@@ -1,0 +1,16 @@
+export declare var Vue: any;
+export declare var WjComboBox: any;
+export declare var WjAutoComplete: any;
+export declare var WjCalendar: any;
+export declare var WjColorPicker: any;
+export declare var WjInputMask: any;
+export declare var WjInputColor: any;
+export declare var WjMultiSelect: any;
+export declare var WjMultiAutoComplete: any;
+export declare var WjInputNumber: any;
+export declare var WjInputDate: any;
+export declare var WjInputTime: any;
+export declare var WjInputDateTime: any;
+export declare var WjListBox: any;
+export declare var WjMenu: any;
+export declare var WjPopup: any;

@@ -1,0 +1,32 @@
+import * as wjcCore from 'wijmo/wijmo';
+import * as wjcGrid from 'wijmo/wijmo.grid';
+export declare class GroupPanel extends wjcCore.Control {
+    _g: any;
+    _gds: wjcCore.ObservableArray;
+    _hideGroupedCols: boolean;
+    _maxGroups: number;
+    _dragCol: wjcGrid.Column;
+    _dragMarker: HTMLElement;
+    _divMarkers: HTMLElement;
+    _divPH: HTMLElement;
+    static controlTemplate: string;
+    constructor(element: any, options?: any);
+    hideGroupedColumns: boolean;
+    maxGroups: number;
+    placeholder: string;
+    grid: wjcGrid.FlexGrid;
+    refresh(): void;
+    _addGroup(col: wjcGrid.Column, e: MouseEvent): void;
+    _moveGroup(marker: HTMLElement, e: MouseEvent): void;
+    _removeGroup(index: number, groups?: wjcCore.ObservableArray): void;
+    _getIndex(e: MouseEvent): number;
+    _getElementIndex(e: HTMLElement): number;
+    _draggingColumn(s: wjcGrid.FlexGrid, e: wjcGrid.CellRangeEventArgs): void;
+    _itemsSourceChanged(s: wjcGrid.FlexGrid, e: wjcCore.EventArgs): void;
+    _groupsChanged(s: any, e: wjcCore.EventArgs): void;
+    _dragStart(e: any): void;
+    _dragOver(e: any): void;
+    _drop(e: MouseEvent): void;
+    _dragEnd(e: any): void;
+    _click(e: any): void;
+}

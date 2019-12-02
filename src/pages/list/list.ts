@@ -383,9 +383,9 @@ export class ListPage implements OnDestroy {
       index: this.getItemIndex(this.items[i]),
       cancel: () => popupModal.dismiss(),
       save: (item) => {
-        // console.log('--- item ---');
-        // console.log(this.reverseMapFunc(item));
-        // console.log(`--- number i = ${i} ---`);
+        console.log('--- item ---');
+        console.log(this.reverseMapFunc(item));
+        console.log(`--- number i = ${i} ---`);
 
         let k = this.listHasKeys && this.items[i].key || i;
 

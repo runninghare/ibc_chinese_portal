@@ -34,6 +34,10 @@ import { PhotoEditComponent } from '../components/photo-edit/photo-edit';
 import { HeaderPopOverComponent } from '../components/header-pop-over/header';
 import { CommentComponent } from '../components/comment/comment';
 
+import { WjGridModule } from 'wijmo/wijmo.angular2.grid';
+import { WjGridSheetModule } from 'wijmo/wijmo.angular2.grid.sheet';
+import { WjInputModule } from 'wijmo/wijmo.angular2.input';
+
 @NgModule({
     declarations: [
         ModalSelectAvatar,
@@ -61,7 +65,10 @@ import { CommentComponent } from '../components/comment/comment';
         AngularFirestoreModule,
         ImageCropperModule,
         CommonDirectivesModule,
-        PipesModule
+        PipesModule,
+        WjGridModule,
+        WjGridSheetModule,
+        WjInputModule
     ],
     exports: [
         FormsModule,
@@ -75,7 +82,10 @@ import { CommentComponent } from '../components/comment/comment';
         AngularFirestoreModule,
         ImageCropperModule,
         CommonDirectivesModule,
-
+        WjGridModule,
+        WjGridSheetModule,
+        WjInputModule,
+        
         ModalSelectAvatar,
         MediaDownloaderComponent,
         PopupComponent,
