@@ -287,6 +287,7 @@ export interface IntAccounting {
     offering?: number;
     cny?: number;
     expense?: number;
+    saving?: string;
     notes?: string;
 }
 

@@ -10,8 +10,9 @@ import * as wjcCore from 'wijmo/wijmo';
 import * as wjcGrid from 'wijmo/wijmo.grid';
 import * as wjcGridSheet from 'wijmo/wijmo.grid.sheet';
 import * as wjcInput from 'wijmo/wijmo.input';
+import * as moment from 'moment';
 
-import * as moment from 'moment'
+import * as _ from 'lodash';
 
 interface IntAccountingColumn {
     id?: string;
@@ -21,6 +22,7 @@ interface IntAccountingColumn {
     offering?: number;
     cny?: number;
     expense?: number;
+    saving?: string;
     notes?: string;    
     countedBy?: string; /* Contact Name */
     middleman?: string; /* Contact Name */
@@ -79,16 +81,10 @@ export class AccountingPage {
 
     columns: any[] = [
         {
-            name: 'id',
-            binding: 'id',
-            header: 'Id',
-            dataType: 1,
-            visible: false,
-        },
-        {
             name: 'datetime',
             binding: 'datetime',
             header: '日期',
+            format: 'dd/MM/yyyy',
             dataType: 4,
             visible: true,
         },
@@ -186,7 +182,14 @@ export class AccountingPage {
             wordWrap: true,
             // isReadOnly: true,
             visible: true,
-        }
+        },
+        {
+            name: 'id',
+            binding: 'id',
+            header: 'Id',
+            dataType: 1,
+            visible: false,
+        }        
     ];
 
     refreshFooter(sheet: wjcGridSheet.FlexSheet) {
@@ -196,6 +199,47 @@ export class AccountingPage {
                 sheet.columnFooters.setCellData(0, i, agg);
             }
         }
+
+        for (let i = 0; i < this.accountingData._src.length; i++) {
+            this.flexSheet.setCellData(i+1, this.content.commonSvc.globals.excelSavingColumnIndex, 
+                _.template(this.content.commonSvc.globals.excelSavingColumnExpression)({
+                    row: i+2,
+                    audcny: this.content.commonSvc.exchangeRates.audcny
+                }));
+        }
+    }
+
+    onCopying(e: wjcGrid.CellRangeEventArgs): void {
+        // console.log('--- copy value ---');
+        // console.log(e);
+    }
+
+    onCopied(e: wjcGrid.CellRangeEventArgs): void {
+        // console.log('--- value copied ---');
+        // console.log(e);
+    }
+
+    onPasting(e: wjcGrid.CellRangeEventArgs): void {
+        // console.log('--- pasting value ---');
+        // console.log(e);
+    }    
+
+    onPasted(e: wjcGrid.CellRangeEventArgs): void {
+        let s = this.flexSheet.getClipString();
+        s = s.replace(/[$¥]/g, '');
+
+        // console.log('--- pasted value ---');
+        // console.log(s);
+
+        this.flexSheet.setClipString(s, e.range);
+
+        e.cancel = true;
+
+        this.refreshFooter(this.flexSheet);
+
+        setTimeout(() => {
+            this.flexSheet.autoSizeRows();
+        })
     }
 
     private getAggregatedValue(sheet: wjcGridSheet.FlexSheet, col: wjcGrid.Column) {
@@ -219,14 +263,19 @@ export class AccountingPage {
                 columns: this.columns
             });
 
-            flex.sheets.push(new wjcGridSheet.Sheet(flex, grid, 'General'));
+            let sheet = new wjcGridSheet.Sheet(flex, grid, 'General');
+            sheet.itemsSource = this.accountingData;
+
+            flex.sheets.push(sheet);
 
             let row = new wjcGrid.GroupRow();
             flex.columnFooters.rows.push(row);
             flex.allowDelete = true;
             flex.allowAddNew = true;
-            flex.allowSorting = true;
+            // flex.allowSorting = true;
             flex.bottomLeftCells.setCellData(0, 0, '\u03A3');
+
+            flex.columns[2].header = 'AAA';
 
             this.refreshFooter(flex);
         }
@@ -243,7 +292,7 @@ export class AccountingPage {
                 children: a.children,
                 offering: a.offering,
                 cny: a.cny,
-                saving: `=E${index+2}+G${index+2}/${this.content.commonSvc.exchangeRates.audcny}-F${index+2}`,
+                saving: a.saving,
                 expense: a.expense,
                 notes: a.notes,
                 countedBy: a.countedBy ? a.countedBy.map(c => this.contacts[c] && this.contacts[c].name).join(', ') : null,
@@ -269,6 +318,7 @@ export class AccountingPage {
                 cny: item.cny,
                 expense: item.expense,
                 notes: item.notes,
+                saving: item.saving,
                 countedBy: this.contactNamesToIds(item.countedBy),
                 middleman: this.contactNamesToIds(item.middleman),
                 recipient: this.contactNamesToIds(item.recipient),
@@ -296,13 +346,14 @@ export class AccountingPage {
 
         this.highlightId = this.navParams.get('id');
 
+        window['accounting'] = this;
+
         this.content.allContactsDB.once('value', snapshot => {
             this.contacts = snapshot.val();
             this.content.accounting$.subscribe(accounting => {
                 if (!this.accountingData) {
                     this.accountingData = new wjcCore.CollectionView(this.formatData(accounting));
 
-                    window['accounting'] = this;
 
                     let highlightRowIndex = accounting.map(item => item.id).indexOf(this.highlightId);
 
@@ -320,21 +371,22 @@ export class AccountingPage {
                     this.accountingData.refresh();
                 }
             });
-        })
+        });
     }
 
     save() {
         let data = this.reverseFormatData(this.accountingData._src);
-        console.log(data);
+        // console.log(data);
         this.content.accountingDB.set(data).then(res => {
             this.content.commonSvc.toastSuccess('財務信息已保存');
+            this.flexSheet.autoSizeRows();
         }, error => {
             this.content.commonSvc.toastFailure('保存失敗');
         })
     }
 
     ionViewDidLoad() {
-        console.log('ionViewDidLoad AccountingPage');
+        // console.log('ionViewDidLoad AccountingPage');
     }
 
 }

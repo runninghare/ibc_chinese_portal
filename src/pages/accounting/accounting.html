@@ -22,7 +22,12 @@
         [dataType]="c.dataType" *ngFor="let c of columns; let idx = index"></wj-flex-grid-column>
     </wj-flex-grid> -->
 
-    <wj-flex-sheet #flexSheet *ngIf="accountingData" (cellEditEnded)="refreshFooter(flexSheet)" (itmesSourceChanged)="refreshFooter(flexSheet)" [autoGenerateColumns]="true" (initialized)="initFlexSheet(flexSheet)"> 
+    <wj-flex-sheet #flexSheet *ngIf="accountingData"
+     (cellEditEnded)="refreshFooter(flexSheet)" (itmesSourceChanged)="refreshFooter(flexSheet)" [autoGenerateColumns]="false" (initialized)="initFlexSheet(flexSheet)"
+     (copying)="onCopying($event)" (copied)="onCopied($event)" (pasting)="onPasting($event)" (pasted)="onPasted($event)"
+     > 
+<!--         <wj-sheet name="Data">
+        </wj-sheet> -->
     </wj-flex-sheet>
 
 
