@@ -3,6 +3,7 @@ import { ModalController, NavParams, ViewController} from 'ionic-angular';
 import { CommonProvider } from '../../providers/common/common';
 import { BrowserProvider } from '../../providers/browser/browser';
 import { LoadTrackerProvider } from '../../providers/load-tracker/load-tracker';
+import { FileTransfer } from '@ionic-native/file-transfer';
 import { DataProvider } from '../../providers/data-adaptor/data-adaptor';
 
 /**
@@ -28,6 +29,8 @@ export class MediaDownloaderComponent {
 
   download() {
 
+      console.log(`====== downloading image ${this.imageUrl} ===========`);
+
       if (this.commonSvc.isWeb) {
           window.open(this.imageUrl, '_blank');
       } else {
@@ -50,11 +53,32 @@ export class MediaDownloaderComponent {
 
                   this.loadTrackerSvc.loading = true;
 
+                  // let fileTransfer = new FileTransfer();
+                  // fileTransfer.download(this.imageUrl, 'cdvfile://localhost/temporary/path/to/image.jpg', (entry) => {
+                  //   var targetPath = entry.toURL();
+
+                  //   cordova.plugins['photoLibrary'].saveImage(targetPath, 'IBC', (libraryItem) => {
+                  //     this.commonSvc.toastSuccess('圖片已保存至IBC相冊！')
+                  //     this.loadTrackerSvc.loading = false;
+                  //     this.back();
+                  //   }, err => {
+                  //     console.log(err);
+                  //     this.commonSvc.toastFailure(`保存失败：${err}`);
+                  //     this.loadTrackerSvc.loading = false;
+                  //     this.back();
+                  //   })
+
+                  // }, err => {
+                  //   console.error('Error downloading image!');
+                  //   console.error(err);
+                  // });
+
                   cordova.plugins['photoLibrary'].saveImage(this.imageUrl, 'IBC', (libraryItem) => {
                       this.commonSvc.toastSuccess('圖片已保存至IBC相冊！')
                       this.loadTrackerSvc.loading = false;
                       this.back();
                   }, err => {
+                      console.log(err);
                       this.commonSvc.toastFailure(`保存失败：${err}`);
                       this.loadTrackerSvc.loading = false;
                       this.back();

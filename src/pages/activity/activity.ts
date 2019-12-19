@@ -328,7 +328,20 @@ export class ActivityPage implements OnDestroy {
   removePhoto(photo: string|IntIBCImage, callback?: Function): void {
     if (!photo || !this.activity.pictures) return;
 
-    let index = this.activity.pictures.indexOf(photo);
+    let allUrls = [];
+    this.activity.pictures.forEach(p => {
+      if (typeof p == 'string') {
+        allUrls.push(p);
+      } else if (p && p.detail) {
+        allUrls.push(p.detail);
+      }
+    });
+
+    let index = allUrls.indexOf(photo);
+
+    console.log(`==== remove photo at index: ${index} ===`);
+    console.log(photo);
+
     this.commonSvc.confirmDialog("你確定要刪除這張照片嗎", "刪除後所有人將無法看見", () => {
       this.activity.pictures.splice(index,1);
       this.activityDB.child(`pictures`).set(this.activity.pictures).then(() => {

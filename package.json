@@ -10,7 +10,7 @@
         "serve-prod": "IBC_ENV=ibc_prod ionic serve --no-open",
         "build-www": "IBC_ENV=ibc_prod ionic-app-scripts build --aot --minifyjs --minifycss",
         "build-www-dev": "IBC_ENV=ibc_dev ionic-app-scripts build --aot --minifyjs --minifycss",
-        "build": "IBC_ENV=ibc_prod ionic cordova build --aot --minifyjs --minifycss -- --packageType=app-store",
+        "build": "IBC_ENV=ibc_prod ionic cordova build --aot --minifyjs --minifycss --packageType=app-store",
         "build-dev": "IBC_ENV=ibc_dev ionic cordova build --aot --minifyjs --minifycss --packageType=app-store",
         "run": "IBC_ENV=ibc_prod ionic cordova run --aot --minifyjs --minifycss",
         "run-dev": "IBC_ENV=ibc_dev ionic cordova run",
@@ -27,7 +27,7 @@
         "lint": "ionic-app-scripts lint",
         "ionic:build": "ionic-app-scripts build",
         "ionic:serve": "ionic-app-scripts serve",
-        "ionic:sign": "pushd platforms/android && rm -rf build/outputs/apk/release/android-release*.apk && gradlew assembleRelease && cd build/outputs/apk/release && zipalign -v -p 4 android-release-unsigned.apk android-release-aligned.apk && apksigner sign --ks ~/android/android_keys/ibc-release.keystore --ks-key-alias ibc_chinese --out android-release-signed.apk android-release-aligned.apk && popd"
+        "ionic:sign": "pushd platforms/android && rm -rf app/build/outputs/apk/release/android-release*.apk && gradlew assembleRelease && cd app/build/outputs/apk/release && zipalign -v -p 4 app-release-unsigned.apk android-release-aligned.apk && apksigner sign --ks ~/android/android_keys/ibc-release.keystore --ks-key-alias ibc_chinese --out android-release-signed.apk android-release-aligned.apk && popd"
     },
     "dependencies": {
         "@angular/animations": "~5.1.0",
