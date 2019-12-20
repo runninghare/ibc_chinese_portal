@@ -139,7 +139,7 @@ export class FileCacheProvider {
         }
         let cacheRoot = this.platform.is('ios') ? this.file.cacheDirectory : this.file.externalCacheDirectory;
 
-        let hashCode = btoa(sourceUrl);
+        let hashCode = this.commonSvc.makeRandomString(20);
         return cacheRoot + '/ibc/' + hashCode + ext;
     }
 
